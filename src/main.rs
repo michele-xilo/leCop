@@ -1,6 +1,9 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use lecop::{dataset::Dataset, validate::{Severity, validate}};
+use lecop::{
+    dataset::Dataset,
+    validate::{Severity, validate},
+};
 use std::{path::PathBuf, process::ExitCode};
 
 #[derive(Parser)]
@@ -25,19 +28,38 @@ fn main() -> Result<ExitCode> {
             println!("version   {}", i.codebase_version);
             println!("robot     {}", i.robot_type.as_deref().unwrap_or("?"));
             println!("episodes  {}", i.total_episodes);
-            println!("frames    {} ({:.2} h @ {} fps)", i.total_frames, i.total_frames as f64 / i.fps / 3600.0, i.fps);
-            for (k, f) in &i.features { println!("feature   {k:<34} {:<8} {:?}", f.dtype, f.shape); }
+            println!(
+                "frames    {} ({:.2} h @ {} fps)",
+                i.total_frames,
+                i.total_frames as f64 / i.fps / 3600.0,
+                i.fps
+            );
+            for (k, f) in &i.features {
+                println!("feature   {k:<34} {:<8} {:?}", f.dtype, f.shape);
+            }
             Ok(ExitCode::SUCCESS)
         }
         Cmd::Validate { path } => {
             let issues = validate(&Dataset::open(path)?)?;
             for x in &issues {
                 let ep = x.episode.map_or("-".into(), |e| e.to_string());
-                println!("{:<7} ep {ep:<6} {:<24} {}", format!("{:?}", x.severity).to_uppercase(), x.code, x.message);
+                println!(
+                    "{:<7} ep {ep:<6} {:<24} {}",
+                    format!("{:?}", x.severity).to_uppercase(),
+                    x.code,
+                    x.message
+                );
             }
-            let errors = issues.iter().filter(|x| x.severity == Severity::Error).count();
+            let errors = issues
+                .iter()
+                .filter(|x| x.severity == Severity::Error)
+                .count();
             println!("{errors} errors, {} warnings", issues.len() - errors);
-            Ok(if errors > 0 { ExitCode::FAILURE } else { ExitCode::SUCCESS })
+            Ok(if errors > 0 {
+                ExitCode::FAILURE
+            } else {
+                ExitCode::SUCCESS
+            })
         }
     }
 }
