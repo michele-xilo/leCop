@@ -145,15 +145,14 @@ pub fn idle_profile(actions: &[f64], width: usize) -> Idle {
     r
 }
 
-/// The feature the action checks run on: `action`, or an `action*` float feature such as `actions`.
+/// The feature the action checks run on: `action`, or `actions` (seen in the wild). Not any `action*`
+/// name: siblings such as `action_is_pad` are not the action.
 fn action_key(ds: &Dataset) -> Option<&str> {
     let f = &ds.info.features;
-    if f.contains_key("action") {
-        return Some("action");
-    }
-    f.iter()
-        .find(|(k, v)| k.starts_with("action") && (v.dtype == "float32" || v.dtype == "float64"))
-        .map(|(k, _)| k.as_str())
+    ["action", "actions"].into_iter().find(|k| {
+        f.get(*k)
+            .is_some_and(|v| v.dtype == "float32" || v.dtype == "float64")
+    })
 }
 
 pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {

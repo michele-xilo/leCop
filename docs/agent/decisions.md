@@ -41,7 +41,7 @@ Added after running lecop on 7 community datasets found no structural faults (se
 warnings. `idle_episode`: > 50% of transitions repeat the previous action row exactly (constant action
 keeps its own `action_constant` code, not both). Threshold is a fixed constant from a single dataset; it is
 a judgement call and should become a flag if anyone disagrees. Action checks use `action`, falling back to
-an `action*` float feature. Missing `observation.state` is not checked yet (the test fixtures would need
+`actions` (not any `action*`: `action_is_pad` exists in real datasets). Missing `observation.state` is not checked yet (the test fixtures would need
 the column). On the 15 local real datasets the two checks fire only on the two datasets that motivated
 them (1 naming warning, 5 idle warnings); the other 13 stay clean.
 

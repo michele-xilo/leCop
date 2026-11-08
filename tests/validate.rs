@@ -590,3 +590,17 @@ fn does_not_warn_on_a_short_pause() {
     let v = run(vec![idle_then_moving(20, 6)], None); // 5 of 19 transitions repeat
     assert!(v.is_empty(), "{v:?}");
 }
+
+#[test]
+fn does_not_mistake_a_sibling_feature_for_the_action() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    edit_info(dir.path(), |v| {
+        let f = v["features"].as_object_mut().unwrap();
+        let a = f.remove("action").unwrap();
+        f.insert("action_mask".into(), a); // a float feature that only shares the prefix
+    });
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["nonstandard_features"]);
+    assert!(!v[0].message.contains("action_mask"), "{}", v[0].message);
+}

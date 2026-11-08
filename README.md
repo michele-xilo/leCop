@@ -31,7 +31,7 @@ lecop validate path/to/dataset   # exits 1 if any error is found
 - `frame_index` runs `0..n-1`
 - no NaN/Inf in float features
 - warns if `action` is identical on every frame, or if more than half of an episode's frames repeat the previous action (`idle_episode`: dead time, with the frames where it first and last changes)
-- warns if there is no `action` feature (policies expect that name); action checks then use an `action*` feature such as `actions`
+- warns if there is no `action` feature (policies expect that name); action checks then use `actions` if present
 - malformed data is reported, not crashed on: a missing or non-float `timestamp` column, ragged or wrongly shaped feature columns, `fps` that is not a positive number
 - v3 only: each episode's frame range matches its length, ranges are contiguous, and the global `index` column agrees
 
