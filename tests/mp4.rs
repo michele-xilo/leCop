@@ -73,3 +73,12 @@ fn errors_on_empty_and_garbage_files() {
     assert!(read(vec![]).is_err());
     assert!(read(b"this is not an mp4 file at all".to_vec()).is_err());
 }
+
+#[test]
+fn errors_instead_of_overflowing_on_a_huge_64_bit_box_size() {
+    let mut b = Mp4::constant_fps(1, 10).bytes()[..20].to_vec(); // ftyp only
+    b.extend([0, 0, 0, 1]); // size == 1 -> 64-bit size follows
+    b.extend(b"free");
+    b.extend(u64::MAX.to_be_bytes());
+    assert!(read(b).is_err());
+}

@@ -62,7 +62,7 @@ fn read_moov(f: &mut File) -> Result<Vec<u8>> {
         if size < header {
             bail!("invalid box size {size} at byte {pos}");
         }
-        if pos + size > len {
+        if size > len - pos {
             bail!(
                 "truncated {} box at byte {pos}: needs {size} bytes, file has {}",
                 String::from_utf8_lossy(&kind),

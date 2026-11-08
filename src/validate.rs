@@ -44,6 +44,7 @@ type VideoRead = Result<VideoInfo, (&'static str, String)>;
 // ponytail: whole file in memory, one file at a time. Fine for ~100 MB shards; stream by row group if files get huge.
 #[derive(Default)]
 struct FileData {
+    rows: usize,
     ts: Vec<f64>,
     fi: Vec<i64>,
     ep: Option<Vec<i64>>,
@@ -56,6 +57,7 @@ fn read_file(path: &Path, ds: &Dataset) -> Result<FileData> {
     let mut d = FileData::default();
     for batch in reader {
         let batch = batch?;
+        d.rows += batch.num_rows();
         if let Some(c) = batch.column_by_name("timestamp") {
             d.ts.extend(as_f64(c));
         }
@@ -171,15 +173,14 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
                     ),
                 );
             }
-            if prev_to.is_some_and(|p| p != from) {
+            if let Some(p) = prev_to
+                && p != from
+            {
                 push(
                     Error,
                     ep,
                     "range_gap",
-                    format!(
-                        "starts at {from}, previous episode ended at {}",
-                        prev_to.unwrap()
-                    ),
+                    format!("starts at {from}, previous episode ended at {p}"),
                 );
             }
             prev_to = Some(to);
@@ -274,9 +275,21 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
                     None
                 }
                 Ok(_) => match read_file(&e.data_file, ds) {
+                    Ok(d) if d.ts.len() != d.rows => {
+                        push(
+                            Error,
+                            ep,
+                            "column_missing",
+                            format!(
+                                "{}: `timestamp` column missing or not a float",
+                                e.data_file.display()
+                            ),
+                        );
+                        None
+                    }
                     Ok(d) => Some(d),
                     Err(err) => {
-                        push(Error, ep, "data_unreadable", err.to_string());
+                        push(Error, ep, "data_unreadable", format!("{err:#}"));
                         None
                     }
                 },
@@ -284,7 +297,7 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
             let runs = loaded.as_ref().map(episode_runs).unwrap_or_default();
             current = Some((e.data_file.clone(), loaded, runs));
         }
-        let (_, Some(d), runs) = current.as_ref().unwrap() else {
+        let Some((_, Some(d), runs)) = &current else {
             continue;
         };
 
@@ -354,7 +367,19 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
             push(Error, ep, "frame_index", "frame_index is not 0..n-1".into());
         }
         for (k, (vals, w)) in &d.floats {
-            let slice = &vals[s * w..t * w];
+            let Some(slice) = vals.get(s * w..t * w) else {
+                push(
+                    Error,
+                    ep,
+                    "column_shape",
+                    format!(
+                        "{k}: {} values do not fit {} rows of width {w}",
+                        vals.len(),
+                        d.rows
+                    ),
+                );
+                continue;
+            };
             let n = slice.iter().filter(|x| !x.is_finite()).count();
             if n > 0 {
                 push(Error, ep, "non_finite", format!("{k}: {n} NaN/Inf values"));

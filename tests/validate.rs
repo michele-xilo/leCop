@@ -444,3 +444,64 @@ fn v3_reports_a_shared_unreadable_video_once() {
     let v = run_v3(vec![a, good(10), good(10)]);
     assert_eq!(codes(&v), ["video_unreadable"]);
 }
+
+// ---------------------------------------------------------------- malformed input must not panic
+
+/// Replace episode 0's data file of a one-episode v2 dataset with `batch`.
+fn run_with_data_file(batch: RecordBatch) -> Vec<Issue> {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(10)], None);
+    let f = fs::File::create(dir.path().join("data/chunk-000/episode_000000.parquet")).unwrap();
+    let mut w = ArrowWriter::try_new(f, batch.schema(), None).unwrap();
+    w.write(&batch).unwrap();
+    w.close().unwrap();
+    validate(&Dataset::open(dir.path()).unwrap()).unwrap()
+}
+
+#[test]
+fn reports_a_missing_timestamp_column_instead_of_panicking() {
+    let schema = Arc::new(Schema::new(vec![
+        Field::new("frame_index", DataType::Int64, false),
+        Field::new(
+            "action",
+            DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM),
+            false,
+        ),
+    ]));
+    let batch = RecordBatch::try_new(
+        schema,
+        vec![i64s((0..10).collect()), fsl(vec![0.5; 10 * DIM as usize])],
+    )
+    .unwrap();
+    let c = codes(&run_with_data_file(batch));
+    assert!(c.contains(&"column_missing"), "{c:?}");
+}
+
+#[test]
+fn reports_ragged_list_columns_instead_of_panicking() {
+    use arrow_array::{ListArray, types::Float32Type};
+    let rows = (0..10).map(|i| Some(vec![Some(i as f32); if i == 0 { 2 } else { 1 }]));
+    let action: ArrayRef = Arc::new(ListArray::from_iter_primitive::<Float32Type, _, _>(rows));
+    let schema = Arc::new(Schema::new(vec![
+        Field::new("timestamp", DataType::Float32, false),
+        Field::new("action", action.data_type().clone(), true),
+    ]));
+    let ts: Vec<f32> = (0..10).map(|i| i as f32 / FPS).collect();
+    let batch =
+        RecordBatch::try_new(schema, vec![Arc::new(Float32Array::from(ts)), action]).unwrap();
+    let c = codes(&run_with_data_file(batch));
+    assert!(c.contains(&"column_shape"), "{c:?}");
+}
+
+#[test]
+fn rejects_non_positive_fps() {
+    let dir = tempfile::tempdir().unwrap();
+    fs::create_dir_all(dir.path().join("meta")).unwrap();
+    fs::write(
+        dir.path().join("meta/info.json"),
+        r#"{"codebase_version":"v2.1","fps":0,"total_episodes":0,"total_frames":0,"data_path":"x","features":{}}"#,
+    )
+    .unwrap();
+    let err = Dataset::open(dir.path()).err().unwrap().to_string();
+    assert!(err.contains("fps"), "{err}");
+}

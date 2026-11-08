@@ -68,6 +68,9 @@ impl Dataset {
             &fs::read(&p).with_context(|| format!("reading {}", p.display()))?,
         )
         .with_context(|| format!("parsing {}", p.display()))?;
+        if !(info.fps.is_finite() && info.fps > 0.0) {
+            bail!("info.json fps must be a positive number, got {}", info.fps);
+        }
         let episodes = match info.codebase_version.as_str() {
             v if v.starts_with("v2") => episodes_v2(&root, &info)?,
             v if v.starts_with("v3") => episodes_v3(&root, &info)?,
