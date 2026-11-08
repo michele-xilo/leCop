@@ -19,7 +19,10 @@ cargo test
 cargo bench        # when you touched a hot path, see performance.md
 ```
 
-Run all the checks before considering work done. Tests verify the code, not real data: a change to what the
+Run all the checks before considering work done. CI (`.github/workflows/ci.yml`) runs the same fmt, clippy,
+build and test steps on Linux and macOS, plus a gitleaks secret scan of the full history and a coverage
+report with a line-coverage floor; a change that would fail CI is not done. Never weaken a CI check to get a
+change through, and pin any new third-party action to a commit SHA. Tests verify the code, not real data: a change to what the
 checks report must also go through a real run of `cargo run --release -- validate datasets/<name>` on the
 datasets in `datasets/` (see below), plus a mutation test on a copy (e.g. change `fps` in `info.json` and
 expect `timestamp_drift` errors), so you know the checks fire rather than silently skip. If you cannot run
