@@ -31,6 +31,10 @@ const TIMESTAMP_TOL_S: f64 = 1e-4;
 /// Relative difference between a video's frame rate and info.json's that we still accept.
 const VIDEO_FPS_TOL: f64 = 0.01;
 
+/// An episode is reported when more than this fraction of its frames repeat the previous action.
+// ponytail: fixed 50% threshold, from one so101 dataset where normal episodes idled < 50%; make it a flag if people disagree.
+const IDLE_FRACTION: f64 = 0.5;
+
 /// Row range of one episode inside a data file.
 type Run = (usize, usize);
 
@@ -108,6 +112,49 @@ fn episode_runs(d: &FileData) -> HashMap<i64, Run> {
     runs
 }
 
+/// How much of an action trajectory is dead time: transitions where the action vector did not change.
+#[derive(Debug, Default, PartialEq, Eq)]
+pub struct Idle {
+    pub transitions: usize,
+    pub idle: usize,
+    /// First and last frame whose action differs from the previous frame.
+    pub first_move: Option<usize>,
+    pub last_move: Option<usize>,
+}
+
+/// `actions` is `rows * width` values, row-major. Exact equality is intended: real teleop noise is never
+/// bit-identical, so a repeated row means the recording held the last command.
+pub fn idle_profile(actions: &[f64], width: usize) -> Idle {
+    let mut r = Idle::default();
+    if width == 0 {
+        return r;
+    }
+    let mut prev: Option<&[f64]> = None;
+    for (i, row) in actions.chunks_exact(width).enumerate() {
+        if let Some(p) = prev {
+            r.transitions += 1;
+            if p == row {
+                r.idle += 1;
+            } else {
+                r.first_move.get_or_insert(i);
+                r.last_move = Some(i);
+            }
+        }
+        prev = Some(row);
+    }
+    r
+}
+
+/// The feature the action checks run on: `action`, or `actions` (seen in the wild). Not any `action*`
+/// name: siblings such as `action_is_pad` are not the action.
+fn action_key(ds: &Dataset) -> Option<&str> {
+    let f = &ds.info.features;
+    ["action", "actions"].into_iter().find(|k| {
+        f.get(*k)
+            .is_some_and(|v| v.dtype == "float32" || v.dtype == "float64")
+    })
+}
+
 pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
     use Severity::*;
     let mut v = Vec::new();
@@ -119,6 +166,19 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
             message,
         })
     };
+
+    let action = action_key(ds);
+    if !ds.info.features.contains_key("action") {
+        let found = action.map_or(String::new(), |k| {
+            format!("; running the action checks on `{k}`")
+        });
+        push(
+            Warning,
+            None,
+            "nonstandard_features",
+            format!("no `action` feature, which LeRobot policies expect{found}"),
+        );
+    }
 
     if ds.episodes.len() != ds.info.total_episodes {
         push(
@@ -384,17 +444,29 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
             if n > 0 {
                 push(Error, ep, "non_finite", format!("{k}: {n} NaN/Inf values"));
             }
-            if k == "action"
-                && *w > 0
-                && slice.len() > *w
-                && slice.chunks(*w).all(|r| r == &slice[..*w])
-            {
-                push(
-                    Warning,
-                    ep,
-                    "action_constant",
-                    "action is identical on every frame".into(),
-                );
+            if Some(k.as_str()) == action && *w > 0 && slice.len() > *w {
+                let idle = idle_profile(slice, *w);
+                if idle.idle == idle.transitions {
+                    push(
+                        Warning,
+                        ep,
+                        "action_constant",
+                        "action is identical on every frame".into(),
+                    );
+                } else if idle.idle as f64 > IDLE_FRACTION * idle.transitions as f64 {
+                    push(
+                        Warning,
+                        ep,
+                        "idle_episode",
+                        format!(
+                            "{:.0}% of frames repeat the previous action; it first changes at frame {} and last at frame {} of {}",
+                            100.0 * idle.idle as f64 / idle.transitions as f64,
+                            idle.first_move.unwrap_or(0),
+                            idle.last_move.unwrap_or(0),
+                            idle.transitions + 1
+                        ),
+                    );
+                }
             }
         }
     }
@@ -423,4 +495,32 @@ fn flatten(c: &ArrayRef) -> Option<(Vec<f64>, usize)> {
         l.value_length(0) as usize
     };
     Some((as_f64(l.values()), w))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn idle_profile_counts_repeated_rows_and_first_last_change() {
+        // width 2, rows: A A A B B C  -> transitions: same same diff same diff
+        let a = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0];
+        let p = idle_profile(&a, 2);
+        assert_eq!(
+            p,
+            Idle {
+                transitions: 5,
+                idle: 3,
+                first_move: Some(3),
+                last_move: Some(5)
+            }
+        );
+    }
+
+    #[test]
+    fn idle_profile_handles_degenerate_input() {
+        assert_eq!(idle_profile(&[], 3), Idle::default());
+        assert_eq!(idle_profile(&[1.0, 2.0], 0), Idle::default()); // zero width must not panic
+        assert_eq!(idle_profile(&[1.0, 2.0], 2).transitions, 0); // a single row has no transitions
+    }
 }

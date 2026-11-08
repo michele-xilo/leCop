@@ -36,6 +36,15 @@ Rules adapted from task-audit live in `.claude/rules/` (general, modus-operandi,
 Feature work goes on a branch; ask before pushing. Performance rules require criterion benches and
 rayon parallelism; the validator is still sequential (planned as M4), so the rules are ahead of the code.
 
+## 2026-11-08 Semantic checks: nonstandard_features, idle_episode
+Added after running lecop on 7 community datasets found no structural faults (see m1-notes.md). Both
+warnings. `idle_episode`: > 50% of transitions repeat the previous action row exactly (constant action
+keeps its own `action_constant` code, not both). Threshold is a fixed constant from a single dataset; it is
+a judgement call and should become a flag if anyone disagrees. Action checks use `action`, falling back to
+`actions` (not any `action*`: `action_is_pad` exists in real datasets). Missing `observation.state` is not checked yet (the test fixtures would need
+the column). On the 15 local real datasets the two checks fire only on the two datasets that motivated
+them (1 naming warning, 5 idle warnings); the other 13 stay clean.
+
 ## 2026-11-08 License: MIT OR Apache-2.0
 Rust convention. Copyright holder assumed "Michele Xiloyannis"; user should confirm.
 
