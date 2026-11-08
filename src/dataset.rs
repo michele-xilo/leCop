@@ -2,7 +2,11 @@ use anyhow::{Context, Result, bail};
 use arrow_array::{RecordBatch, cast::AsArray, types::*};
 use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
 use serde::Deserialize;
-use std::{collections::BTreeMap, fs, path::{Path, PathBuf}};
+use std::{
+    collections::BTreeMap,
+    fs,
+    path::{Path, PathBuf},
+};
 
 #[derive(Debug, Deserialize)]
 pub struct Feature {
@@ -26,7 +30,9 @@ pub struct Info {
     pub video_path: Option<String>,
     pub features: BTreeMap<String, Feature>,
 }
-fn default_chunks_size() -> usize { 1000 }
+fn default_chunks_size() -> usize {
+    1000
+}
 
 /// One episode, resolved to files. Same shape for v2.x (one file per episode) and v3.0 (packed files).
 #[derive(Debug)]
@@ -50,49 +56,91 @@ impl Dataset {
     pub fn open(root: impl AsRef<Path>) -> Result<Self> {
         let root = root.as_ref().to_path_buf();
         let p = root.join("meta/info.json");
-        let info: Info = serde_json::from_slice(&fs::read(&p).with_context(|| format!("reading {}", p.display()))?)
-            .with_context(|| format!("parsing {}", p.display()))?;
+        let info: Info = serde_json::from_slice(
+            &fs::read(&p).with_context(|| format!("reading {}", p.display()))?,
+        )
+        .with_context(|| format!("parsing {}", p.display()))?;
         let episodes = match info.codebase_version.as_str() {
             v if v.starts_with("v2") => episodes_v2(&root, &info)?,
             v if v.starts_with("v3") => episodes_v3(&root, &info)?,
             v => bail!("unsupported codebase_version {v:?} (supported: v2.x, v3.x)"),
         };
-        Ok(Self { root, info, episodes })
+        Ok(Self {
+            root,
+            info,
+            episodes,
+        })
     }
 }
 
 fn video_keys(info: &Info) -> Vec<&str> {
-    info.features.iter().filter(|(_, f)| f.dtype == "video").map(|(k, _)| k.as_str()).collect()
+    info.features
+        .iter()
+        .filter(|(_, f)| f.dtype == "video")
+        .map(|(k, _)| k.as_str())
+        .collect()
 }
 
 #[derive(Deserialize)]
-struct EpisodeLine { episode_index: usize, length: usize }
+struct EpisodeLine {
+    episode_index: usize,
+    length: usize,
+}
 
 fn episodes_v2(root: &Path, info: &Info) -> Result<Vec<Episode>> {
     let p = root.join("meta/episodes.jsonl");
     let lines = fs::read_to_string(&p).with_context(|| format!("reading {}", p.display()))?;
     let mut out = Vec::new();
     for l in lines.lines().filter(|l| !l.trim().is_empty()) {
-        let e: EpisodeLine = serde_json::from_str(l).with_context(|| format!("bad line in episodes.jsonl: {l}"))?;
+        let e: EpisodeLine =
+            serde_json::from_str(l).with_context(|| format!("bad line in episodes.jsonl: {l}"))?;
         let chunk = (e.episode_index / info.chunks_size).to_string();
         let ep = e.episode_index.to_string();
-        let data_file = root.join(fill(&info.data_path, &[("episode_chunk", &chunk), ("episode_index", &ep)]));
+        let data_file = root.join(fill(
+            &info.data_path,
+            &[("episode_chunk", &chunk), ("episode_index", &ep)],
+        ));
         let videos = match &info.video_path {
-            Some(t) => video_keys(info).into_iter()
-                .map(|k| (k.to_string(), root.join(fill(t, &[("episode_chunk", &chunk), ("episode_index", &ep), ("video_key", k)]))))
+            Some(t) => video_keys(info)
+                .into_iter()
+                .map(|k| {
+                    (
+                        k.to_string(),
+                        root.join(fill(
+                            t,
+                            &[
+                                ("episode_chunk", &chunk),
+                                ("episode_index", &ep),
+                                ("video_key", k),
+                            ],
+                        )),
+                    )
+                })
                 .collect(),
             None => vec![],
         };
-        out.push(Episode { index: e.episode_index, length: e.length, data_file, range: None, videos });
+        out.push(Episode {
+            index: e.episode_index,
+            length: e.length,
+            data_file,
+            range: None,
+            videos,
+        });
     }
     Ok(out)
 }
 
 fn col_i64(b: &RecordBatch, name: &str) -> Option<Vec<i64>> {
     let c = b.column_by_name(name)?;
-    if let Some(a) = c.as_primitive_opt::<Int64Type>() { return Some(a.values().to_vec()); }
-    c.as_primitive_opt::<Int32Type>().map(|a| a.values().iter().map(|x| *x as i64).collect())
+    if let Some(a) = c.as_primitive_opt::<Int64Type>() {
+        return Some(a.values().to_vec());
+    }
+    c.as_primitive_opt::<Int32Type>()
+        .map(|a| a.values().iter().map(|x| *x as i64).collect())
 }
+
+/// (chunk_index, file_index) columns of one video key in the episodes metadata.
+type FileCols = (Vec<i64>, Vec<i64>);
 
 fn episodes_v3(root: &Path, info: &Info) -> Result<Vec<Episode>> {
     let dir = root.join("meta/episodes");
@@ -102,7 +150,9 @@ fn episodes_v3(root: &Path, info: &Info) -> Result<Vec<Episode>> {
         if chunk.is_dir() {
             for f in fs::read_dir(&chunk)? {
                 let f = f?.path();
-                if f.extension().is_some_and(|x| x == "parquet") { files.push(f); }
+                if f.extension().is_some_and(|x| x == "parquet") {
+                    files.push(f);
+                }
             }
         }
     }
@@ -113,23 +163,57 @@ fn episodes_v3(root: &Path, info: &Info) -> Result<Vec<Episode>> {
         let reader = ParquetRecordBatchReaderBuilder::try_new(fs::File::open(&f)?)?.build()?;
         for b in reader {
             let b = b?;
-            let need = |n: &str| col_i64(&b, n).with_context(|| format!("{}: missing column {n}", f.display()));
+            let need = |n: &str| {
+                col_i64(&b, n).with_context(|| format!("{}: missing column {n}", f.display()))
+            };
             let (idx, len) = (need("episode_index")?, need("length")?);
             let (from, to) = (need("dataset_from_index")?, need("dataset_to_index")?);
             let (dc, df) = (need("data/chunk_index")?, need("data/file_index")?);
-            let vcols: Vec<(&str, Option<(Vec<i64>, Vec<i64>)>)> = vkeys.iter()
-                .map(|k| (*k, col_i64(&b, &format!("videos/{k}/chunk_index")).zip(col_i64(&b, &format!("videos/{k}/file_index")))))
+            let vcols: Vec<(&str, Option<FileCols>)> = vkeys
+                .iter()
+                .map(|k| {
+                    (
+                        *k,
+                        col_i64(&b, &format!("videos/{k}/chunk_index"))
+                            .zip(col_i64(&b, &format!("videos/{k}/file_index"))),
+                    )
+                })
                 .collect();
             for i in 0..idx.len() {
-                let data_file = root.join(fill(&info.data_path, &[("chunk_index", &dc[i].to_string()), ("file_index", &df[i].to_string())]));
+                let data_file = root.join(fill(
+                    &info.data_path,
+                    &[
+                        ("chunk_index", &dc[i].to_string()),
+                        ("file_index", &df[i].to_string()),
+                    ],
+                ));
                 let videos = match &info.video_path {
-                    Some(t) => vcols.iter().filter_map(|(k, c)| {
-                        let (vc, vf) = c.as_ref()?;
-                        Some((k.to_string(), root.join(fill(t, &[("video_key", k), ("chunk_index", &vc[i].to_string()), ("file_index", &vf[i].to_string())]))))
-                    }).collect(),
+                    Some(t) => vcols
+                        .iter()
+                        .filter_map(|(k, c)| {
+                            let (vc, vf) = c.as_ref()?;
+                            Some((
+                                k.to_string(),
+                                root.join(fill(
+                                    t,
+                                    &[
+                                        ("video_key", k),
+                                        ("chunk_index", &vc[i].to_string()),
+                                        ("file_index", &vf[i].to_string()),
+                                    ],
+                                )),
+                            ))
+                        })
+                        .collect(),
                     None => vec![],
                 };
-                out.push(Episode { index: idx[i] as usize, length: len[i] as usize, data_file, range: Some((from[i], to[i])), videos });
+                out.push(Episode {
+                    index: idx[i] as usize,
+                    length: len[i] as usize,
+                    data_file,
+                    range: Some((from[i], to[i])),
+                    videos,
+                });
             }
         }
     }
@@ -146,7 +230,11 @@ pub fn fill(template: &str, vars: &[(&str, &str)]) -> String {
         let Some(j) = rest[i..].find('}') else { break };
         let spec = &rest[i + 1..i + j];
         let (name, fmt) = spec.split_once(':').unwrap_or((spec, ""));
-        let width: usize = fmt.trim_start_matches('0').trim_end_matches('d').parse().unwrap_or(0);
+        let width: usize = fmt
+            .trim_start_matches('0')
+            .trim_end_matches('d')
+            .parse()
+            .unwrap_or(0);
         match vars.iter().find(|(k, _)| *k == name) {
             Some((_, v)) => out.push_str(&format!("{v:0>width$}")),
             None => out.push_str(&format!("{{{spec}}}")),
@@ -163,11 +251,21 @@ mod tests {
     #[test]
     fn fills_lerobot_templates() {
         assert_eq!(
-            fill("data/chunk-{episode_chunk:03d}/episode_{episode_index:06d}.parquet", &[("episode_chunk", "0"), ("episode_index", "12")]),
+            fill(
+                "data/chunk-{episode_chunk:03d}/episode_{episode_index:06d}.parquet",
+                &[("episode_chunk", "0"), ("episode_index", "12")]
+            ),
             "data/chunk-000/episode_000012.parquet"
         );
         assert_eq!(
-            fill("videos/{video_key}/chunk-{chunk_index:03d}/file-{file_index:03d}.mp4", &[("video_key", "observation.images.top"), ("chunk_index", "1"), ("file_index", "42")]),
+            fill(
+                "videos/{video_key}/chunk-{chunk_index:03d}/file-{file_index:03d}.mp4",
+                &[
+                    ("video_key", "observation.images.top"),
+                    ("chunk_index", "1"),
+                    ("file_index", "42")
+                ]
+            ),
             "videos/observation.images.top/chunk-001/file-042.mp4"
         );
     }

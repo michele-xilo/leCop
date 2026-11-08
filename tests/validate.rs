@@ -1,14 +1,24 @@
 //! Smoke tests on synthetic LeRobot v2.1-style datasets written to a temp dir.
 use arrow_array::{ArrayRef, FixedSizeListArray, Float32Array, Int64Array, RecordBatch};
 use arrow_schema::{DataType, Field, Schema};
+use lecop::{
+    dataset::Dataset,
+    validate::{Issue, Severity, validate},
+};
 use parquet::arrow::ArrowWriter;
-use lecop::{dataset::Dataset, validate::{Issue, Severity, validate}};
 use std::{fs, path::Path, sync::Arc};
 
 const FPS: f32 = 10.0;
 const DIM: i32 = 2;
 
-struct Ep { len: usize, ts: Vec<f32>, action: Vec<f32>, with_video: bool, with_data: bool, range_to_delta: i64 }
+struct Ep {
+    len: usize,
+    ts: Vec<f32>,
+    action: Vec<f32>,
+    with_video: bool,
+    with_data: bool,
+    range_to_delta: i64,
+}
 
 /// A healthy episode: perfect timestamps, varying action.
 fn good(len: usize) -> Ep {
@@ -24,11 +34,20 @@ fn good(len: usize) -> Ep {
 
 fn fsl(vals: Vec<f32>) -> ArrayRef {
     let item = Arc::new(Field::new("item", DataType::Float32, true));
-    Arc::new(FixedSizeListArray::new(item, DIM, Arc::new(Float32Array::from(vals)), None))
+    Arc::new(FixedSizeListArray::new(
+        item,
+        DIM,
+        Arc::new(Float32Array::from(vals)),
+        None,
+    ))
 }
 
 fn write_ds(root: &Path, eps: &[Ep], claimed_total_frames: Option<usize>) {
-    for d in ["meta", "data/chunk-000", "videos/chunk-000/observation.images.top"] {
+    for d in [
+        "meta",
+        "data/chunk-000",
+        "videos/chunk-000/observation.images.top",
+    ] {
         fs::create_dir_all(root.join(d)).unwrap();
     }
     let frames: usize = eps.iter().map(|e| e.len).sum();
@@ -45,27 +64,55 @@ fn write_ds(root: &Path, eps: &[Ep], claimed_total_frames: Option<usize>) {
         }
     });
     fs::write(root.join("meta/info.json"), info.to_string()).unwrap();
-    let jsonl: String = eps.iter().enumerate()
-        .map(|(i, e)| format!("{}\n", serde_json::json!({"episode_index": i, "length": e.len, "tasks": ["t"]})))
+    let jsonl: String = eps
+        .iter()
+        .enumerate()
+        .map(|(i, e)| {
+            format!(
+                "{}\n",
+                serde_json::json!({"episode_index": i, "length": e.len, "tasks": ["t"]})
+            )
+        })
         .collect();
     fs::write(root.join("meta/episodes.jsonl"), jsonl).unwrap();
 
     for (i, e) in eps.iter().enumerate() {
         if e.with_video {
-            fs::write(root.join(format!("videos/chunk-000/observation.images.top/episode_{i:06}.mp4")), b"").unwrap();
+            fs::write(
+                root.join(format!(
+                    "videos/chunk-000/observation.images.top/episode_{i:06}.mp4"
+                )),
+                b"",
+            )
+            .unwrap();
         }
-        if !e.with_data { continue; }
+        if !e.with_data {
+            continue;
+        }
         let schema = Arc::new(Schema::new(vec![
             Field::new("timestamp", DataType::Float32, false),
             Field::new("frame_index", DataType::Int64, false),
-            Field::new("action", DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM), false),
+            Field::new(
+                "action",
+                DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM),
+                false,
+            ),
         ]));
-        let batch = RecordBatch::try_new(schema.clone(), vec![
-            Arc::new(Float32Array::from(e.ts.clone())),
-            Arc::new(Int64Array::from((0..e.ts.len() as i64).collect::<Vec<_>>())),
-            fsl(e.action.clone()),
-        ]).unwrap();
-        let mut w = ArrowWriter::try_new(fs::File::create(root.join(format!("data/chunk-000/episode_{i:06}.parquet"))).unwrap(), schema, None).unwrap();
+        let batch = RecordBatch::try_new(
+            schema.clone(),
+            vec![
+                Arc::new(Float32Array::from(e.ts.clone())),
+                Arc::new(Int64Array::from((0..e.ts.len() as i64).collect::<Vec<_>>())),
+                fsl(e.action.clone()),
+            ],
+        )
+        .unwrap();
+        let mut w = ArrowWriter::try_new(
+            fs::File::create(root.join(format!("data/chunk-000/episode_{i:06}.parquet"))).unwrap(),
+            schema,
+            None,
+        )
+        .unwrap();
         w.write(&batch).unwrap();
         w.close().unwrap();
     }
@@ -76,7 +123,9 @@ fn run(eps: Vec<Ep>, claimed_frames: Option<usize>) -> Vec<Issue> {
     write_ds(dir.path(), &eps, claimed_frames);
     validate(&Dataset::open(dir.path()).unwrap()).unwrap()
 }
-fn codes(v: &[Issue]) -> Vec<&'static str> { v.iter().map(|i| i.code).collect() }
+fn codes(v: &[Issue]) -> Vec<&'static str> {
+    v.iter().map(|i| i.code).collect()
+}
 
 #[test]
 fn healthy_dataset_has_no_issues() {
@@ -87,7 +136,9 @@ fn healthy_dataset_has_no_issues() {
 #[test]
 fn flags_timestamp_drift() {
     let mut e = good(20);
-    for t in e.ts.iter_mut().skip(10) { *t += 0.05; } // 50 ms late from frame 10
+    for t in e.ts.iter_mut().skip(10) {
+        *t += 0.05;
+    } // 50 ms late from frame 10
     assert_eq!(codes(&run(vec![e], None)), ["timestamp_drift"]);
 }
 
@@ -117,10 +168,15 @@ fn warns_on_frozen_action() {
 
 #[test]
 fn flags_missing_video_and_data_files() {
-    let mut a = good(10); a.with_video = false;
-    let mut b = good(10); b.with_data = false;
+    let mut a = good(10);
+    a.with_video = false;
+    let mut b = good(10);
+    b.with_data = false;
     let c = codes(&run(vec![a, b], None));
-    assert!(c.contains(&"video_missing") && c.contains(&"data_missing"), "{c:?}");
+    assert!(
+        c.contains(&"video_missing") && c.contains(&"data_missing"),
+        "{c:?}"
+    );
 }
 
 #[test]
@@ -143,13 +199,19 @@ use arrow_array::{Float64Array, StringArray};
 
 const PER_FILE: usize = 2; // episodes packed per data/video file
 
-fn i64s(v: Vec<i64>) -> ArrayRef { Arc::new(Int64Array::from(v)) }
+fn i64s(v: Vec<i64>) -> ArrayRef {
+    Arc::new(Int64Array::from(v))
+}
 
 /// v3.0 layout: PER_FILE episodes per data/video file, episode boundaries in meta/episodes parquet.
 /// Timestamps in data files are episode-relative.
 fn write_ds_v3(root: &Path, eps: &[Ep]) {
     let vk = "observation.images.top";
-    for d in ["meta/episodes/chunk-000", "data/chunk-000", &format!("videos/{vk}/chunk-000")] {
+    for d in [
+        "meta/episodes/chunk-000",
+        "data/chunk-000",
+        &format!("videos/{vk}/chunk-000"),
+    ] {
         fs::create_dir_all(root.join(d)).unwrap();
     }
     let frames: usize = eps.iter().map(|e| e.len).sum();
@@ -170,9 +232,19 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
     let mut file_idx = Vec::new();
     for (g, group) in eps.chunks(PER_FILE).enumerate() {
         if group[0].with_video {
-            fs::write(root.join(format!("videos/{vk}/chunk-000/file-{g:03}.mp4")), b"").unwrap();
+            fs::write(
+                root.join(format!("videos/{vk}/chunk-000/file-{g:03}.mp4")),
+                b"",
+            )
+            .unwrap();
         }
-        let mut rows = (Vec::<f32>::new(), Vec::<i64>::new(), Vec::<i64>::new(), Vec::<i64>::new(), Vec::<f32>::new());
+        let mut rows = (
+            Vec::<f32>::new(),
+            Vec::<i64>::new(),
+            Vec::<i64>::new(),
+            Vec::<i64>::new(),
+            Vec::<f32>::new(),
+        );
         for (j, e) in group.iter().enumerate() {
             let i = g * PER_FILE + j;
             cols[0].push(i as i64);
@@ -182,22 +254,36 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
             file_idx.push(g as i64);
             rows.0.extend(&e.ts);
             rows.1.extend(0..e.ts.len() as i64);
-            rows.2.extend(std::iter::repeat(i as i64).take(e.ts.len()));
+            rows.2.extend(std::iter::repeat_n(i as i64, e.ts.len()));
             rows.3.extend(from..from + e.ts.len() as i64);
             rows.4.extend(&e.action);
             from += e.len as i64;
         }
-        if !group[0].with_data { continue; }
+        if !group[0].with_data {
+            continue;
+        }
         let schema = Arc::new(Schema::new(vec![
             Field::new("timestamp", DataType::Float32, false),
             Field::new("frame_index", DataType::Int64, false),
             Field::new("episode_index", DataType::Int64, false),
             Field::new("index", DataType::Int64, false),
-            Field::new("action", DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM), false),
+            Field::new(
+                "action",
+                DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM),
+                false,
+            ),
         ]));
-        let batch = RecordBatch::try_new(schema.clone(), vec![
-            Arc::new(Float32Array::from(rows.0)), i64s(rows.1), i64s(rows.2), i64s(rows.3), fsl(rows.4),
-        ]).unwrap();
+        let batch = RecordBatch::try_new(
+            schema.clone(),
+            vec![
+                Arc::new(Float32Array::from(rows.0)),
+                i64s(rows.1),
+                i64s(rows.2),
+                i64s(rows.3),
+                fsl(rows.4),
+            ],
+        )
+        .unwrap();
         let f = fs::File::create(root.join(format!("data/chunk-000/file-{g:03}.parquet"))).unwrap();
         let mut w = ArrowWriter::try_new(f, schema, None).unwrap();
         w.write(&batch).unwrap();
@@ -208,16 +294,38 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
     let zeros = || i64s(vec![0; n]);
     let f64s = |v: f64| -> ArrayRef { Arc::new(Float64Array::from(vec![v; n])) };
     let names = [
-        "episode_index", "length", "dataset_from_index", "dataset_to_index", "data/chunk_index", "data/file_index",
-        "videos/observation.images.top/chunk_index", "videos/observation.images.top/file_index",
-        "videos/observation.images.top/from_timestamp", "videos/observation.images.top/to_timestamp",
-        "meta/episodes/chunk_index", "meta/episodes/file_index",
+        "episode_index",
+        "length",
+        "dataset_from_index",
+        "dataset_to_index",
+        "data/chunk_index",
+        "data/file_index",
+        "videos/observation.images.top/chunk_index",
+        "videos/observation.images.top/file_index",
+        "videos/observation.images.top/from_timestamp",
+        "videos/observation.images.top/to_timestamp",
+        "meta/episodes/chunk_index",
+        "meta/episodes/file_index",
     ];
     let arrays: Vec<ArrayRef> = vec![
-        i64s(cols[0].clone()), i64s(cols[1].clone()), i64s(cols[2].clone()), i64s(cols[3].clone()),
-        zeros(), i64s(file_idx.clone()), zeros(), i64s(file_idx), f64s(0.0), f64s(1.0), zeros(), zeros(),
+        i64s(cols[0].clone()),
+        i64s(cols[1].clone()),
+        i64s(cols[2].clone()),
+        i64s(cols[3].clone()),
+        zeros(),
+        i64s(file_idx.clone()),
+        zeros(),
+        i64s(file_idx),
+        f64s(0.0),
+        f64s(1.0),
+        zeros(),
+        zeros(),
     ];
-    let fields: Vec<Field> = names.iter().zip(&arrays).map(|(n, a)| Field::new(*n, a.data_type().clone(), false)).collect();
+    let fields: Vec<Field> = names
+        .iter()
+        .zip(&arrays)
+        .map(|(n, a)| Field::new(*n, a.data_type().clone(), false))
+        .collect();
     let _ = StringArray::from(vec!["unused"; 0]);
     let schema = Arc::new(Schema::new(fields));
     let batch = RecordBatch::try_new(schema.clone(), arrays).unwrap();
@@ -242,7 +350,9 @@ fn v3_healthy_packed_dataset_has_no_issues() {
 #[test]
 fn v3_flags_timestamp_drift_in_second_episode_of_a_file() {
     let mut e = good(20);
-    for t in e.ts.iter_mut().skip(5) { *t += 0.05; }
+    for t in e.ts.iter_mut().skip(5) {
+        *t += 0.05;
+    }
     let v = run_v3(vec![good(10), e, good(10)]);
     assert_eq!(codes(&v), ["timestamp_drift"]);
     assert_eq!(v[0].episode, Some(1));
@@ -258,9 +368,14 @@ fn v3_flags_range_not_matching_length() {
 
 #[test]
 fn v3_flags_missing_data_and_video_files() {
-    let mut a = good(10); a.with_data = false;
-    let mut b = good(10); b.with_video = false;
+    let mut a = good(10);
+    a.with_data = false;
+    let mut b = good(10);
+    b.with_video = false;
     // group 0 = [a, good], group 1 = [b, good]
     let c = codes(&run_v3(vec![a, good(10), b, good(10)]));
-    assert!(c.contains(&"data_missing") && c.contains(&"video_missing"), "{c:?}");
+    assert!(
+        c.contains(&"data_missing") && c.contains(&"video_missing"),
+        "{c:?}"
+    );
 }
