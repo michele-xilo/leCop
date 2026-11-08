@@ -2,6 +2,10 @@
 name = "lecop"
 version = "0.1.0"
 edition = "2024"
+description = "Fast health checks for LeRobot-format robot datasets (unofficial)"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/michele-xilo/lecop"
+readme = "README.md"
 
 [dependencies]
 anyhow = "1.0.104"
