@@ -17,6 +17,12 @@ popular datasets, including small official `lerobot/*` ones. lecop currently rej
 move v3 support ahead of video checks (M3 before M2). `lerobot/*` repos keep a `v2.1` revision
 usable for v2.1 testing. v3 field names are still unverified; read LeRobot source before coding.
 
+## 2026-11-08 v3.0 support implemented
+`Dataset` resolves every episode (v2 or v3) to data file, optional global row range and video files;
+validator reads each packed data file once, one at a time (whole file in memory, ceiling noted in code).
+v3-only checks: `range_length`, `range_gap`, `index_mismatch`. Timestamp assumption (episode-relative in
+v3) verified on real data.
+
 ## 2026-11-08 License: MIT OR Apache-2.0
 Rust convention. Copyright holder assumed "Michele Xiloyannis"; user should confirm.
 

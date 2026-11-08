@@ -15,3 +15,13 @@ Findings (2026-11-08):
 
 Next: find genuinely messy community datasets (e.g. `jchandru08/so100_press_red_button`, v2.1, 1.3 GB)
 to look for true positives. Then v3.0 support (see decisions.md).
+
+## v3.0 results (2026-11-08)
+- v3 support implemented (see decisions.md). Verified field names against LeRobot source
+  (`utils.py`, `dataset_metadata.py`), not memory.
+- Real v3 datasets in `datasets/v3_*`: pusht, aloha_sim_transfer_cube_human, aloha_sim_insertion_human.
+  All report 0 errors / 0 warnings.
+- Confirmed on real data: v3 data-file `timestamp` is episode-relative (matches frame_index/fps);
+  pusht packs all 206 episodes into one data file and one episodes-metadata file.
+- Mutation test on real v3 (fps 10 -> 11) produced 206 `timestamp_drift` errors, so checks run.
+- Still untested on real data: files split across chunks, multi-file datasets, videos.
