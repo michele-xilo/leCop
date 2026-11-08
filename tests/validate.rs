@@ -505,3 +505,88 @@ fn rejects_non_positive_fps() {
     let err = Dataset::open(dir.path()).err().unwrap().to_string();
     assert!(err.contains("fps"), "{err}");
 }
+
+// ---------------------------------------------------------------- semantic checks
+
+fn edit_info(root: &Path, f: impl FnOnce(&mut serde_json::Value)) {
+    let p = root.join("meta/info.json");
+    let mut v: serde_json::Value = serde_json::from_slice(&fs::read(&p).unwrap()).unwrap();
+    f(&mut v);
+    fs::write(p, v.to_string()).unwrap();
+}
+
+fn rename_action_feature(root: &Path) {
+    edit_info(root, |v| {
+        let f = v["features"].as_object_mut().unwrap();
+        let a = f.remove("action").unwrap();
+        f.insert("actions".into(), a);
+    });
+}
+
+#[test]
+fn warns_when_there_is_no_standard_action_feature() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    rename_action_feature(dir.path());
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["nonstandard_features"]);
+    assert_eq!(v[0].severity, Severity::Warning);
+    assert_eq!(v[0].episode, None);
+}
+
+#[test]
+fn action_checks_follow_an_actions_column() {
+    // piperx-style dataset: the column is `actions`, so the frozen-action check must still run.
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(10)], None);
+    rename_action_feature(dir.path());
+    let schema = Arc::new(Schema::new(vec![
+        Field::new("timestamp", DataType::Float32, false),
+        Field::new(
+            "actions",
+            DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM),
+            false,
+        ),
+    ]));
+    let ts: Vec<f32> = (0..10).map(|i| i as f32 / FPS).collect();
+    let batch = RecordBatch::try_new(
+        schema,
+        vec![
+            Arc::new(Float32Array::from(ts)),
+            fsl(vec![0.5; 10 * DIM as usize]),
+        ],
+    )
+    .unwrap();
+    let f = fs::File::create(dir.path().join("data/chunk-000/episode_000000.parquet")).unwrap();
+    let mut w = ArrowWriter::try_new(f, batch.schema(), None).unwrap();
+    w.write(&batch).unwrap();
+    w.close().unwrap();
+    let c = codes(&validate(&Dataset::open(dir.path()).unwrap()).unwrap());
+    assert!(c.contains(&"action_constant"), "{c:?}");
+}
+
+/// `idle_rows` leading rows repeat the same action, then the action changes every frame.
+fn idle_then_moving(len: usize, idle_rows: usize) -> Ep {
+    let mut e = good(len);
+    e.action = (0..len)
+        .flat_map(|i| {
+            let v = if i < idle_rows { 0.5 } else { i as f32 * 0.1 };
+            [v, v]
+        })
+        .collect();
+    e
+}
+
+#[test]
+fn warns_on_mostly_idle_episode_and_says_when_it_starts_moving() {
+    let v = run(vec![idle_then_moving(20, 15)], None); // 14 of 19 transitions repeat
+    assert_eq!(codes(&v), ["idle_episode"]);
+    assert_eq!(v[0].severity, Severity::Warning);
+    assert!(v[0].message.contains("frame 15"), "{}", v[0].message);
+}
+
+#[test]
+fn does_not_warn_on_a_short_pause() {
+    let v = run(vec![idle_then_moving(20, 6)], None); // 5 of 19 transitions repeat
+    assert!(v.is_empty(), "{v:?}");
+}

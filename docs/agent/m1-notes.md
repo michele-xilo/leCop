@@ -48,3 +48,25 @@ numbers unchanged after the fixes.
 Known, not fixed: a v3 dataset whose episodes interleave across data/video files would re-read files
 (only the latest file per data/camera is kept); a non-int64 `episode_index` column makes a v3 file look
 like v2; no coverage tool installed (`cargo llvm-cov`); `validate` is still sequential.
+
+## Community datasets (2026-11-08, branch test/community-datasets)
+Seven small community datasets (4 so101-style v3.0 recordings, 3 v2.1) in `datasets/c_*`; pre-screened
+from metadata text (no v2.1 totals mismatches among ~400 candidates), then run through lecop.
+- lecop: 0 errors / 0 warnings on all seven. Structural problems are rare in datasets that load in LeRobot
+  at all (LeRobot itself checks timestamps on load). No real-world structural catch.
+- Gap 1: `piperx-two-color-block-sorting` (v2.1) uses columns `state` / `actions`, not
+  `observation.state` / `action`. LeRobot policies expect the standard names; lecop's constant-action
+  check keys on the literal name `action`, so it silently skipped that dataset. Candidate: warn when the
+  standard features are absent; make the action check not depend on the name.
+- Gap 2 (semantic, outside lecop's current checks): in `so101_my_task_50ep` (v3.0, fixed-length episodes of
+  ~744 frames at 30 fps) 5 of 50 episodes have > 50% frames with zero action change. Episode 18 does not
+  start moving until frame 471 of 744 (63% dead time); the others stop moving at frames 372-544 and idle to
+  the end. Candidate check: `idle_episode` warning with leading/trailing idle breakdown; the threshold is a
+  judgement call and should be a flag.
+- Reading: the useful checks on real data look semantic (dead time, naming, frozen cameras), not structural.
+  This is the more defensible direction for lecop than adding more format checks.
+
+Implemented both (feat/semantic-checks). Result on all 15 local datasets: `nonstandard_features` x1
+(piperx) and `idle_episode` x5 (so101_my_task: episodes 18, 28, 38, 43, 46 at 64/50/53/52/54% idle), no
+other findings. lecop output matches the independent Python analysis. Open question for the user: whether
+these 5 episodes are actually bad for training; the check only shows the dead time exists.
