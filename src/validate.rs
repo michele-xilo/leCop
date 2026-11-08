@@ -1,4 +1,7 @@
-use crate::dataset::Dataset;
+use crate::{
+    dataset::Dataset,
+    mp4::{VideoInfo, read_video_info},
+};
 use anyhow::Result;
 use arrow_array::{Array, ArrayRef, cast::AsArray, types::*};
 use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
@@ -25,11 +28,17 @@ pub struct Issue {
 /// Timestamps may deviate from frame_index/fps by this much (LeRobot's default tolerance).
 const TIMESTAMP_TOL_S: f64 = 1e-4;
 
+/// Relative difference between a video's frame rate and info.json's that we still accept.
+const VIDEO_FPS_TOL: f64 = 0.01;
+
 /// Row range of one episode inside a data file.
 type Run = (usize, usize);
 
 /// The data file currently loaded: path, contents (None if unreadable) and per-episode runs.
 type Loaded = (PathBuf, Option<FileData>, HashMap<i64, Run>);
+
+/// Outcome of reading one video file: its info, or (issue code, message).
+type VideoRead = Result<VideoInfo, (&'static str, String)>;
 
 /// One data parquet file in memory. v3 files hold many episodes.
 // ponytail: whole file in memory, one file at a time. Fine for ~100 MB shards; stream by row group if files get huge.
@@ -137,6 +146,7 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
     let mut missing_reported: std::collections::HashSet<PathBuf> = Default::default();
     let mut current: Option<Loaded> = None;
     let mut prev_to: Option<i64> = None;
+    let mut videos: HashMap<String, (PathBuf, VideoRead)> = HashMap::new();
 
     for (pos, e) in ds.episodes.iter().enumerate() {
         let ep = Some(e.index);
@@ -174,9 +184,79 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
             }
             prev_to = Some(to);
         }
-        for (_, vp) in &e.videos {
-            if !vp.exists() && missing_reported.insert(vp.clone()) {
-                push(Error, ep, "video_missing", format!("{}", vp.display()));
+        for v in &e.videos {
+            // A v3 video file is shared by many episodes, so read it once, and keep only the latest per camera.
+            let fresh = videos.get(&v.key).is_none_or(|(p, _)| p != &v.path);
+            if fresh {
+                let r: VideoRead = if !v.path.exists() {
+                    Err(("video_missing", format!("{}", v.path.display())))
+                } else {
+                    read_video_info(&v.path).map_err(|err| ("video_unreadable", format!("{err:#}")))
+                };
+                videos.insert(v.key.clone(), (v.path.clone(), r));
+            }
+            match &videos[&v.key].1 {
+                Err((code, msg)) => {
+                    if fresh {
+                        push(Error, ep, code, msg.clone());
+                    }
+                }
+                Ok(info) => {
+                    let frame = 1.0 / ds.info.fps;
+                    if fresh && (info.fps() / ds.info.fps - 1.0).abs() > VIDEO_FPS_TOL {
+                        push(
+                            Warning,
+                            ep,
+                            "video_fps",
+                            format!(
+                                "{} runs at {:.3} fps, info.json says {}",
+                                v.key,
+                                info.fps(),
+                                ds.info.fps
+                            ),
+                        );
+                    }
+                    match v.span {
+                        None if info.sample_count != e.length as u64 => push(
+                            Error,
+                            ep,
+                            "video_frame_count",
+                            format!(
+                                "{} has {} frames, episode has {}",
+                                v.key, info.sample_count, e.length
+                            ),
+                        ),
+                        Some((from, to)) => {
+                            let expected = e.length as f64 * frame;
+                            if ((to - from) - expected).abs() > frame {
+                                push(
+                                    Error,
+                                    ep,
+                                    "video_span_length",
+                                    format!(
+                                        "{}: span [{from:.3}, {to:.3}) s is {:.3} s, {} frames are {expected:.3} s",
+                                        v.key,
+                                        to - from,
+                                        e.length
+                                    ),
+                                );
+                            }
+                            if from < -frame || to > info.duration_s() + frame {
+                                push(
+                                    Error,
+                                    ep,
+                                    "video_span_beyond_end",
+                                    format!(
+                                        "{}: span [{from:.3}, {to:.3}) s outside video of {:.3} s",
+                                        v.key,
+                                        info.duration_s()
+                                    ),
+                                );
+                            }
+                        }
+                        None => {}
+                    }
+                }
             }
         }
 

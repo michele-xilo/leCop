@@ -1,6 +1,8 @@
 //! Smoke tests on synthetic LeRobot v2.1-style datasets written to a temp dir.
+mod common;
 use arrow_array::{ArrayRef, FixedSizeListArray, Float32Array, Int64Array, RecordBatch};
 use arrow_schema::{DataType, Field, Schema};
+use common::Mp4;
 use lecop::{
     dataset::Dataset,
     validate::{Issue, Severity, validate},
@@ -18,6 +20,17 @@ struct Ep {
     with_video: bool,
     with_data: bool,
     range_to_delta: i64,
+    /// v2: video has `len + delta` frames. v3: `to_timestamp` is `delta` frames past the real end.
+    video_delta: i32,
+    video_fps: u32,
+    video_garbage: bool,
+}
+
+fn video_bytes(frames: i64, e: &Ep) -> Vec<u8> {
+    if e.video_garbage {
+        return b"not an mp4".to_vec();
+    }
+    Mp4::constant_fps(frames.max(0) as u32, e.video_fps).bytes()
 }
 
 /// A healthy episode: perfect timestamps, varying action.
@@ -29,6 +42,9 @@ fn good(len: usize) -> Ep {
         with_video: true,
         with_data: true,
         range_to_delta: 0,
+        video_delta: 0,
+        video_fps: FPS as u32,
+        video_garbage: false,
     }
 }
 
@@ -82,7 +98,7 @@ fn write_ds(root: &Path, eps: &[Ep], claimed_total_frames: Option<usize>) {
                 root.join(format!(
                     "videos/chunk-000/observation.images.top/episode_{i:06}.mp4"
                 )),
-                b"",
+                video_bytes(e.len as i64 + e.video_delta as i64, e),
             )
             .unwrap();
         }
@@ -230,11 +246,12 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
 
     let (mut from, mut cols): (i64, [Vec<i64>; 4]) = (0, Default::default()); // ep, len, from, to
     let mut file_idx = Vec::new();
+    let (mut vfrom, mut vto) = (Vec::<f64>::new(), Vec::<f64>::new());
     for (g, group) in eps.chunks(PER_FILE).enumerate() {
         if group[0].with_video {
             fs::write(
                 root.join(format!("videos/{vk}/chunk-000/file-{g:03}.mp4")),
-                b"",
+                video_bytes(group.iter().map(|e| e.len as i64).sum(), &group[0]),
             )
             .unwrap();
         }
@@ -245,8 +262,12 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
             Vec::<i64>::new(),
             Vec::<f32>::new(),
         );
+        let mut t = 0.0;
         for (j, e) in group.iter().enumerate() {
             let i = g * PER_FILE + j;
+            vfrom.push(t);
+            vto.push(t + (e.len as i64 + e.video_delta as i64) as f64 / FPS as f64);
+            t += e.len as f64 / FPS as f64;
             cols[0].push(i as i64);
             cols[1].push(e.len as i64);
             cols[2].push(from);
@@ -292,7 +313,6 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
 
     let n = eps.len();
     let zeros = || i64s(vec![0; n]);
-    let f64s = |v: f64| -> ArrayRef { Arc::new(Float64Array::from(vec![v; n])) };
     let names = [
         "episode_index",
         "length",
@@ -316,8 +336,8 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
         i64s(file_idx.clone()),
         zeros(),
         i64s(file_idx),
-        f64s(0.0),
-        f64s(1.0),
+        Arc::new(Float64Array::from(vfrom)),
+        Arc::new(Float64Array::from(vto)),
         zeros(),
         zeros(),
     ];
@@ -378,4 +398,49 @@ fn v3_flags_missing_data_and_video_files() {
         c.contains(&"data_missing") && c.contains(&"video_missing"),
         "{c:?}"
     );
+}
+
+// ---------------------------------------------------------------- video checks
+
+#[test]
+fn flags_video_frame_count_mismatch() {
+    let mut e = good(20);
+    e.video_delta = -3;
+    let v = run(vec![e], None);
+    assert_eq!(codes(&v), ["video_frame_count"]);
+    assert_eq!(v[0].severity, Severity::Error);
+}
+
+#[test]
+fn warns_on_video_fps_mismatch() {
+    let mut e = good(20);
+    e.video_fps = 15; // same frame count, different timing
+    let v = run(vec![e], None);
+    assert_eq!(codes(&v), ["video_fps"]);
+    assert_eq!(v[0].severity, Severity::Warning);
+}
+
+#[test]
+fn flags_unreadable_video() {
+    let mut e = good(20);
+    e.video_garbage = true;
+    let v = run(vec![e], None);
+    assert_eq!(codes(&v), ["video_unreadable"]);
+}
+
+#[test]
+fn v3_flags_span_not_matching_length_and_beyond_end() {
+    let mut e = good(10);
+    e.video_delta = 5; // span claims 5 frames more than the episode has
+    let c = codes(&run_v3(vec![good(10), e, good(10)]));
+    assert!(c.contains(&"video_span_length"), "{c:?}");
+    assert!(c.contains(&"video_span_beyond_end"), "{c:?}"); // episode 1 is last in its file
+}
+
+#[test]
+fn v3_reports_a_shared_unreadable_video_once() {
+    let mut a = good(10);
+    a.video_garbage = true; // group 0 = [a, good]: two episodes share one broken file
+    let v = run_v3(vec![a, good(10), good(10)]);
+    assert_eq!(codes(&v), ["video_unreadable"]);
 }

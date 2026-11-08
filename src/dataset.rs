@@ -42,8 +42,16 @@ pub struct Episode {
     pub data_file: PathBuf,
     /// v3 only: the episode's global frame range `[from, to)` from the episodes metadata.
     pub range: Option<(i64, i64)>,
-    /// (video_key, file)
-    pub videos: Vec<(String, PathBuf)>,
+    pub videos: Vec<VideoRef>,
+}
+
+/// One camera's video for an episode.
+#[derive(Debug)]
+pub struct VideoRef {
+    pub key: String,
+    pub path: PathBuf,
+    /// v3 only: where the episode sits inside the (shared) video file, in seconds `[from, to)`.
+    pub span: Option<(f64, f64)>,
 }
 
 pub struct Dataset {
@@ -103,18 +111,17 @@ fn episodes_v2(root: &Path, info: &Info) -> Result<Vec<Episode>> {
         let videos = match &info.video_path {
             Some(t) => video_keys(info)
                 .into_iter()
-                .map(|k| {
-                    (
-                        k.to_string(),
-                        root.join(fill(
-                            t,
-                            &[
-                                ("episode_chunk", &chunk),
-                                ("episode_index", &ep),
-                                ("video_key", k),
-                            ],
-                        )),
-                    )
+                .map(|k| VideoRef {
+                    key: k.to_string(),
+                    path: root.join(fill(
+                        t,
+                        &[
+                            ("episode_chunk", &chunk),
+                            ("episode_index", &ep),
+                            ("video_key", k),
+                        ],
+                    )),
+                    span: None,
                 })
                 .collect(),
             None => vec![],
@@ -139,8 +146,22 @@ fn col_i64(b: &RecordBatch, name: &str) -> Option<Vec<i64>> {
         .map(|a| a.values().iter().map(|x| *x as i64).collect())
 }
 
-/// (chunk_index, file_index) columns of one video key in the episodes metadata.
-type FileCols = (Vec<i64>, Vec<i64>);
+fn col_f64(b: &RecordBatch, name: &str) -> Option<Vec<f64>> {
+    Some(
+        b.column_by_name(name)?
+            .as_primitive_opt::<Float64Type>()?
+            .values()
+            .to_vec(),
+    )
+}
+
+/// One video key's columns in the episodes metadata.
+struct VideoCols {
+    key: String,
+    chunk: Vec<i64>,
+    file: Vec<i64>,
+    span: Option<(Vec<f64>, Vec<f64>)>,
+}
 
 fn episodes_v3(root: &Path, info: &Info) -> Result<Vec<Episode>> {
     let dir = root.join("meta/episodes");
@@ -169,14 +190,16 @@ fn episodes_v3(root: &Path, info: &Info) -> Result<Vec<Episode>> {
             let (idx, len) = (need("episode_index")?, need("length")?);
             let (from, to) = (need("dataset_from_index")?, need("dataset_to_index")?);
             let (dc, df) = (need("data/chunk_index")?, need("data/file_index")?);
-            let vcols: Vec<(&str, Option<FileCols>)> = vkeys
+            let vcols: Vec<VideoCols> = vkeys
                 .iter()
-                .map(|k| {
-                    (
-                        *k,
-                        col_i64(&b, &format!("videos/{k}/chunk_index"))
-                            .zip(col_i64(&b, &format!("videos/{k}/file_index"))),
-                    )
+                .filter_map(|k| {
+                    Some(VideoCols {
+                        key: k.to_string(),
+                        chunk: col_i64(&b, &format!("videos/{k}/chunk_index"))?,
+                        file: col_i64(&b, &format!("videos/{k}/file_index"))?,
+                        span: col_f64(&b, &format!("videos/{k}/from_timestamp"))
+                            .zip(col_f64(&b, &format!("videos/{k}/to_timestamp"))),
+                    })
                 })
                 .collect();
             for i in 0..idx.len() {
@@ -190,19 +213,17 @@ fn episodes_v3(root: &Path, info: &Info) -> Result<Vec<Episode>> {
                 let videos = match &info.video_path {
                     Some(t) => vcols
                         .iter()
-                        .filter_map(|(k, c)| {
-                            let (vc, vf) = c.as_ref()?;
-                            Some((
-                                k.to_string(),
-                                root.join(fill(
-                                    t,
-                                    &[
-                                        ("video_key", k),
-                                        ("chunk_index", &vc[i].to_string()),
-                                        ("file_index", &vf[i].to_string()),
-                                    ],
-                                )),
-                            ))
+                        .map(|c| VideoRef {
+                            key: c.key.clone(),
+                            path: root.join(fill(
+                                t,
+                                &[
+                                    ("video_key", &c.key),
+                                    ("chunk_index", &c.chunk[i].to_string()),
+                                    ("file_index", &c.file[i].to_string()),
+                                ],
+                            )),
+                            span: c.span.as_ref().map(|(f, t)| (f[i], t[i])),
                         })
                         .collect(),
                     None => vec![],

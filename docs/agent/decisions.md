@@ -23,6 +23,19 @@ validator reads each packed data file once, one at a time (whole file in memory,
 v3-only checks: `range_length`, `range_gap`, `index_mismatch`. Timestamp assumption (episode-relative in
 v3) verified on real data.
 
+## 2026-11-08 Own moov-only mp4 parser instead of the `mp4` crate
+Real LeRobot videos are AV1 with the `moov` box after a multi-MB `mdat`. The `mp4` crate may not handle
+AV1 and reads more than needed. `src/mp4.rs` scans top-level box headers, seeks past `mdat`, reads only
+`moov` and takes frame count from `stsz` and duration from summed `stts`; inconsistent `stts`/`stsz` is
+reported as corruption. Cost is independent of video size (benchmarked). Known gap: v3 per-episode frame
+counts inside a shared video are not checked (only the episode's [from, to) span); would need `stts`
+sample times and care with B-frame composition offsets (`ctts`).
+
+## 2026-11-08 Branch workflow and rules
+Rules adapted from task-audit live in `.claude/rules/` (general, modus-operandi, TDD, performance).
+Feature work goes on a branch; ask before pushing. Performance rules require criterion benches and
+rayon parallelism; the validator is still sequential (planned as M4), so the rules are ahead of the code.
+
 ## 2026-11-08 License: MIT OR Apache-2.0
 Rust convention. Copyright holder assumed "Michele Xiloyannis"; user should confirm.
 

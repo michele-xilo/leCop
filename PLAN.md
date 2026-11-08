@@ -30,7 +30,7 @@ Hugging Face Hub access, Python bindings, TUI.
 |---|---|---|
 | M0 | Current scaffold (v2.x, metadata+parquet) | 9 tests green. **Done.** |
 | M1 | Validate against **real** datasets | Run on 5 real Hub datasets (v2.1); zero false positives, or each triaged. Fixtures adjusted to real schemas. |
-| M2 | Video container checks (`mp4` crate, moov only) | Test fixtures with real tiny mp4s: frame-count mismatch and duration drift caught; <50 ms per file. |
+| M2 | Video container checks (own moov-only parser). **Done on v2/v3; per-episode frame counts in shared v3 videos still open.** (was: `mp4` crate) | Test fixtures with real tiny mp4s: frame-count mismatch and duration drift caught; <50 ms per file. |
 | M3 | v3.0 support | Same checks pass on 3 real v3 datasets (episodes packed per file, metadata in parquet). |
 | M4 | Parallelism + `--json` + benchmark | rayon over episodes; published table vs lerobot-doctor/physlint on the same dataset (fair, reproducible script). |
 | M5 | Release v0.1 | README with real output, crates.io publish, GitHub release binaries (mac/linux), GitHub Action example. Post in LeRobot Discord / HF forum. |

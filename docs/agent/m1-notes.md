@@ -25,3 +25,16 @@ to look for true positives. Then v3.0 support (see decisions.md).
   pusht packs all 206 episodes into one data file and one episodes-metadata file.
 - Mutation test on real v3 (fps 10 -> 11) produced 206 `timestamp_drift` errors, so checks run.
 - Still untested on real data: files split across chunks, multi-file datasets, videos.
+
+## Video checks (2026-11-08, branch feat/video-checks)
+- All 8 real datasets (5 v2.1, 3 v3.0; AV1 video) report 0 errors / 0 warnings with video checks on;
+  each validates in <=0.8 s wall time (release build, Apple M2 Pro, warm cache).
+- Mutation tests on real copies: truncated v2 mp4 -> `video_unreadable` ("truncated mdat box ...");
+  fps 10->12 in info.json -> `video_fps` warnings (v2: per episode; v3: once, the file is shared) and
+  `video_span_length` errors for every v3 episode.
+- Ground truth: pusht ep0 has 161 frames in episodes.jsonl and ffprobe; v3 pusht shared video has 25650
+  frames in ffprobe, equal to total_frames.
+- criterion `cargo bench --bench mp4` (Apple M2 Pro, rustc 1.99.1, release profile, synthetic files,
+  moov last, warm cache, commit df4ecaa + uncommitted branch work):
+  161 frames 12.7 us whether the mdat is 1 KiB or 64 MiB; 25,650 frames 18.1 us; 500,000 frames 81 us.
+  Cost scales with the moov size, not with the video size.
