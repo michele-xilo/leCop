@@ -51,3 +51,13 @@ Rust convention. Copyright holder assumed "Michele Xiloyannis"; user should conf
 ## Unverified assumptions (check before relying)
 - v2.1 schema details came from memory/web summaries, not LeRobot source. M1 tests this.
 - mp4 frame count from the sample table may mislead with VFR/B-frame edit lists.
+
+## 2026-11-08 Parallel validate (rayon), `--jobs`
+`validate_with(ds, jobs)` runs video files and data-file groups on a rayon pool built per call (library
+callers choose the count; 0 = one per core). Issues carry (episode position, phase) and are stable-sorted, so
+output is identical for any thread count (test: `report_is_identical_for_any_thread_count`). Measured on
+Apple M2 Pro, synthetic 600k frames: v2 174.8 -> 36.2 ms, v3 91.3 -> 21.1 ms. Whole-file `fs::read` instead of
+parquet's File reader: v2 jobs10 98 -> 42 ms (syscall contention). Tried and reverted, no measurable gain:
+moving the first batch instead of copying (2%), mimalloc (none), per-episode parallelism inside a file (5%,
+noise). Open: v3 is bounded by file count; splitting a file by row group would help, needs real v3 files
+with many row groups to justify. `data_missing` is reported once per path even if a file's episodes are not contiguous.

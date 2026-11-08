@@ -660,6 +660,7 @@ dependencies = [
  "anyhow",
  "arrow-array",
  "arrow-schema",
+ "bytes",
  "clap",
  "criterion",
  "parquet",

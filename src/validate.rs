@@ -8,7 +8,6 @@ use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
 use rayon::prelude::*;
 use std::{
     collections::{BTreeMap, HashMap},
-    fs::File,
     path::{Path, PathBuf},
 };
 
@@ -54,8 +53,8 @@ struct FileData {
     floats: BTreeMap<String, (Vec<f64>, usize)>,
 }
 
-fn read_file(path: &Path, ds: &Dataset) -> Result<FileData> {
-    let reader = ParquetRecordBatchReaderBuilder::try_new(File::open(path)?)?.build()?;
+fn parse_file(bytes: bytes::Bytes, ds: &Dataset) -> Result<FileData> {
+    let reader = ParquetRecordBatchReaderBuilder::try_new(bytes)?.build()?;
     let mut d = FileData::default();
     for batch in reader {
         let batch = batch?;
@@ -416,10 +415,12 @@ fn check_group(ds: &Dataset, action: Option<&str>, start: usize, eps: &[Episode]
             message,
         )]
     };
-    if File::open(&first.data_file).is_err() {
+    // One read syscall for the whole file: parquet's own reader issues many small preads, which stopped
+    // scaling past ~3 threads (synthetic_v2 jobs10: 98 ms with File, 42 ms with this).
+    let Ok(bytes) = std::fs::read(&first.data_file) else {
         return at_first("data_missing", format!("{}", first.data_file.display()));
-    }
-    let d = match read_file(&first.data_file, ds) {
+    };
+    let d = match parse_file(bytes.into(), ds) {
         Ok(d) if d.ts.len() != d.rows => {
             return at_first(
                 "column_missing",

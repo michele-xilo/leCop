@@ -45,10 +45,12 @@ fn bench(c: &mut Criterion) {
             run(&format!("real_{real}"), &p);
         }
     }
-    let ds1 = Dataset::open(&v3).unwrap();
-    g.bench_function("synthetic_v3_1000ep_600k_frames_jobs1", |b| {
-        b.iter(|| validate_with(black_box(&ds1), 1).unwrap())
-    });
+    for (name, path) in [("v2", &v2), ("v3", &v3)] {
+        let ds = Dataset::open(path).unwrap();
+        g.bench_function(format!("synthetic_{name}_1000ep_600k_frames_jobs1"), |b| {
+            b.iter(|| validate_with(black_box(&ds), 1).unwrap())
+        });
+    }
     g.finish();
     let _ = std::fs::remove_dir_all(&root);
 }
