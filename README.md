@@ -87,7 +87,7 @@ All checks read metadata and parquet only: no video frame is decoded.
 
 | What LeRobot expects | Status | Issue code |
 |---|---|---|
-| `meta/info.json` exists, parses, has a supported `codebase_version` | Covered (v2.x, v3.x; other versions are rejected, v2.0 is untested) | error on open |
+| `meta/info.json` exists, parses, has a supported `codebase_version` | Covered (v2.x, v3.x; other versions are rejected; v2.0 is read like v2.1, with `stats.json`) | error on open; a missing required field is named in the message |
 | `fps` is a positive number | Covered | error on open |
 | `total_episodes` matches the episode metadata | Covered | `episode_count` |
 | `total_frames` matches the sum of episode lengths | Covered | `frame_count` |
@@ -104,10 +104,10 @@ All checks read metadata and parquet only: no video frame is decoded.
 | Video frame size matches the shape in `info.json` | Covered, from the container's sample description | `video_resolution` |
 | Video holds the episode's frames: v2 frame count, v3 span length, bounds and frames in the span | Covered, from the container's sample tables | `video_frame_count`, `video_span_length`, `video_span_beyond_end` |
 | An `action` feature exists (policies expect that name) | Covered (warning; `actions` is accepted for the other checks) | `nonstandard_features` |
-| `observation.state` exists | Not yet | |
+| `observation.state` exists | Covered (warning) | `nonstandard_features` |
 | Camera features are video-backed, not images | Not yet | |
 | `total_tasks` matches the task metadata (`tasks.jsonl` lines, `tasks.parquet` rows) | Covered; the file missing is an error, a different count a warning | `tasks_missing`, `tasks_count` |
-| Every `task_index` is in the task metadata | Not yet | |
+| Every `task_index` in the data is in the task metadata | Covered | `task_index` |
 | The statistics file (`stats.json`, or `episodes_stats.jsonl` for v2.1) exists and has an entry for every non-string feature | Covered (warnings; v2.1 reads the first episode's entry only) | `stats_missing`, `stats_features` |
 | The statistics match the data | Not yet | |
 
@@ -129,16 +129,16 @@ installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **16 ms** | 855 ms | n/a | 53x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 576 ms | n/a | 64x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **7 ms** | 548 ms | n/a | 78x |
-| `v3_pusht` (v3.0) | 🏆 **9 ms** | 731 ms | 17,449 ms | 81x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **9 ms** | 578 ms | 2,925 ms | 64x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **8 ms** | 544 ms | 3,435 ms | 68x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **28 ms** | 577 ms | 738 ms | 21x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **14 ms** | 589 ms | 8,133 ms | 42x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 498 ms | 2,984 ms | 42x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 580 ms | 8,088 ms | 41x |
+| `pusht` (v2.1) | 🏆 **13 ms** | 706 ms | n/a | 54x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **8 ms** | 452 ms | n/a | 56x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **7 ms** | 431 ms | n/a | 62x |
+| `v3_pusht` (v3.0) | 🏆 **8 ms** | 622 ms | 15,792 ms | 78x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 483 ms | 2,738 ms | 48x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **8 ms** | 427 ms | 3,218 ms | 53x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **27 ms** | 463 ms | 683 ms | 17x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **14 ms** | 475 ms | 7,845 ms | 34x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 425 ms | 2,965 ms | 35x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **13 ms** | 481 ms | 7,326 ms | 37x |
 
 The tools check different things (see the coverage table below), so this compares speed only.
 
@@ -152,7 +152,7 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Check | leCop | lerobot-doctor | physlint |
 |---|---|---|---|
 | `info.json` readable, version supported, `fps` positive | ✅ | ✅ | ✅ |
-| `info.json` required fields present | ⚠️ parse error | ✅ | ✅ |
+| `info.json` required fields present | ✅ | ✅ | ✅ |
 | `total_episodes`, `total_frames` match the metadata | ✅ | ✅ | ✅ |
 | `total_tasks` matches the task metadata | ✅ | ✅ | ❌ |
 | Data and episode-metadata files exist and are readable | ✅ | ✅ | ✅ |
@@ -161,7 +161,7 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | `frame_index` sequential within each episode | ✅ | ✅ | ❌ |
 | Declared dtype and shape match the stored data | ✅ float list widths | ⚠️ | ✅ |
 | Same features in every episode (missing, extra, dtype, shape) | ✅ | ✅ | ⚠️ |
-| Required streams present (`observation.state`, ...) | ⚠️ `action`, `timestamp` | ❌ | ⚠️ needs config |
+| Required streams present (`observation.state`, ...) | ⚠️ `action`, `observation.state`, `timestamp` | ❌ | ⚠️ needs config |
 | Streams cover whole episodes; observation/action delay | ❌ | ❌ | ✅ delay by config |
 | NaN and Inf in feature columns | ✅ | ✅ | ✅ |
 | Numeric limits per feature | ❌ | ❌ | ⚠️ needs config |

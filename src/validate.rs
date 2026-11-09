@@ -7,7 +7,7 @@ use arrow_array::{Array, ArrayRef, cast::AsArray, types::*};
 use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
 use rayon::prelude::*;
 use std::{
-    collections::{BTreeMap, HashMap},
+    collections::{BTreeMap, BTreeSet, HashMap},
     path::{Path, PathBuf},
 };
 
@@ -27,8 +27,9 @@ pub struct Issue {
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 41] = [
+pub const ALL_CODES: [&str; 42] = [
     "episode_count",
+    "task_index",
     "stats_missing",
     "stats_features",
     "tasks_missing",
@@ -75,6 +76,7 @@ pub const ALL_CODES: [&str; 41] = [
 pub fn explain(code: &str) -> &'static str {
     match code {
         "episode_count" => "info.json total_episodes disagrees with the episode metadata",
+        "task_index" => "a task_index in the data is not in the task metadata",
         "stats_missing" => "the statistics file for this format version is missing or unreadable",
         "stats_features" => {
             "a non-string feature declared in info.json has no entry in the statistics"
@@ -158,6 +160,7 @@ struct FileData {
     fi: Vec<i64>,
     ep: Option<Vec<i64>>,
     idx: Option<Vec<i64>>,
+    tasks: BTreeSet<i64>,
     floats: BTreeMap<String, (Vec<f64>, usize)>,
     /// Findings about the file's columns against info.json; the same for every file of a healthy dataset.
     schema: Vec<SchemaProblem>,
@@ -199,6 +202,19 @@ fn parse_file(bytes: bytes::Bytes, ds: &Dataset) -> Result<FileData> {
             d.idx
                 .get_or_insert_with(Vec::new)
                 .extend(c.values().iter().copied());
+        }
+        if let Some(c) = batch
+            .column_by_name("task_index")
+            .and_then(|c| c.as_primitive_opt::<Int64Type>())
+        {
+            // Consecutive frames share a task, so inserting only on change keeps this to a compare per row.
+            let mut last = None;
+            for &t in c.values().iter() {
+                if last != Some(t) {
+                    d.tasks.insert(t);
+                    last = Some(t);
+                }
+            }
         }
         for (key, f) in &ds.info.features {
             if f.dtype != "float32" && f.dtype != "float64" {
@@ -514,6 +530,7 @@ pub fn numeric_findings(
 /// What a data file contributes to the dataset-wide checks.
 #[derive(Default)]
 struct GroupExtra {
+    tasks: BTreeSet<i64>,
     hashes: Vec<ActionHash>,
     stats: Vec<(String, Vec<DimStats>)>,
 }
@@ -667,6 +684,11 @@ fn run(ds: &Dataset) -> Vec<Issue> {
         .flat_map(|e| e.hashes.iter().copied())
         .collect();
     tagged.extend(duplicate_episodes(&hashes));
+    let used: BTreeSet<i64> = extras
+        .iter()
+        .flat_map(|e| e.tasks.iter().copied())
+        .collect();
+    tagged.extend(task_index_issue(&used, task_ids(ds).as_ref()));
     tagged.extend(numeric_issues(&extras, action));
     // A schema fault is the same in every file of the dataset: report it once, at the first file.
     let mut seen = std::collections::HashSet::new();
@@ -815,6 +837,58 @@ fn stats_findings(ds: &Dataset) -> Vec<(&'static str, String)> {
     }
 }
 
+/// The `task_index` values in the task metadata, or `None` when it is missing or unreadable.
+fn task_ids(ds: &Dataset) -> Option<BTreeSet<i64>> {
+    if ds.info.codebase_version.starts_with("v3") {
+        let f = std::fs::File::open(ds.root.join("meta/tasks.parquet")).ok()?;
+        let mut ids = BTreeSet::new();
+        for batch in ParquetRecordBatchReaderBuilder::try_new(f)
+            .ok()?
+            .build()
+            .ok()?
+        {
+            let batch = batch.ok()?;
+            ids.extend(
+                batch
+                    .column_by_name("task_index")?
+                    .as_primitive_opt::<Int64Type>()?
+                    .values()
+                    .iter()
+                    .copied(),
+            );
+        }
+        Some(ids)
+    } else {
+        let t = std::fs::read_to_string(ds.root.join("meta/tasks.jsonl")).ok()?;
+        t.lines()
+            .filter(|l| !l.trim().is_empty())
+            .map(|l| serde_json::from_str::<serde_json::Value>(l).ok()?["task_index"].as_i64())
+            .collect()
+    }
+}
+
+/// An error when the data uses a `task_index` that the task metadata does not define.
+fn task_index_issue(used: &BTreeSet<i64>, known: Option<&BTreeSet<i64>>) -> Option<Tagged> {
+    let unknown: Vec<String> = used
+        .difference(known?)
+        .take(5)
+        .map(|t| t.to_string())
+        .collect();
+    (!unknown.is_empty()).then(|| {
+        tag(
+            None,
+            PHASE_DATA,
+            Severity::Error,
+            None,
+            "task_index",
+            format!(
+                "task_index {} appears in the data but not in the task metadata",
+                unknown.join(", ")
+            ),
+        )
+    })
+}
+
 /// `total_tasks` from info.json against the tasks found. A dataset that does not declare tasks is not checked.
 pub fn task_finding(
     declared: Option<usize>,
@@ -850,6 +924,16 @@ fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
             None,
             "nonstandard_features",
             format!("no `action` feature, which LeRobot policies expect{found}"),
+        ));
+    }
+    if !ds.info.features.contains_key("observation.state") {
+        v.push(tag(
+            None,
+            PHASE_META,
+            Warning,
+            None,
+            "nonstandard_features",
+            "no `observation.state` feature, which LeRobot policies expect".into(),
         ));
     }
     if ds.episodes.len() != ds.info.total_episodes {
@@ -1164,7 +1248,11 @@ fn check_group(
         .collect();
     (
         schema.chain(per_episode).collect(),
-        GroupExtra { hashes, stats },
+        GroupExtra {
+            tasks: d.tasks.clone(),
+            hashes,
+            stats,
+        },
     )
 }
 
