@@ -1,8 +1,9 @@
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 use lecop::{
     dataset::Dataset,
-    validate::{Severity, validate_with},
+    report::{self, Format},
+    validate::validate_with,
 };
 use std::{path::PathBuf, process::ExitCode};
 
@@ -11,6 +12,15 @@ use std::{path::PathBuf, process::ExitCode};
 struct Cli {
     #[command(subcommand)]
     cmd: Cmd,
+}
+#[derive(Clone, Copy, ValueEnum)]
+enum Output {
+    /// One line per issue
+    Text,
+    /// A single JSON object: counts and an issues array
+    Json,
+    /// GitHub Actions workflow commands (annotations)
+    Github,
 }
 #[derive(Subcommand)]
 enum Cmd {
@@ -22,6 +32,9 @@ enum Cmd {
         /// Worker threads (default: one per core). The report is identical for any value.
         #[arg(short, long, default_value_t = 0)]
         jobs: usize,
+        /// Output format
+        #[arg(short, long, value_enum, default_value_t = Output::Text)]
+        format: Output,
     },
 }
 
@@ -44,23 +57,15 @@ fn main() -> Result<ExitCode> {
             }
             Ok(ExitCode::SUCCESS)
         }
-        Cmd::Validate { path, jobs } => {
+        Cmd::Validate { path, jobs, format } => {
             let issues = validate_with(&Dataset::open(path)?, jobs)?;
-            for x in &issues {
-                let ep = x.episode.map_or("-".into(), |e| e.to_string());
-                println!(
-                    "{:<7} ep {ep:<6} {:<24} {}",
-                    format!("{:?}", x.severity).to_uppercase(),
-                    x.code,
-                    x.message
-                );
-            }
-            let errors = issues
-                .iter()
-                .filter(|x| x.severity == Severity::Error)
-                .count();
-            println!("{errors} errors, {} warnings", issues.len() - errors);
-            Ok(if errors > 0 {
+            let format = match format {
+                Output::Text => Format::Text,
+                Output::Json => Format::Json,
+                Output::Github => Format::Github,
+            };
+            print!("{}", report::render(&issues, format));
+            Ok(if report::counts(&issues).0 > 0 {
                 ExitCode::FAILURE
             } else {
                 ExitCode::SUCCESS

@@ -61,3 +61,10 @@ parquet's File reader: v2 jobs10 98 -> 42 ms (syscall contention). Tried and rev
 moving the first batch instead of copying (2%), mimalloc (none), per-episode parallelism inside a file (5%,
 noise). Open: v3 is bounded by file count; splitting a file by row group would help, needs real v3 files
 with many row groups to justify. `data_missing` is reported once per path even if a file's episodes are not contiguous.
+
+## 2026-11-09 Output formats: --format text|json|github
+`report::render` is a pure function of the issue list. Text output is byte-identical to before (checked by
+md5 on 15 local datasets against the previous binary). JSON is one object with `errors`, `warnings`, `issues[]`
+(`severity` lowercase, `episode` null for dataset-wide, `code`, `message`); this schema is now a public contract
+like the issue codes. GitHub format escapes `%`, CR, LF; annotations carry no file path because issues are
+about a dataset, not a source line.

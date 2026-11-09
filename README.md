@@ -26,6 +26,10 @@ lecop validate path/to/dataset -j 4   # worker threads (default: one per core)
 
 The report and exit code are identical for every `-j`.
 
+`--format json` prints one object (`errors`, `warnings`, `issues[]` with `severity`, `episode`, `code`, `message`) for
+scripts; `--format github` prints `::error`/`::warning` annotations for GitHub Actions. The exit code is 1 on
+any error in every format.
+
 `validate` supports LeRobot **v2.x** (one file per episode) and **v3.x** (episodes packed into shared files). It checks:
 
 - episode and frame counts in `info.json` vs the episode metadata (`episodes.jsonl` in v2, `meta/episodes/` in v3), and episode index continuity
@@ -68,7 +72,7 @@ The CLI wall time on the real datasets (6-8 ms for the three above, 27 ms for `c
 ## Not yet supported
 
 - Decoding frames (frozen or black frames, A/V drift inside a video), and v3 per-episode frame counts inside a shared video
-- JSON output, remote (Hub) datasets
+- Remote (Hub) datasets
 
 See [PLAN.md](PLAN.md) for the roadmap.
 
