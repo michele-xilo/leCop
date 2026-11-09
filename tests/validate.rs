@@ -28,6 +28,8 @@ struct Ep {
     video_size: (u16, u16),
     /// v3: this episode's frames are spaced at half the rate in the shared video (dropped frames).
     video_sparse: bool,
+    /// The `task_index` of every frame.
+    task: i64,
 }
 
 /// One video per data file: constant rate, except episodes marked `video_sparse` whose frames are twice as far apart.
@@ -72,7 +74,15 @@ fn good(len: usize) -> Ep {
         video_garbage: false,
         video_size: (4, 4),
         video_sparse: false,
+        task: 0,
     }
+}
+
+/// A steadily rising `observation.state` that no check has anything to say about.
+fn ramp(frames: usize) -> Vec<f32> {
+    (0..frames * DIM as usize)
+        .map(|i| 1.0 + i as f32 * 0.5)
+        .collect()
 }
 
 fn fsl(vals: Vec<f32>) -> ArrayRef {
@@ -102,13 +112,20 @@ fn write_ds(root: &Path, eps: &[Ep], claimed_total_frames: Option<usize>) {
         "video_path": "videos/chunk-{episode_chunk:03d}/{video_key}/episode_{episode_index:06d}.mp4",
         "features": {
             "action": {"dtype": "float32", "shape": [DIM]},
+            "observation.state": {"dtype": "float32", "shape": [DIM]},
             "observation.images.top": {"dtype": "video", "shape": [4, 4, 3]},
             "timestamp": {"dtype": "float32", "shape": [1]},
             "frame_index": {"dtype": "int64", "shape": [1]},
+            "task_index": {"dtype": "int64", "shape": [1]},
         }
     });
     fs::write(root.join("meta/info.json"), info.to_string()).unwrap();
     common::write_stats(root);
+    fs::write(
+        root.join("meta/tasks.jsonl"),
+        "{\"task_index\": 0, \"task\": \"t\"}\n",
+    )
+    .unwrap();
     let jsonl: String = eps
         .iter()
         .enumerate()
@@ -137,8 +154,14 @@ fn write_ds(root: &Path, eps: &[Ep], claimed_total_frames: Option<usize>) {
         let schema = Arc::new(Schema::new(vec![
             Field::new("timestamp", DataType::Float32, false),
             Field::new("frame_index", DataType::Int64, false),
+            Field::new("task_index", DataType::Int64, false),
             Field::new(
                 "action",
+                DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM),
+                false,
+            ),
+            Field::new(
+                "observation.state",
                 DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM),
                 false,
             ),
@@ -148,7 +171,9 @@ fn write_ds(root: &Path, eps: &[Ep], claimed_total_frames: Option<usize>) {
             vec![
                 Arc::new(Float32Array::from(e.ts.clone())),
                 Arc::new(Int64Array::from((0..e.ts.len() as i64).collect::<Vec<_>>())),
+                i64s(vec![e.task; e.len]),
                 fsl(e.action.clone()),
+                fsl(ramp(e.len)),
             ],
         )
         .unwrap();
@@ -267,6 +292,7 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
         "video_path": "videos/{video_key}/chunk-{chunk_index:03d}/file-{file_index:03d}.mp4",
         "features": {
             "action": {"dtype": "float32", "shape": [DIM]},
+            "observation.state": {"dtype": "float32", "shape": [DIM]},
             "observation.images.top": {"dtype": "video", "shape": [4, 4, 3]},
             "timestamp": {"dtype": "float32", "shape": [1]},
             "frame_index": {"dtype": "int64", "shape": [1]},
@@ -326,7 +352,13 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
                 DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM),
                 false,
             ),
+            Field::new(
+                "observation.state",
+                DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM),
+                false,
+            ),
         ]));
+        let frames = rows.0.len();
         let batch = RecordBatch::try_new(
             schema.clone(),
             vec![
@@ -335,6 +367,7 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
                 i64s(rows.2),
                 i64s(rows.3),
                 fsl(rows.4),
+                fsl(ramp(frames)),
             ],
         )
         .unwrap();
@@ -744,11 +777,11 @@ fn schema_issues_after(edit: impl FnOnce(&mut serde_json::Value)) -> Vec<Issue> 
 #[test]
 fn flags_a_declared_feature_missing_from_the_data_once() {
     let v = schema_issues_after(|v| {
-        v["features"]["observation.state"] = serde_json::json!({"dtype": "float32", "shape": [3]});
+        v["features"]["observation.extra"] = serde_json::json!({"dtype": "float32", "shape": [3]});
     });
     assert_eq!(codes(&v), ["feature_missing"], "{v:?}");
     assert_eq!(v[0].severity, Severity::Error);
-    assert!(v[0].message.contains("observation.state"), "{v:?}");
+    assert!(v[0].message.contains("observation.extra"), "{v:?}");
 }
 
 #[test]
@@ -952,6 +985,8 @@ fn run_with_tasks(declared: usize, jsonl_lines: Option<usize>) -> Vec<Issue> {
             .map(|i| format!("{{\"task_index\": {i}, \"task\": \"t{i}\"}}"))
             .collect();
         fs::write(dir.path().join("meta/tasks.jsonl"), lines.join("\n")).unwrap();
+    } else {
+        fs::remove_file(dir.path().join("meta/tasks.jsonl")).unwrap();
     }
     validate(&Dataset::open(dir.path()).unwrap()).unwrap()
 }
@@ -1031,6 +1066,62 @@ fn v3_reads_stats_json() {
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["stats_features"], "{v:?}");
     fs::write(&p, "not json").unwrap();
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["stats_missing"], "{v:?}");
+}
+
+#[test]
+fn flags_a_task_index_missing_from_the_task_metadata() {
+    let mut a = good(20);
+    a.task = 3;
+    let mut b = good(15);
+    b.task = 7;
+    let v = run(vec![good(12), a, b], None);
+    assert_eq!(codes(&v), ["task_index"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Error);
+    assert!(v[0].message.contains("3, 7"), "{}", v[0].message);
+}
+
+#[test]
+fn warns_when_there_is_no_observation_state() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    rename_feature(dir.path(), "observation.state", "observation.joints");
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["nonstandard_features"], "{v:?}");
+    assert!(
+        v[0].message.contains("observation.state"),
+        "{}",
+        v[0].message
+    );
+}
+
+#[test]
+fn names_every_missing_info_field_at_once() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    edit_info(dir.path(), |v| {
+        let o = v.as_object_mut().unwrap();
+        o.remove("fps");
+        o.remove("total_frames");
+    });
+    let err = Dataset::open(dir.path()).err().unwrap().to_string();
+    assert!(
+        err.contains("missing required fields: fps, total_frames"),
+        "{err}"
+    );
+}
+
+#[test]
+fn v2_0_datasets_use_stats_json_and_are_otherwise_checked_like_v2_1() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20), good(15)], None);
+    fs::remove_file(stats_path(dir.path())).unwrap();
+    edit_info(dir.path(), |v| v["codebase_version"] = "v2.0".into());
+    assert!(dir.path().join("meta/stats.json").exists());
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert!(v.is_empty(), "{v:?}");
+    fs::remove_file(dir.path().join("meta/stats.json")).unwrap();
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["stats_missing"], "{v:?}");
 }

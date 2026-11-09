@@ -94,10 +94,18 @@ impl Dataset {
     pub fn open(root: impl AsRef<Path>) -> Result<Self> {
         let root = root.as_ref().to_path_buf();
         let p = root.join("meta/info.json");
-        let info: Info = serde_json::from_slice(
-            &fs::read(&p).with_context(|| format!("reading {}", p.display()))?,
-        )
-        .with_context(|| format!("parsing {}", p.display()))?;
+        let bytes = fs::read(&p).with_context(|| format!("reading {}", p.display()))?;
+        let raw: serde_json::Value =
+            serde_json::from_slice(&bytes).with_context(|| format!("parsing {}", p.display()))?;
+        let missing = missing_info_fields(&raw);
+        if !missing.is_empty() {
+            bail!(
+                "info.json is missing required fields: {}",
+                missing.join(", ")
+            );
+        }
+        let info: Info =
+            serde_json::from_value(raw).with_context(|| format!("parsing {}", p.display()))?;
         if !(info.fps.is_finite() && info.fps > 0.0) {
             bail!("info.json fps must be a positive number, got {}", info.fps);
         }
@@ -118,6 +126,21 @@ impl Dataset {
             episodes,
         })
     }
+}
+
+/// Fields every LeRobot info.json has; all are named at once so one run shows the whole list.
+pub fn missing_info_fields(raw: &serde_json::Value) -> Vec<&'static str> {
+    [
+        "codebase_version",
+        "fps",
+        "total_episodes",
+        "total_frames",
+        "features",
+        "data_path",
+    ]
+    .into_iter()
+    .filter(|f| raw.get(f).is_none())
+    .collect()
 }
 
 fn video_keys(info: &Info) -> Vec<&str> {
