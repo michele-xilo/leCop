@@ -63,6 +63,8 @@ scripts/fetch-datasets.sh --yes    # download them into datasets/ (git-ignored)
 `cargo test` also checks the error and warning counts on every downloaded dataset listed in
 `scripts/datasets.tsv` and skips the ones you do not have.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [STYLE_GUIDE.md](STYLE_GUIDE.md).
+
 ## License
 
 Licensed under either of [Apache License 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT) at your option.

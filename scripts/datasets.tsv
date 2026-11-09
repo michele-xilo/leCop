@@ -17,7 +17,9 @@ c_careattrs_mug2v2	Aaronng456/careattrs_mug2v2	7ed6203cdb625a01e0a045651da4a48ed
 c_d3il_avoiding_vision_224	shivakanthsujit/d3il_avoiding_vision_224	e7c3f92f5e816e006e643f170ffc88dda2f58a8d	0	0
 # Candidates not downloaded yet (screened on the Hub with meta/info.json + meta/episodes.jsonl only):
 # jchandru08/so100_press_red_button @ b8544ee7cb9075efbf5f4d2c49f7a6aa93fe0e09, v2.1, 1.34 GB: info.json says
-#   19028 frames, episodes.jsonl sums to 17156 over 29 episodes. Expect a frame_count error: a true positive.
+#   19028 frames, episodes.jsonl sums to 17156 over 29 episodes. lecop reports that frame_count error on the
+#   partial download. Full download failed 2026-11-09: `hf download` stops on episode_000007.mp4 (size check
+#   10335792 vs 10496466 bytes), reproducibly, so the server copy looks truncated. Add it with counts once fetchable.
 # v2.0 (older layout, untested by lecop, none under 377 MB): saaduddinM/rbo_oxe_base_language_table_lerobot @
 #   65191b1538a6c2896376c4cc999cd7af0c469692 (377 MB), IPEC-COMMUNITY/kuka_lerobot @
 #   e17b0de50bf8711222d957aac2b21245ef33af75 (440 MB).
