@@ -6,7 +6,12 @@
 
 <p align="center"><em>The police of your robot dataset.</em></p>
 
-[![CI](https://github.com/michele-xilo/lecop/actions/workflows/ci.yml/badge.svg)](https://github.com/michele-xilo/lecop/actions/workflows/ci.yml)
+<p align="center">
+  <a href="https://github.com/michele-xilo/lecop/actions/workflows/ci.yml"><img src="https://github.com/michele-xilo/lecop/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/michele-xilo/lecop/actions/workflows/ci.yml"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/michele-xilo/lecop/badges/coverage.json" alt="coverage"></a>
+  <img src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue" alt="license: MIT OR Apache-2.0">
+  <img src="https://img.shields.io/badge/rust-stable-orange?logo=rust" alt="Rust">
+</p>
 
 A fast, single-binary health check for
 [LeRobot](https://github.com/huggingface/lerobot)-format datasets, written in Rust.
