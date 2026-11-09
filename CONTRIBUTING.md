@@ -32,7 +32,8 @@ can. If you find a new piece of work, open an issue first with a `Priority: Pn, 
 2. For a bug: write a failing test first, confirm it fails for the right reason, then fix it.
 3. Add tests with the change. Synthetic datasets built in a temp dir are preferred over real ones.
 4. Update `README.md` if you add a command, option, check, issue code or supported version.
-5. Open a PR describing what failed or changed and why, with the evidence.
+5. Open a PR describing what failed or changed and why, with the evidence. Decisions, plans and measurements
+   that explain the change go in a comment on the issue, not in a file in the repo.
 
 Style is in [STYLE_GUIDE.md](STYLE_GUIDE.md).
 
