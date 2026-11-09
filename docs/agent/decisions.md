@@ -68,3 +68,13 @@ md5 on 15 local datasets against the previous binary). JSON is one object with `
 (`severity` lowercase, `episode` null for dataset-wide, `code`, `message`); this schema is now a public contract
 like the issue codes. GitHub format escapes `%`, CR, LF; annotations carry no file path because issues are
 about a dataset, not a source line.
+
+## 2026-11-09 v3: frame count per episode span
+`VideoInfo::samples_in(from, to)` counts stts samples by decode time in the span, shifted back half a frame so
+a frame stamped just after a boundary stays in its episode. A mismatch with the episode length is reported as
+`video_frame_count` (same meaning as the v2 code), only when the span itself is already consistent
+(`video_span_length` / `video_span_beyond_end` would otherwise duplicate it). Decode time, not presentation
+time: ctts is not read. Verified: no new findings on the 5 real v3 datasets (v3_pusht, v3_aloha x2, and the
+so101 v3 recordings); a real-data mutation was not done (needs a rewritten mp4 stts), the synthetic dropped-frames
+fixture covers it. Bench vs previous main: v2 path +4% and jobs1 v3 +2%, inside the ~20% run-to-run noise seen
+on this machine (v2 does not run the new code).
