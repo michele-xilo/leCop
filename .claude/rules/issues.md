@@ -11,7 +11,7 @@ are not doing in the current change:
 - a bug or a false positive/negative found while testing (on a real dataset, in review, in a benchmark),
 - a gap in coverage or a check we decided to skip ("not checked yet" in a note is a missing issue),
 - a performance problem or opportunity a profile or benchmark showed,
-- a follow-up named in a PR description, review or `docs/agent/` note,
+- a follow-up named in a PR description, review or comment on an issue,
 - a feature idea the user mentions that we are not building now.
 
 One issue per independently shippable package. If two items could be merged and released separately, they
@@ -49,8 +49,8 @@ Re-triage when evidence changes (a P2 that real users hit becomes P1) and say wh
   that is lower priority than open P0/P1 issues, do it, and mention the open higher-priority items.
 - Branch names carry the issue number (`feat/12-observation-state-check`), the PR body says `Closes #12`,
   and the PR description's evidence answers the issue's acceptance criteria.
-- Issues track *what to do*; `docs/agent/decisions.md` records *what was decided and why*. Do not duplicate
-  one in the other: link them.
+- Issues track both *what to do* and *what was decided and why*: record decisions, measurements and rejected
+  options as comments on the issue, never as files in the repo (`modus-operandi.md`).
 - If a task grows and splits, create the new issues and link them from the original before closing it.
 
 ## Commands

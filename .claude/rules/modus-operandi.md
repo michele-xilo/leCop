@@ -6,7 +6,7 @@ lecop is an unofficial, fast, single-binary health checker for robot-learning da
 [LeRobot](https://github.com/huggingface/lerobot) format (v2.x and v3.x), written in Rust. It is a library
 crate (`src/lib.rs`: `dataset` resolves a dataset's episodes to files, `validate` runs the checks) plus a thin
 CLI (`src/main.rs`: `inspect`, `validate`). Its reason to exist is speed and zero setup, not check count: see
-`PLAN.md` and `performance.md`. The roadmap is `PLAN.md`; the decision log is `docs/agent/decisions.md`.
+`performance.md`. The roadmap is the open issues by priority (`issues.md`); the old plan is `docs/agent/PLAN.md`.
 
 ## Build, lint, format, test: do this often
 
@@ -47,7 +47,7 @@ something (no network, dataset not downloaded), say so rather than claim it work
   follows a test module.
 - Issue codes (`timestamp_drift`, `range_length`, ...), the CLI's output format and exit codes are a public
   contract once released. Add new ones; do not rename or repurpose existing ones without a version bump.
-- Never decode video frames in the default path: video checks read container metadata only (see `PLAN.md`).
+- Never decode video frames in the default path: video checks read container metadata only (see `performance.md`).
 
 ## Testing
 
@@ -72,13 +72,17 @@ something (no network, dataset not downloaded), say so rather than claim it work
 
 ## Specs, decisions, notes
 
-- `docs/agent/` holds everything meant for AI agents rather than people: the decision log
-  (`decisions.md`, append, do not rewrite), working notes, conventions. Record a decision there when it
-  changes scope, a format assumption, a dependency, or a public contract.
-- Work that is not being done now becomes a GitHub issue with a priority, see `issues.md`. Do not park it
-  only in a note.
-- Verified-versus-assumed matters: when a note rests on an assumption about the LeRobot format, say so, and
-  update it once real data confirms or refutes it.
+- Do not commit files that record decisions, plans, findings or working notes about the past. They go stale
+  and the repository is not their history. Put them on the GitHub issue the work belongs to: a comment
+  stating what was decided and why, what was measured (dataset, machine, commit, numbers), what was tried
+  and rejected. Link the issue from the PR. If the work has no issue yet, create one (`issues.md`).
+- A decision that changes a public contract (issue codes, CLI output, JSON schema) is also stated in the
+  README or the code docs that describe the contract, as present-tense fact, not as a log entry.
+- Work that is not being done now becomes a GitHub issue with a priority, see `issues.md`.
+- Verified-versus-assumed matters: when a finding rests on an assumption about the LeRobot format, say so on
+  the issue, and comment again once real data confirms or refutes it.
+- `docs/agent/` holds legacy notes from before this rule; do not add to it. Move anything still useful to
+  an issue and delete the file, with the user's OK.
 - Everything else in `docs/` and the top-level `README.md` is for people who use the project: how to run it,
   what it checks, what it does not support.
 
