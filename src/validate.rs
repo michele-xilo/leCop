@@ -27,7 +27,7 @@ pub struct Issue {
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 36] = [
+pub const ALL_CODES: [&str; 37] = [
     "episode_count",
     "frame_count",
     "episode_index",
@@ -57,6 +57,7 @@ pub const ALL_CODES: [&str; 36] = [
     "video_missing",
     "video_unreadable",
     "video_fps",
+    "video_resolution",
     "video_frame_count",
     "video_span_length",
     "video_span_beyond_end",
@@ -106,6 +107,7 @@ pub fn explain(code: &str) -> &'static str {
         "video_missing" => "a video file listed by the metadata does not exist",
         "video_unreadable" => "a video file is truncated or not a valid mp4",
         "video_fps" => "a video's frame rate differs from the fps in info.json",
+        "video_resolution" => "a video's frame size differs from the shape in info.json",
         "video_frame_count" => "the video holds a different number of frames than the episode",
         "video_span_length" => "the episode's span in a shared video is not as long as the episode",
         "video_span_beyond_end" => "the episode's span reaches past the end of the video",
@@ -829,6 +831,8 @@ fn metadata_and_video_issues(ds: &Dataset, reads: &HashMap<PathBuf, VideoRead>) 
     let mut out = Vec::new();
     let mut prev_to: Option<i64> = None;
     let mut latest: HashMap<&str, &Path> = HashMap::new();
+    // A wrong size is the same in every file of a camera: report it once per camera.
+    let mut wrong_size: std::collections::HashSet<&str> = std::collections::HashSet::new();
     for (pos, e) in ds.episodes.iter().enumerate() {
         let ep = Some(e.index);
         let mut meta =
@@ -886,6 +890,21 @@ fn metadata_and_video_issues(ds: &Dataset, reads: &HashMap<PathBuf, VideoRead>) 
                                 v.key,
                                 info.fps(),
                                 ds.info.fps
+                            ),
+                        );
+                    }
+                    if let (Some((w, h)), Some((dw, dh))) = (
+                        info.size,
+                        ds.info.features.get(&v.key).and_then(|f| f.frame_size()),
+                    ) && (w as usize, h as usize) != (dw, dh)
+                        && wrong_size.insert(v.key.as_str())
+                    {
+                        vid(
+                            Error,
+                            "video_resolution",
+                            format!(
+                                "{} is {w}x{h} (width x height) but info.json declares {dw}x{dh}",
+                                v.key
                             ),
                         );
                     }

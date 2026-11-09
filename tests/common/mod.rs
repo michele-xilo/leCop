@@ -14,7 +14,27 @@ fn be(x: u32) -> [u8; 4] {
     x.to_be_bytes()
 }
 
-fn trak(handler: &[u8; 4], timescale: u32, stts: &[(u32, u32)], samples: u32) -> Vec<u8> {
+/// `stsd` with one VisualSampleEntry of the given size, laid out like a real AV1 or H.264 entry.
+fn stsd(width: u16, height: u16) -> Vec<u8> {
+    let mut e = vec![0u8; 6]; // reserved
+    e.extend([0, 1]); // data_reference_index
+    e.extend([0u8; 16]); // pre_defined, reserved, pre_defined
+    e.extend(width.to_be_bytes());
+    e.extend(height.to_be_bytes());
+    e.extend(vec![0u8; 50]); // resolution, frame count, compressor name, depth, pre_defined
+    let mut v = vec![0u8; 4];
+    v.extend(be(1)); // entry count
+    v.extend(bx(b"av01", &e));
+    v
+}
+
+fn trak(
+    handler: &[u8; 4],
+    timescale: u32,
+    stts: &[(u32, u32)],
+    samples: u32,
+    size: Option<(u16, u16)>,
+) -> Vec<u8> {
     let mut mdhd = vec![0u8; 4]; // version + flags
     mdhd.extend([0u8; 8]); // creation, modification
     mdhd.extend(be(timescale));
@@ -41,7 +61,11 @@ fn trak(handler: &[u8; 4], timescale: u32, stts: &[(u32, u32)], samples: u32) ->
         sz.extend(be(100));
     }
 
-    let stbl = bx(b"stbl", &[bx(b"stts", &st), bx(b"stsz", &sz)].concat());
+    let mut tables = vec![bx(b"stts", &st), bx(b"stsz", &sz)];
+    if let Some((w, h)) = size {
+        tables.insert(0, bx(b"stsd", &stsd(w, h)));
+    }
+    let stbl = bx(b"stbl", &tables.concat());
     let minf = bx(b"minf", &stbl);
     let mdia = bx(
         b"mdia",
@@ -57,6 +81,8 @@ pub struct Mp4 {
     pub moov_first: bool,
     pub audio_track_first: bool,
     pub video_track: bool,
+    /// Width and height written to the `stsd` sample entry; no `stsd` box when None.
+    pub size: Option<(u16, u16)>,
     pub large_mdat: bool,
     /// Size of the (zero-filled) frame data box.
     pub mdat_len: usize,
@@ -71,6 +97,7 @@ impl Mp4 {
             moov_first: false,
             audio_track_first: false,
             video_track: true,
+            size: None,
             large_mdat: false,
             mdat_len: 64,
         }
@@ -80,10 +107,10 @@ impl Mp4 {
         let frames: u32 = self.stts.iter().map(|(c, _)| c).sum();
         let mut tracks = Vec::new();
         if self.audio_track_first {
-            tracks.push(trak(b"soun", 48000, &[(50, 1024)], 50));
+            tracks.push(trak(b"soun", 48000, &[(50, 1024)], 50, None));
         }
         if self.video_track {
-            tracks.push(trak(b"vide", self.timescale, &self.stts, frames));
+            tracks.push(trak(b"vide", self.timescale, &self.stts, frames, self.size));
         }
         let moov = bx(b"moov", &tracks.concat());
 

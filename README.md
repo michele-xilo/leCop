@@ -99,6 +99,7 @@ All checks read metadata and parquet only: no video frame is decoded.
 | Every declared feature has a data column of the declared dtype and width; no undeclared columns | Covered (list width for float features only; multi-dimensional shapes are not checked) | `feature_missing`, `feature_dtype`, `feature_shape`, `column_shape`, `feature_extra` (warning) |
 | Every video file exists and is a readable mp4 | Covered | `video_missing`, `video_unreadable` |
 | Video frame rate matches `fps` | Covered (warning) | `video_fps` |
+| Video frame size matches the shape in `info.json` | Covered, from the container's sample description | `video_resolution` |
 | Video holds the episode's frames: v2 frame count, v3 span length, bounds and frames in the span | Covered, from the container's sample tables | `video_frame_count`, `video_span_length`, `video_span_beyond_end` |
 | An `action` feature exists (policies expect that name) | Covered (warning; `actions` is accepted for the other checks) | `nonstandard_features` |
 | `observation.state` exists | Not yet | |
@@ -170,7 +171,7 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | `stats.json` present and consistent with the data | ❌ | 🏆 **✅** | ❌ |
 | Video file exists, readable mp4, frame rate | ✅ | ✅ | ✅ |
 | Video frame count against the episode (container tables) | 🏆 **✅** | 🏆 **✅** | ❌ |
-| Video resolution against `info.json` | ❌ | 🏆 **✅** | ❌ |
+| Video resolution against `info.json` | 🏆 **✅** | 🏆 **✅** | ❌ |
 | Frames decode, frozen frames, black frames | ❌ opt-in decode planned | ⚠️ first frame only | 🏆 **✅** |
 | Portability: absolute paths, symlinks, unreadable or oversized files | ❌ | 🏆 **✅** | ❌ |
 | Training readiness: normalisation, policy windows, `delta_timestamps` | ❌ | 🏆 **✅** | ❌ |

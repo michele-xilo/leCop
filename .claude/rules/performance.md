@@ -33,6 +33,14 @@ designed in, measured, and protected against regressions.
   benchmark name. An optimization that makes code harder to read and does not move a benchmark gets reverted
   (`general.md`: Simplicity First).
 
+## The comparison with other tools is re-measured with every check
+
+More checks cost time, so a speed table measured before a check landed overstates us. Every change that adds or
+changes a check (a new issue code, a new pass over the data) re-runs `scripts/compare.py` on the datasets in the
+README speed table with a release build of that commit, and updates the table in the same PR. The PR description
+quotes the new numbers. A check that makes us slower than the tool we compare against on any row is a finding to
+raise, not a number to hide.
+
 ## Design rules for speed
 
 1. **Parallelize across independent units.** Data files and episodes are independent: use

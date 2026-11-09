@@ -24,6 +24,8 @@ struct Ep {
     video_delta: i32,
     video_fps: u32,
     video_garbage: bool,
+    /// Width and height in the video's sample description; info.json declares 4x4.
+    video_size: (u16, u16),
     /// v3: this episode's frames are spaced at half the rate in the shared video (dropped frames).
     video_sparse: bool,
 }
@@ -34,6 +36,7 @@ fn v3_video_bytes(group: &[Ep]) -> Vec<u8> {
         return video_bytes(0, &group[0]);
     }
     let mut m = Mp4::constant_fps(0, group[0].video_fps);
+    m.size = Some(group[0].video_size);
     m.stts = group
         .iter()
         .map(|e| (e.len as u32, if e.video_sparse { 2048 } else { 1024 }))
@@ -45,7 +48,9 @@ fn video_bytes(frames: i64, e: &Ep) -> Vec<u8> {
     if e.video_garbage {
         return b"not an mp4".to_vec();
     }
-    Mp4::constant_fps(frames.max(0) as u32, e.video_fps).bytes()
+    let mut m = Mp4::constant_fps(frames.max(0) as u32, e.video_fps);
+    m.size = Some(e.video_size);
+    m.bytes()
 }
 
 /// A healthy episode: perfect timestamps, varying action. Every call gets its own action values, so two
@@ -65,6 +70,7 @@ fn good(len: usize) -> Ep {
         video_delta: 0,
         video_fps: FPS as u32,
         video_garbage: false,
+        video_size: (4, 4),
         video_sparse: false,
     }
 }
@@ -879,4 +885,43 @@ fn warns_on_a_value_far_from_the_rest() {
     });
     let f: Vec<_> = v.iter().filter(|i| i.code == "outlier_values").collect();
     assert_eq!(f.len(), 1, "{v:?}");
+}
+
+// ---------------------------------------------------------------- video resolution
+
+#[test]
+fn flags_a_video_whose_size_differs_from_info_json_once() {
+    let mut a = good(20);
+    a.video_size = (8, 6);
+    let mut b = good(15);
+    b.video_size = (8, 6);
+    let v = run(vec![a, b, good(12)], None);
+    let r: Vec<_> = v.iter().filter(|i| i.code == "video_resolution").collect();
+    assert_eq!(r.len(), 1, "{v:?}");
+    assert!(
+        r[0].message.contains("8x6") && r[0].message.contains("4x4"),
+        "{}",
+        r[0].message
+    );
+}
+
+#[test]
+fn flags_the_same_in_a_packed_v3_dataset() {
+    let mut a = good(20);
+    a.video_size = (8, 6);
+    let v = run_v3(vec![a, good(15)]);
+    assert_eq!(codes(&v), ["video_resolution"], "{v:?}");
+}
+
+#[test]
+fn reads_channel_first_shapes_from_the_feature_names() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    edit_info(dir.path(), |v| {
+        let f = &mut v["features"]["observation.images.top"];
+        f["shape"] = serde_json::json!([3, 4, 4]);
+        f["names"] = serde_json::json!(["channels", "height", "width"]);
+    });
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert!(v.is_empty(), "{v:?}");
 }
