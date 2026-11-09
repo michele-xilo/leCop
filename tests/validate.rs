@@ -48,12 +48,17 @@ fn video_bytes(frames: i64, e: &Ep) -> Vec<u8> {
     Mp4::constant_fps(frames.max(0) as u32, e.video_fps).bytes()
 }
 
-/// A healthy episode: perfect timestamps, varying action.
+/// A healthy episode: perfect timestamps, varying action. Every call gets its own action values, so two
+/// episodes are never duplicates unless a test copies one.
 fn good(len: usize) -> Ep {
+    static CALLS: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+    let base = CALLS.fetch_add(1, std::sync::atomic::Ordering::Relaxed) as f32 * 1000.0;
     Ep {
         len,
         ts: (0..len).map(|i| i as f32 / FPS).collect(),
-        action: (0..len * DIM as usize).map(|i| i as f32 * 0.1).collect(),
+        action: (0..len * DIM as usize)
+            .map(|i| base + i as f32 * 0.1)
+            .collect(),
         with_video: true,
         with_data: true,
         range_to_delta: 0,
@@ -383,7 +388,7 @@ fn run_v3(eps: Vec<Ep>) -> Vec<Issue> {
 
 #[test]
 fn v3_healthy_packed_dataset_has_no_issues() {
-    let v = run_v3(vec![good(20), good(15), good(10), good(12), good(8)]);
+    let v = run_v3(vec![good(20), good(15), good(10), good(12), good(18)]);
     assert!(v.is_empty(), "{v:?}");
 }
 
@@ -472,7 +477,7 @@ fn v3_flags_episodes_whose_span_holds_the_wrong_number_of_frames() {
 
 #[test]
 fn v3_healthy_packed_dataset_has_no_frame_count_findings() {
-    let v = run_v3(vec![good(10), good(12), good(7)]);
+    let v = run_v3(vec![good(10), good(12), good(17)]);
     assert!(v.is_empty(), "{v:?}");
 }
 
@@ -760,4 +765,65 @@ fn warns_on_a_data_column_info_json_does_not_declare() {
     });
     assert_eq!(codes(&v), ["feature_extra"], "{v:?}");
     assert_eq!(v[0].severity, Severity::Warning);
+}
+
+// ---------------------------------------------------------------- episode shape
+
+#[test]
+fn warns_on_an_episode_shorter_than_a_second() {
+    let v = run(vec![good(20), good(3)], None);
+    let short: Vec<_> = v.iter().filter(|i| i.code == "episode_short").collect();
+    assert_eq!(short.len(), 1, "{v:?}");
+    assert_eq!(short[0].episode, Some(1));
+    assert_eq!(short[0].severity, Severity::Warning);
+}
+
+#[test]
+fn flags_an_empty_episode() {
+    let v = run(vec![good(20), good(0)], None);
+    assert!(codes(&v).contains(&"episode_empty"), "{v:?}");
+    assert!(!codes(&v).contains(&"episode_short"), "{v:?}");
+}
+
+#[test]
+fn warns_on_an_episode_far_longer_than_the_others() {
+    let mut eps: Vec<Ep> = (0..20).map(|i| good(20 + i % 4)).collect();
+    eps.push(good(400));
+    let v = run(eps, None);
+    let out: Vec<_> = v
+        .iter()
+        .filter(|i| i.code == "episode_length_outlier")
+        .collect();
+    assert_eq!(out.len(), 1, "{v:?}");
+    assert_eq!(out[0].episode, Some(20));
+    assert_eq!(out[0].severity, Severity::Warning);
+}
+
+#[test]
+fn does_not_call_a_few_episodes_outliers() {
+    let v = run(vec![good(20), good(21), good(400)], None);
+    assert!(!codes(&v).contains(&"episode_length_outlier"), "{v:?}");
+}
+
+#[test]
+fn warns_on_an_episode_that_repeats_an_earlier_one() {
+    let first = good(20);
+    let mut copy = good(20);
+    copy.action = first.action.clone();
+    let v = run(vec![first, good(15), copy], None);
+    let dup: Vec<_> = v.iter().filter(|i| i.code == "duplicate_episode").collect();
+    assert_eq!(dup.len(), 1, "{v:?}");
+    assert_eq!(dup[0].episode, Some(2));
+    assert!(dup[0].message.contains("episode 0"), "{}", dup[0].message);
+    assert_eq!(dup[0].severity, Severity::Warning);
+}
+
+#[test]
+fn does_not_flag_same_length_episodes_with_different_actions() {
+    let first = good(20);
+    let mut other = good(20);
+    other.action = first.action.clone();
+    other.action[5] += 1.0;
+    let v = run(vec![first, other], None);
+    assert!(!codes(&v).contains(&"duplicate_episode"), "{v:?}");
 }

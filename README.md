@@ -107,7 +107,10 @@ All checks read metadata and parquet only: no video frame is decoded.
 
 Beyond what LeRobot checks: NaN or Inf in float features (`non_finite`), an `action` that never changes
 (`action_constant`), and episodes where more than half the frames repeat the previous action (`idle_episode`, a
-warning that says where the robot first and last moves). Malformed files are reported, not crashed on.
+warning that says where the robot first and last moves), empty, shorter-than-a-second and statistically long
+or short episodes (`episode_empty`, `episode_short`, `episode_length_outlier`: more than 3 standard deviations from the
+mean, judged from 10 episodes up) and an episode whose action sequence repeats an earlier one (`duplicate_episode`).
+These last four are warnings except `episode_empty`. Malformed files are reported, not crashed on.
 
 ## Speed
 
@@ -158,8 +161,8 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Stuck or constant dimensions, zero variance | ❌ | 🏆 **✅** | ❌ |
 | Values clipped at their min or max | ❌ | 🏆 **✅** | ❌ |
 | Extreme outliers, distribution shift across episodes | ❌ | 🏆 **✅** | ❌ |
-| Duplicate episodes | ❌ | 🏆 **✅ near-duplicates** | 🏆 **✅ exact** |
-| Episode length: empty, too short, outliers | ⚠️ rows missing | 🏆 **✅** | ❌ |
+| Duplicate episodes | ✅ exact action sequences | ✅ near-duplicates | ✅ exact |
+| Episode length: empty, too short, outliers | 🏆 **✅** | 🏆 **✅** | ❌ |
 | `stats.json` present and consistent with the data | ❌ | 🏆 **✅** | ❌ |
 | Video file exists, readable mp4, frame rate | ✅ | ✅ | ✅ |
 | Video frame count against the episode (container tables) | 🏆 **✅** | 🏆 **✅** | ❌ |

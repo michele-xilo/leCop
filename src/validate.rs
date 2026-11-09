@@ -27,7 +27,7 @@ pub struct Issue {
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 29] = [
+pub const ALL_CODES: [&str; 33] = [
     "episode_count",
     "frame_count",
     "episode_index",
@@ -47,6 +47,10 @@ pub const ALL_CODES: [&str; 29] = [
     "feature_dtype",
     "feature_shape",
     "feature_extra",
+    "episode_empty",
+    "episode_short",
+    "episode_length_outlier",
+    "duplicate_episode",
     "video_missing",
     "video_unreadable",
     "video_fps",
@@ -81,6 +85,12 @@ pub fn explain(code: &str) -> &'static str {
         "feature_dtype" => "a data column has a different type than info.json declares",
         "feature_shape" => "a data column has a different width than info.json declares",
         "feature_extra" => "a data column is not declared in info.json",
+        "episode_empty" => "the episode metadata says the episode has no frames",
+        "episode_short" => "the episode is shorter than a second (or 5 frames)",
+        "episode_length_outlier" => {
+            "the episode length is more than 3 standard deviations from the mean"
+        }
+        "duplicate_episode" => "the episode has exactly the same action sequence as an earlier one",
         "video_missing" => "a video file listed by the metadata does not exist",
         "video_unreadable" => "a video file is truncated or not a valid mp4",
         "video_fps" => "a video's frame rate differs from the fps in info.json",
@@ -323,6 +333,31 @@ fn action_key(ds: &Dataset) -> Option<&str> {
     })
 }
 
+/// (position, episode index, length, hash of its action rows)
+type ActionHash = (usize, usize, usize, u64);
+
+/// A warning on every episode whose action sequence equals that of an earlier one.
+fn duplicate_episodes(hashes: &[ActionHash]) -> Vec<Tagged> {
+    let mut first: HashMap<(usize, u64), usize> = HashMap::new();
+    let mut out = Vec::new();
+    for &(pos, index, len, h) in hashes {
+        match first.entry((len, h)) {
+            std::collections::hash_map::Entry::Occupied(o) => out.push(tag(
+                Some(pos),
+                PHASE_DATA,
+                Severity::Warning,
+                Some(index),
+                "duplicate_episode",
+                format!("same action sequence as episode {}", o.get()),
+            )),
+            std::collections::hash_map::Entry::Vacant(v) => {
+                v.insert(index);
+            }
+        }
+    }
+    out
+}
+
 /// An issue plus where it sorts in the report: episode position (None = dataset-wide) and check phase.
 type Tagged = (Option<usize>, u8, Issue);
 
@@ -409,10 +444,12 @@ fn run(ds: &Dataset) -> Vec<Issue> {
         groups.push((start, g));
         start += g.len();
     }
-    let data: Vec<Vec<Tagged>> = groups
+    let data: Vec<(Vec<Tagged>, Vec<ActionHash>)> = groups
         .into_par_iter()
         .map(|(start, eps)| check_group(ds, action, start, eps))
         .collect();
+    let (data, hashes): (Vec<_>, Vec<_>) = data.into_iter().unzip();
+    tagged.extend(duplicate_episodes(&hashes.concat()));
     // A schema fault is the same in every file of the dataset: report it once, at the first file.
     let mut seen = std::collections::HashSet::new();
     tagged.extend(data.into_iter().flatten().filter(|(_, _, i)| {
@@ -425,6 +462,77 @@ fn run(ds: &Dataset) -> Vec<Issue> {
     let mut seen = std::collections::HashSet::new();
     tagged.retain(|(_, _, i)| i.code != "data_missing" || seen.insert(i.message.clone()));
     tagged.into_iter().map(|(_, _, i)| i).collect()
+}
+
+/// Episodes shorter than this many frames are suspect: one second, and never fewer than 5 frames.
+fn short_threshold(fps: f64) -> usize {
+    (fps.ceil() as usize).max(5)
+}
+
+/// Findings on episode lengths alone: `(position, severity, code, message)`. Outliers are judged only with 10 or
+/// more episodes, where a mean and standard deviation mean something.
+pub fn length_findings(
+    lengths: &[usize],
+    fps: f64,
+) -> Vec<(usize, Severity, &'static str, String)> {
+    let mut out = Vec::new();
+    let threshold = short_threshold(fps);
+    let n = lengths.len() as f64;
+    let mean = lengths.iter().sum::<usize>() as f64 / n;
+    let std = (lengths
+        .iter()
+        .map(|l| (*l as f64 - mean).powi(2))
+        .sum::<f64>()
+        / n)
+        .sqrt();
+    for (i, &len) in lengths.iter().enumerate() {
+        if len == 0 {
+            out.push((
+                i,
+                Severity::Error,
+                "episode_empty",
+                "episode has 0 frames".into(),
+            ));
+        } else if len < threshold {
+            out.push((
+                i,
+                Severity::Warning,
+                "episode_short",
+                format!("{len} frames, under one second ({threshold} frames at {fps} fps)"),
+            ));
+        } else if lengths.len() >= 10 && std > 0.0 && (len as f64 - mean).abs() > 3.0 * std {
+            out.push((
+                i,
+                Severity::Warning,
+                "episode_length_outlier",
+                format!(
+                    "{len} frames; mean {mean:.0}, std {std:.0} over {} episodes",
+                    lengths.len()
+                ),
+            ));
+        }
+    }
+    out
+}
+
+/// Order-sensitive hash of float rows by bit pattern. Four independent FxHash-style lanes: one serial chain was
+/// ~12% of `validate` on the 600k-frame synthetic set (criterion), four lanes let the CPU overlap the multiplies.
+// ponytail: no equality check after a hash match (a collision also needs an equal row count); add one if a false
+// duplicate is ever reported.
+pub fn rows_hash(vals: &[f64]) -> u64 {
+    const K: u64 = 0x517c_c1b7_2722_0a95;
+    let mix = |h: u64, x: f64| (h.rotate_left(5) ^ x.to_bits()).wrapping_mul(K);
+    let mut lanes = [0u64; 4];
+    let (chunks, rest) = vals.as_chunks::<4>();
+    for c in chunks {
+        for (l, x) in lanes.iter_mut().zip(c) {
+            *l = mix(*l, *x);
+        }
+    }
+    let h = lanes
+        .iter()
+        .fold(0u64, |h, l| (h.rotate_left(5) ^ l).wrapping_mul(K));
+    rest.iter().fold(h, |h, x| mix(h, *x))
 }
 
 fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
@@ -456,6 +564,19 @@ fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
                 ds.episodes.len()
             ),
         ));
+    }
+    let lengths: Vec<usize> = ds.episodes.iter().map(|e| e.length).collect();
+    if !lengths.is_empty() {
+        for (i, sev, code, message) in length_findings(&lengths, ds.info.fps) {
+            v.push(tag(
+                Some(i),
+                PHASE_META,
+                sev,
+                Some(ds.episodes[i].index),
+                code,
+                message,
+            ));
+        }
     }
     let sum: usize = ds.episodes.iter().map(|e| e.length).sum();
     if sum != ds.info.total_frames {
@@ -626,18 +747,26 @@ fn metadata_and_video_issues(ds: &Dataset, reads: &HashMap<PathBuf, VideoRead>) 
 }
 
 /// Load one data file and check every episode stored in it. `eps` all share `eps[0].data_file`.
-fn check_group(ds: &Dataset, action: Option<&str>, start: usize, eps: &[Episode]) -> Vec<Tagged> {
+fn check_group(
+    ds: &Dataset,
+    action: Option<&str>,
+    start: usize,
+    eps: &[Episode],
+) -> (Vec<Tagged>, Vec<ActionHash>) {
     use Severity::Error;
     let first = &eps[0];
     let at_first = |code, message: String| {
-        vec![tag(
-            Some(start),
-            PHASE_DATA,
-            Error,
-            Some(first.index),
-            code,
-            message,
-        )]
+        (
+            vec![tag(
+                Some(start),
+                PHASE_DATA,
+                Error,
+                Some(first.index),
+                code,
+                message,
+            )],
+            Vec::new(),
+        )
     };
     // One read syscall for the whole file: parquet's own reader issues many small preads, which stopped
     // scaling past ~3 threads (synthetic_v2 jobs10: 98 ms with File, 42 ms with this).
@@ -684,7 +813,19 @@ fn check_group(ds: &Dataset, action: Option<&str>, start: usize, eps: &[Episode]
             .into_iter()
             .map(move |x| (Some(start + i), PHASE_DATA, x))
     });
-    schema.chain(per_episode).collect()
+    let hashes = eps
+        .iter()
+        .enumerate()
+        .filter_map(|(i, e)| {
+            let (vals, w) = d.floats.get(action?)?;
+            let (s, t) =
+                d.ep.as_ref()
+                    .map_or(Some((0, d.rows)), |_| runs.get(&(e.index as i64)).copied())?;
+            let rows = vals.get(s * w..t * w)?;
+            (!rows.is_empty()).then(|| (start + i, e.index, e.length, rows_hash(rows)))
+        })
+        .collect();
+    (schema.chain(per_episode).collect(), hashes)
 }
 
 fn check_episode(

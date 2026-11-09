@@ -13,7 +13,7 @@ fn dataset() -> tempfile::TempDir {
     let dir = tempfile::tempdir().unwrap();
     let s = Synth {
         episodes: 3,
-        frames: 20,
+        frames: 40,
         dim: 2,
         fps: 30,
         per_file: 1,
@@ -80,7 +80,7 @@ fn parent_of_two() -> tempfile::TempDir {
     for name in ["a", "b"] {
         let s = Synth {
             episodes: 3,
-            frames: 20,
+            frames: 40,
             dim: 2,
             fps: 30,
             per_file: 1,
