@@ -1,8 +1,14 @@
-# lecop
+<p align="center">
+  <img src="assets/logo.svg" alt="lecop" width="96">
+</p>
+
+<h1 align="center">lecop</h1>
+
+<p align="center"><em>The police of your robot dataset.</em></p>
 
 [![CI](https://github.com/michele-xilo/lecop/actions/workflows/ci.yml/badge.svg)](https://github.com/michele-xilo/lecop/actions/workflows/ci.yml)
 
-The police of your robot dataset. A fast, single-binary health check for
+A fast, single-binary health check for
 [LeRobot](https://github.com/huggingface/lerobot)-format datasets, written in Rust.
 
 > **Unofficial.** Not affiliated with Hugging Face or the LeRobot project.
