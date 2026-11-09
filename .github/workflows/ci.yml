@@ -74,6 +74,12 @@ jobs:
             cargo llvm-cov report --ignore-filename-regex '(tests|benches)/'
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+      # Without the CODECOV_TOKEN secret (forks, or before it is set) the upload is skipped and CI stays green.
+      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          files: lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
