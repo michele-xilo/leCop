@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="128" height="128" role="img" aria-label="lecop">
+  <title>lecop</title>
+  <path d="M32 3 56 11v19c0 15-10 25-24 31C18 55 8 45 8 30V11Z" fill="#D9481F"/>
+  <path d="M32 3 56 11v19c0 15-10 25-24 31V3Z" fill="#000" opacity=".12"/>
+  <path d="m20 32 9 9 16-18" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
