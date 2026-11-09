@@ -127,6 +127,22 @@ What moved the numbers: files and videos are checked in parallel (rayon), and ea
 98 ms before the change, 42 ms after). v3 is limited by its 10 files: one file is decoded by one thread.
 The CLI wall time on the real datasets (6-8 ms for the three above, 27 ms for `c_so101_pill_sorting_medoc`) includes process start.
 
+### Compared with other checkers
+
+`scripts/compare.py` times lecop against [lerobot-doctor](https://pypi.org/project/lerobot-doctor/) 0.2.0 and
+[physlint](https://pypi.org/project/physlint/) 0.4.0 (installed from PyPI into separate venvs) on the same
+datasets: median of 3 runs after one warm-up, warm page cache, wall time including process start, Apple M2 Pro,
+Python 3.12, lecop `release` build. The tools check different things, so this is speed only, not coverage.
+physlint reads v3 only.
+
+| Dataset | lecop | lerobot-doctor | physlint |
+|---|---|---|---|
+| `pusht` (v2.1) | 14 ms | 853 ms | n/a |
+| `svla_so101_pickplace` (v2.1) | 9 ms | 578 ms | n/a |
+| `c_careattrs_mug2v2` (v2.1) | 7 ms | 559 ms | n/a |
+| `v3_pusht` (v3.0) | 8 ms | 743 ms | 16,487 ms |
+| `v3_aloha_sim_insertion_human` (v3.0) | 8 ms | 582 ms | 2,796 ms |
+
 ## Not yet supported
 
 - Decoding frames (frozen or black frames, A/V drift inside a video)
