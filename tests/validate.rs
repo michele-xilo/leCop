@@ -93,6 +93,7 @@ fn write_ds(root: &Path, eps: &[Ep], claimed_total_frames: Option<usize>) {
             "action": {"dtype": "float32", "shape": [DIM]},
             "observation.images.top": {"dtype": "video", "shape": [4, 4, 3]},
             "timestamp": {"dtype": "float32", "shape": [1]},
+            "frame_index": {"dtype": "int64", "shape": [1]},
         }
     });
     fs::write(root.join("meta/info.json"), info.to_string()).unwrap();
@@ -256,6 +257,9 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
             "action": {"dtype": "float32", "shape": [DIM]},
             "observation.images.top": {"dtype": "video", "shape": [4, 4, 3]},
             "timestamp": {"dtype": "float32", "shape": [1]},
+            "frame_index": {"dtype": "int64", "shape": [1]},
+            "episode_index": {"dtype": "int64", "shape": [1]},
+            "index": {"dtype": "int64", "shape": [1]},
         }
     });
     fs::write(root.join("meta/info.json"), info.to_string()).unwrap();
@@ -550,6 +554,45 @@ fn edit_info(root: &Path, f: impl FnOnce(&mut serde_json::Value)) {
     fs::write(p, v.to_string()).unwrap();
 }
 
+/// Rename a feature in info.json and its column in every data file, as a real dataset would have it.
+fn rename_feature(root: &Path, from: &str, to: &str) {
+    edit_info(root, |v| {
+        let f = v["features"].as_object_mut().unwrap();
+        let spec = f.remove(from).unwrap();
+        f.insert(to.into(), spec);
+    });
+    for chunk in fs::read_dir(root.join("data")).unwrap() {
+        for file in fs::read_dir(chunk.unwrap().path()).unwrap() {
+            let path = file.unwrap().path();
+            let reader = parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder::try_new(
+                fs::File::open(&path).unwrap(),
+            )
+            .unwrap()
+            .build()
+            .unwrap();
+            let batches: Vec<RecordBatch> = reader.map(|b| b.unwrap()).collect();
+            let fields: Vec<Field> = batches[0]
+                .schema()
+                .fields()
+                .iter()
+                .map(|f| match f.name() == from {
+                    true => f.as_ref().clone().with_name(to),
+                    false => f.as_ref().clone(),
+                })
+                .collect();
+            let schema = Arc::new(Schema::new(fields));
+            let mut w =
+                ArrowWriter::try_new(fs::File::create(&path).unwrap(), schema.clone(), None)
+                    .unwrap();
+            for b in batches {
+                w.write(&RecordBatch::try_new(schema.clone(), b.columns().to_vec()).unwrap())
+                    .unwrap();
+            }
+            w.close().unwrap();
+        }
+    }
+}
+
 fn rename_action_feature(root: &Path) {
     edit_info(root, |v| {
         let f = v["features"].as_object_mut().unwrap();
@@ -562,7 +605,7 @@ fn rename_action_feature(root: &Path) {
 fn warns_when_there_is_no_standard_action_feature() {
     let dir = tempfile::tempdir().unwrap();
     write_ds(dir.path(), &[good(20)], None);
-    rename_action_feature(dir.path());
+    rename_feature(dir.path(), "action", "actions");
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["nonstandard_features"]);
     assert_eq!(v[0].severity, Severity::Warning);
@@ -630,11 +673,8 @@ fn does_not_warn_on_a_short_pause() {
 fn does_not_mistake_a_sibling_feature_for_the_action() {
     let dir = tempfile::tempdir().unwrap();
     write_ds(dir.path(), &[good(20)], None);
-    edit_info(dir.path(), |v| {
-        let f = v["features"].as_object_mut().unwrap();
-        let a = f.remove("action").unwrap();
-        f.insert("action_mask".into(), a); // a float feature that only shares the prefix
-    });
+    // a float feature that only shares the prefix
+    rename_feature(dir.path(), "action", "action_mask");
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["nonstandard_features"]);
     assert!(!v[0].message.contains("action_mask"), "{}", v[0].message);
@@ -676,4 +716,48 @@ fn report_is_identical_for_any_thread_count() {
             );
         }
     }
+}
+
+// ---------------------------------------------------------------- feature schema vs info.json
+
+fn schema_issues_after(edit: impl FnOnce(&mut serde_json::Value)) -> Vec<Issue> {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20), good(15)], None);
+    edit_info(dir.path(), edit);
+    validate(&Dataset::open(dir.path()).unwrap()).unwrap()
+}
+
+#[test]
+fn flags_a_declared_feature_missing_from_the_data_once() {
+    let v = schema_issues_after(|v| {
+        v["features"]["observation.state"] = serde_json::json!({"dtype": "float32", "shape": [3]});
+    });
+    assert_eq!(codes(&v), ["feature_missing"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Error);
+    assert!(v[0].message.contains("observation.state"), "{v:?}");
+}
+
+#[test]
+fn flags_a_column_whose_dtype_differs_from_info_json() {
+    let v = schema_issues_after(|v| {
+        v["features"]["action"]["dtype"] = "int64".into();
+    });
+    assert_eq!(codes(&v), ["feature_dtype"], "{v:?}");
+}
+
+#[test]
+fn flags_a_column_whose_width_differs_from_info_json() {
+    let v = schema_issues_after(|v| {
+        v["features"]["action"]["shape"] = serde_json::json!([DIM + 1]);
+    });
+    assert_eq!(codes(&v), ["feature_shape"], "{v:?}");
+}
+
+#[test]
+fn warns_on_a_data_column_info_json_does_not_declare() {
+    let v = schema_issues_after(|v| {
+        v["features"].as_object_mut().unwrap().remove("frame_index");
+    });
+    assert_eq!(codes(&v), ["feature_extra"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Warning);
 }
