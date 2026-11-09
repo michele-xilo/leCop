@@ -32,11 +32,13 @@ cargo install --path .
 
 ```bash
 lecop inspect  path/to/dataset   # summary from metadata only
+lecop .                          # same as `lecop validate .`: scan the current directory for datasets
 lecop validate                   # scan the current directory for datasets
 lecop validate path/to/dataset   # one dataset, or a directory that contains many
 ```
 
-`validate` takes any number of paths. A path that holds `meta/info.json` is a dataset; any other directory is
+`validate` is the default command: `lecop <paths> [flags]` is `lecop validate <paths> [flags]`. `validate` takes any
+number of paths. A path that holds `meta/info.json` is a dataset; any other directory is
 searched for datasets (`.gitignore` is respected). Datasets are checked in parallel and reported in sorted order.
 
 ```

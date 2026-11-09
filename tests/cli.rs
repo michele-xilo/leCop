@@ -109,6 +109,24 @@ fn no_argument_scans_the_current_directory() {
 }
 
 #[test]
+fn a_path_without_a_subcommand_runs_validate() {
+    let parent = parent_of_two();
+    let implicit = lecop_in(parent.path(), &[".", "--format", "json"]);
+    let explicit = lecop_in(parent.path(), &["validate", ".", "--format", "json"]);
+    assert_eq!(implicit.status.code(), Some(1));
+    assert_eq!(out(&implicit), out(&explicit));
+}
+
+#[test]
+fn flags_before_the_path_still_run_validate() {
+    let parent = parent_of_two();
+    let o = lecop_in(parent.path(), &["--no-color", "."]);
+    assert_eq!(o.status.code(), Some(1));
+    let s = out(&o);
+    assert!(s.contains("Found 1 error"), "{s}");
+}
+
+#[test]
 fn healthy_run_prints_all_checks_passed_and_quiet_prints_nothing() {
     let d = dataset();
     let path = d.path().to_str().unwrap();

@@ -186,8 +186,22 @@ fn init_logging(verbose: u8) {
         .init();
 }
 
+/// `lecop .` means `lecop validate .`: when no argument names a subcommand or asks for help,
+/// `validate` is inserted so its flags and paths parse as usual.
+fn with_default_command(mut args: Vec<std::ffi::OsString>) -> Vec<std::ffi::OsString> {
+    const KNOWN: [&str; 5] = ["inspect", "validate", "help", "-h", "--help"];
+    let named = args
+        .iter()
+        .skip(1)
+        .any(|a| KNOWN.contains(&a.to_string_lossy().as_ref()));
+    if args.len() > 1 && !named {
+        args.insert(1, "validate".into());
+    }
+    args
+}
+
 fn main() -> ExitCode {
-    let cli = Cli::parse();
+    let cli = Cli::parse_from(with_default_command(std::env::args_os().collect()));
     init_logging(cli.verbose);
     let result = match cli.cmd {
         Cmd::Inspect { path } => inspect(path),
