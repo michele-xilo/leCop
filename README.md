@@ -127,7 +127,48 @@ What moved the numbers: files and videos are checked in parallel (rayon), and ea
 98 ms before the change, 42 ms after). v3 is limited by its 10 files: one file is decoded by one thread.
 The CLI wall time on the real datasets (6-8 ms for the three above, 27 ms for `c_so101_pill_sorting_medoc`) includes process start.
 
-### Compared with other checkers
+### Coverage compared with other checkers
+
+What [lerobot-doctor](https://pypi.org/project/lerobot-doctor/) 0.2.0 and
+[physlint](https://pypi.org/project/physlint/) 0.4.0 check, read from their installed rule lists and source,
+against what lecop checks. physlint also validates MCAP and ROS 2 recordings, which is out of scope here.
+`yes` means the tool reports it, `config` means it needs thresholds you set, `no` means it does not check it.
+
+| Check | lecop | lerobot-doctor | physlint |
+|---|---|---|---|
+| `info.json` readable, version supported, `fps` positive | yes | yes | yes |
+| `info.json` required fields present | partial (parse error) | yes | yes |
+| `total_episodes`, `total_frames` match the metadata | yes | yes | yes |
+| `total_tasks` matches the task metadata | no | yes | no |
+| Data and episode-metadata files exist and are readable | yes | yes | yes |
+| Episode ids unique, contiguous, boundaries and global `index` valid | yes | partial | yes |
+| Timestamps monotonic, match `fps`, no dropped-frame gaps | yes | yes | yes (gap limit by config) |
+| `frame_index` sequential within each episode | yes | yes | no |
+| Declared dtype and shape match the stored data | partial (width only) | partial | yes |
+| Same features in every episode (missing, extra, dtype, shape) | no | yes | partial |
+| Required streams present (`observation.state`, ...) | partial (`action`, `timestamp`) | no | config |
+| Streams cover whole episodes; observation/action delay | no | no | yes (delay by config) |
+| NaN and Inf in feature columns | yes | yes | yes |
+| Numeric limits per feature | no | no | config |
+| Implausible jumps between frames | no | yes | config |
+| Constant or frozen action, idle episodes | yes | yes | no |
+| Stuck or constant dimensions, zero variance | no | yes | no |
+| Values clipped at their min or max | no | yes | no |
+| Extreme outliers, distribution shift across episodes | no | yes | no |
+| Duplicate episodes | no | yes (near-duplicates) | yes (exact) |
+| Episode length: empty, too short, outliers | partial (rows missing) | yes | no |
+| `stats.json` present and consistent with the data | no | yes | no |
+| Video file exists, readable mp4, frame rate | yes | yes | yes |
+| Video frame count against the episode (container tables) | yes | yes | no |
+| Video resolution against `info.json` | no | yes | no |
+| Frames decode, frozen frames, black frames | no (opt-in decode planned) | first frame only | yes |
+| Portability: absolute paths, symlinks, unreadable or oversized files | no | yes | no |
+| Training readiness: normalisation, policy windows, `delta_timestamps` | no | yes | no |
+| Only lecop: v3 video span checks, `range_*`, `index_mismatch` | yes | no | no |
+
+Gaps are tracked as issues by priority; see the open issues labelled `feature`.
+
+### Speed compared with other checkers
 
 `scripts/compare.py` times lecop against [lerobot-doctor](https://pypi.org/project/lerobot-doctor/) 0.2.0 and
 [physlint](https://pypi.org/project/physlint/) 0.4.0 (installed from PyPI into separate venvs) on the same
@@ -140,8 +181,13 @@ physlint reads v3 only.
 | `pusht` (v2.1) | 14 ms | 853 ms | n/a |
 | `svla_so101_pickplace` (v2.1) | 9 ms | 578 ms | n/a |
 | `c_careattrs_mug2v2` (v2.1) | 7 ms | 559 ms | n/a |
-| `v3_pusht` (v3.0) | 8 ms | 743 ms | 16,487 ms |
-| `v3_aloha_sim_insertion_human` (v3.0) | 8 ms | 582 ms | 2,796 ms |
+| `v3_pusht` (v3.0) | 9 ms | 702 ms | 16,235 ms |
+| `v3_aloha_sim_insertion_human` (v3.0) | 8 ms | 581 ms | 2,951 ms |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 8 ms | 548 ms | 3,482 ms |
+| `c_so101_pill_sorting_medoc` (v3.0) | 30 ms | 594 ms | 746 ms |
+| `c_so101_my_task_50ep` (v3.0) | 15 ms | 576 ms | 7,695 ms |
+| `c_so101_block_box_50episodes_final` (v3.0) | 12 ms | 472 ms | 2,726 ms |
+| `c_black-stressball-tutorial` (v3.0) | 13 ms | 559 ms | 7,868 ms |
 
 ## Not yet supported
 
