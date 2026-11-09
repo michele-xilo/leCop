@@ -41,7 +41,7 @@ The report and exit code are identical for every `-j`.
 scripts; `--format github` prints `::error`/`::warning` annotations for GitHub Actions. The exit code is 1 on
 any error in every format.
 
-`validate` supports LeRobot **v2.x** (one file per episode) and **v3.x** (episodes packed into shared files). It checks:
+`validate` supports LeRobot **v2.x** (one file per episode) and **v3.x** (episodes packed into shared files).
 
 LeRobot does not publish a list of dataset checks. The table is derived from its
 [v3 format docs](https://github.com/huggingface/lerobot/blob/main/docs/source/lerobot-dataset-v3.mdx) and from what its
