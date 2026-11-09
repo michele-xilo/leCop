@@ -21,7 +21,10 @@ cargo install --path .
 ```bash
 lecop inspect  path/to/dataset   # summary from metadata only
 lecop validate path/to/dataset   # exits 1 if any error is found
+lecop validate path/to/dataset -j 4   # worker threads (default: one per core)
 ```
+
+The report and exit code are identical for every `-j`.
 
 `validate` supports LeRobot **v2.x** (one file per episode) and **v3.x** (episodes packed into shared files). It checks:
 
@@ -43,10 +46,29 @@ Each finding is one line (format shown for illustration):
 ERROR   ep 3      timestamp_drift          frame 10: t=1.05000s, expected 1.00000s at 10 fps
 ```
 
+## Speed
+
+Library time of `validate` on a warm page cache (criterion, `cargo bench --bench validate`), release profile.
+Machine: Apple M2 Pro (6 performance + 4 efficiency cores), rustc 1.99.1, commit `a85d39d` plus the read-path change below.
+Synthetic datasets: 1,000 episodes x 600 frames, 14-dim action and state, one AV1-style mp4 per camera, fixed seed, healthy.
+
+| Dataset | Before (sequential) | 1 thread | 10 threads |
+|---|---|---|---|
+| synthetic v2, 600k frames, 1000 files | 174.8 ms | 118.5 ms | 36.2 ms |
+| synthetic v3, 600k frames, 10 data files | 91.3 ms | 95.7 ms | 21.1 ms |
+| real `v3_aloha_sim_insertion_human` (87 MB, 50 ep) | 3.6 ms | n/a | 1.5 ms |
+| real `svla_so101_pickplace` (84 MB, 50 ep) | 6.9 ms | n/a | 3.0 ms |
+| real `c_careattrs_mug2v2` (84 MB, 30 ep) | 4.5 ms | n/a | 2.1 ms |
+
+What moved the numbers: files and videos are checked in parallel (rayon), and each data file is read with one
+`read` call instead of parquet's many small preads, which had stopped scaling past ~3 threads (v2, 10 threads:
+98 ms before the change, 42 ms after). v3 is limited by its 10 files: one file is decoded by one thread.
+The CLI wall time on the real datasets (6-8 ms for the three above, 27 ms for `c_so101_pill_sorting_medoc`) includes process start.
+
 ## Not yet supported
 
 - Decoding frames (frozen or black frames, A/V drift inside a video), and v3 per-episode frame counts inside a shared video
-- JSON output, parallelism, remote (Hub) datasets
+- JSON output, remote (Hub) datasets
 
 See [PLAN.md](PLAN.md) for the roadmap.
 

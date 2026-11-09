@@ -1,13 +1,13 @@
 use crate::{
-    dataset::Dataset,
+    dataset::{Dataset, Episode},
     mp4::{VideoInfo, read_video_info},
 };
-use anyhow::Result;
+use anyhow::{Context, Result};
 use arrow_array::{Array, ArrayRef, cast::AsArray, types::*};
 use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
+use rayon::prelude::*;
 use std::{
     collections::{BTreeMap, HashMap},
-    fs::File,
     path::{Path, PathBuf},
 };
 
@@ -38,9 +38,6 @@ const IDLE_FRACTION: f64 = 0.5;
 /// Row range of one episode inside a data file.
 type Run = (usize, usize);
 
-/// The data file currently loaded: path, contents (None if unreadable) and per-episode runs.
-type Loaded = (PathBuf, Option<FileData>, HashMap<i64, Run>);
-
 /// Outcome of reading one video file: its info, or (issue code, message).
 type VideoRead = Result<VideoInfo, (&'static str, String)>;
 
@@ -56,8 +53,8 @@ struct FileData {
     floats: BTreeMap<String, (Vec<f64>, usize)>,
 }
 
-fn read_file(path: &Path, ds: &Dataset) -> Result<FileData> {
-    let reader = ParquetRecordBatchReaderBuilder::try_new(File::open(path)?)?.build()?;
+fn parse_file(bytes: bytes::Bytes, ds: &Dataset) -> Result<FileData> {
+    let reader = ParquetRecordBatchReaderBuilder::try_new(bytes)?.build()?;
     let mut d = FileData::default();
     for batch in reader {
         let batch = batch?;
@@ -155,33 +152,101 @@ fn action_key(ds: &Dataset) -> Option<&str> {
     })
 }
 
-pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
-    use Severity::*;
-    let mut v = Vec::new();
-    let mut push = |s, ep, code, message: String| {
-        v.push(Issue {
-            severity: s,
-            episode: ep,
+/// An issue plus where it sorts in the report: episode position (None = dataset-wide) and check phase.
+type Tagged = (Option<usize>, u8, Issue);
+
+const PHASE_META: u8 = 0;
+const PHASE_VIDEO: u8 = 1;
+const PHASE_DATA: u8 = 2;
+
+fn tag(
+    pos: Option<usize>,
+    phase: u8,
+    severity: Severity,
+    episode: Option<usize>,
+    code: &'static str,
+    message: String,
+) -> Tagged {
+    (
+        pos,
+        phase,
+        Issue {
+            severity,
+            episode,
             code,
             message,
-        })
-    };
+        },
+    )
+}
 
+/// Run all checks on the global rayon-default number of threads.
+pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
+    validate_with(ds, 0)
+}
+
+/// Run all checks on `jobs` threads (0 = one per core). The report is identical for every `jobs`.
+pub fn validate_with(ds: &Dataset, jobs: usize) -> Result<Vec<Issue>> {
+    let pool = rayon::ThreadPoolBuilder::new()
+        .num_threads(jobs)
+        .build()
+        .context("building thread pool")?;
+    Ok(pool.install(|| run(ds)))
+}
+
+fn run(ds: &Dataset) -> Vec<Issue> {
     let action = action_key(ds);
+    let mut tagged = global_issues(ds, action);
+
+    let reads: HashMap<PathBuf, VideoRead> = unique_video_paths(ds)
+        .into_par_iter()
+        .map(|p| {
+            let r = read_video(&p);
+            (p, r)
+        })
+        .collect();
+    tagged.extend(metadata_and_video_issues(ds, &reads));
+
+    // One unit of work per run of episodes sharing a data file: a v2 file is one episode, a v3 file many.
+    let mut groups: Vec<(usize, &[Episode])> = Vec::new();
+    let mut start = 0;
+    for g in ds.episodes.chunk_by(|a, b| a.data_file == b.data_file) {
+        groups.push((start, g));
+        start += g.len();
+    }
+    let data: Vec<Vec<Tagged>> = groups
+        .into_par_iter()
+        .map(|(start, eps)| check_group(ds, action, start, eps))
+        .collect();
+    tagged.extend(data.into_iter().flatten());
+
+    // Stable sort: ties keep their within-phase order, so the report does not depend on thread scheduling.
+    tagged.sort_by_key(|(pos, phase, _)| (*pos, *phase));
+    // A data file missing from several separate runs of episodes is reported once.
+    let mut seen = std::collections::HashSet::new();
+    tagged.retain(|(_, _, i)| i.code != "data_missing" || seen.insert(i.message.clone()));
+    tagged.into_iter().map(|(_, _, i)| i).collect()
+}
+
+fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
+    use Severity::*;
+    let mut v = Vec::new();
     if !ds.info.features.contains_key("action") {
         let found = action.map_or(String::new(), |k| {
             format!("; running the action checks on `{k}`")
         });
-        push(
+        v.push(tag(
+            None,
+            PHASE_META,
             Warning,
             None,
             "nonstandard_features",
             format!("no `action` feature, which LeRobot policies expect{found}"),
-        );
+        ));
     }
-
     if ds.episodes.len() != ds.info.total_episodes {
-        push(
+        v.push(tag(
+            None,
+            PHASE_META,
             Error,
             None,
             "episode_count",
@@ -190,11 +255,13 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
                 ds.info.total_episodes,
                 ds.episodes.len()
             ),
-        );
+        ));
     }
     let sum: usize = ds.episodes.iter().map(|e| e.length).sum();
     if sum != ds.info.total_frames {
-        push(
+        v.push(tag(
+            None,
+            PHASE_META,
             Error,
             None,
             "frame_count",
@@ -202,29 +269,49 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
                 "info.json says {} frames, episode lengths sum to {sum}",
                 ds.info.total_frames
             ),
-        );
+        ));
     }
+    v
+}
 
-    let mut missing_reported: std::collections::HashSet<PathBuf> = Default::default();
-    let mut current: Option<Loaded> = None;
+fn read_video(path: &Path) -> VideoRead {
+    if !path.exists() {
+        return Err(("video_missing", format!("{}", path.display())));
+    }
+    read_video_info(path).map_err(|err| ("video_unreadable", format!("{err:#}")))
+}
+
+/// Each distinct video file once, in first-use order. A v3 file is shared by many episodes.
+fn unique_video_paths(ds: &Dataset) -> Vec<PathBuf> {
+    let mut seen = std::collections::HashSet::new();
+    ds.episodes
+        .iter()
+        .flat_map(|e| &e.videos)
+        .filter(|v| seen.insert(&v.path))
+        .map(|v| v.path.clone())
+        .collect()
+}
+
+fn metadata_and_video_issues(ds: &Dataset, reads: &HashMap<PathBuf, VideoRead>) -> Vec<Tagged> {
+    use Severity::*;
+    let mut out = Vec::new();
     let mut prev_to: Option<i64> = None;
-    let mut videos: HashMap<String, (PathBuf, VideoRead)> = HashMap::new();
-
+    let mut latest: HashMap<&str, &Path> = HashMap::new();
     for (pos, e) in ds.episodes.iter().enumerate() {
         let ep = Some(e.index);
+        let mut meta =
+            |s, code, message: String| out.push(tag(Some(pos), PHASE_META, s, ep, code, message));
         if e.index != pos {
-            push(
+            meta(
                 Error,
-                ep,
                 "episode_index",
                 format!("episode at position {pos} has index {}", e.index),
             );
         }
         if let Some((from, to)) = e.range {
             if to - from != e.length as i64 {
-                push(
+                meta(
                     Error,
-                    ep,
                     "range_length",
                     format!(
                         "dataset range [{from}, {to}) has {} frames, length says {}",
@@ -236,9 +323,8 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
             if let Some(p) = prev_to
                 && p != from
             {
-                push(
+                meta(
                     Error,
-                    ep,
                     "range_gap",
                     format!("starts at {from}, previous episode ended at {p}"),
                 );
@@ -246,28 +332,22 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
             prev_to = Some(to);
         }
         for v in &e.videos {
-            // A v3 video file is shared by many episodes, so read it once, and keep only the latest per camera.
-            let fresh = videos.get(&v.key).is_none_or(|(p, _)| p != &v.path);
-            if fresh {
-                let r: VideoRead = if !v.path.exists() {
-                    Err(("video_missing", format!("{}", v.path.display())))
-                } else {
-                    read_video_info(&v.path).map_err(|err| ("video_unreadable", format!("{err:#}")))
-                };
-                videos.insert(v.key.clone(), (v.path.clone(), r));
-            }
-            match &videos[&v.key].1 {
+            // Report per-file findings once per file, not once per episode that shares it.
+            let fresh = latest.insert(&v.key, &v.path) != Some(v.path.as_path());
+            let mut vid = |s, code, message: String| {
+                out.push(tag(Some(pos), PHASE_VIDEO, s, ep, code, message))
+            };
+            match &reads[&v.path] {
                 Err((code, msg)) => {
                     if fresh {
-                        push(Error, ep, code, msg.clone());
+                        vid(Error, code, msg.clone());
                     }
                 }
                 Ok(info) => {
                     let frame = 1.0 / ds.info.fps;
                     if fresh && (info.fps() / ds.info.fps - 1.0).abs() > VIDEO_FPS_TOL {
-                        push(
+                        vid(
                             Warning,
-                            ep,
                             "video_fps",
                             format!(
                                 "{} runs at {:.3} fps, info.json says {}",
@@ -278,9 +358,8 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
                         );
                     }
                     match v.span {
-                        None if info.sample_count != e.length as u64 => push(
+                        None if info.sample_count != e.length as u64 => vid(
                             Error,
-                            ep,
                             "video_frame_count",
                             format!(
                                 "{} has {} frames, episode has {}",
@@ -290,9 +369,8 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
                         Some((from, to)) => {
                             let expected = e.length as f64 * frame;
                             if ((to - from) - expected).abs() > frame {
-                                push(
+                                vid(
                                     Error,
-                                    ep,
                                     "video_span_length",
                                     format!(
                                         "{}: span [{from:.3}, {to:.3}) s is {:.3} s, {} frames are {expected:.3} s",
@@ -303,9 +381,8 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
                                 );
                             }
                             if from < -frame || to > info.duration_s() + frame {
-                                push(
+                                vid(
                                     Error,
-                                    ep,
                                     "video_span_beyond_end",
                                     format!(
                                         "{}: span [{from:.3}, {to:.3}) s outside video of {:.3} s",
@@ -320,157 +397,172 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
                 }
             }
         }
+    }
+    out
+}
 
-        if current.as_ref().is_none_or(|c| c.0 != e.data_file) {
-            let loaded = match File::open(&e.data_file) {
-                Err(_) => {
-                    if missing_reported.insert(e.data_file.clone()) {
-                        push(
-                            Error,
-                            ep,
-                            "data_missing",
-                            format!("{}", e.data_file.display()),
-                        );
-                    }
-                    None
-                }
-                Ok(_) => match read_file(&e.data_file, ds) {
-                    Ok(d) if d.ts.len() != d.rows => {
-                        push(
-                            Error,
-                            ep,
-                            "column_missing",
-                            format!(
-                                "{}: `timestamp` column missing or not a float",
-                                e.data_file.display()
-                            ),
-                        );
-                        None
-                    }
-                    Ok(d) => Some(d),
-                    Err(err) => {
-                        push(Error, ep, "data_unreadable", format!("{err:#}"));
-                        None
-                    }
-                },
-            };
-            let runs = loaded.as_ref().map(episode_runs).unwrap_or_default();
-            current = Some((e.data_file.clone(), loaded, runs));
-        }
-        let Some((_, Some(d), runs)) = &current else {
-            continue;
-        };
-
-        // This episode's rows: its run in a packed file, or the whole file if there is no episode_index column.
-        let (s, t) = match &d.ep {
-            Some(_) => match runs.get(&(e.index as i64)) {
-                Some(r) => *r,
-                None => {
-                    push(
-                        Error,
-                        ep,
-                        "episode_rows_missing",
-                        "no rows with this episode_index in its data file".into(),
-                    );
-                    continue;
-                }
-            },
-            None => (0, d.ts.len()),
-        };
-        if t - s != e.length {
-            push(
-                Error,
-                ep,
-                "length_mismatch",
-                format!("metadata says {} frames, data file has {}", e.length, t - s),
-            );
-        }
-        if let (Some((from, _)), Some(idx)) = (e.range, &d.idx)
-            && idx[s..t]
-                .iter()
-                .enumerate()
-                .any(|(i, x)| *x != from + i as i64)
-        {
-            push(
-                Error,
-                ep,
-                "index_mismatch",
-                format!("global `index` column does not run from {from}"),
-            );
-        }
-        let ts = &d.ts[s..t];
-        if let Some(i) = ts.windows(2).position(|w| w[1] <= w[0]) {
-            push(
-                Error,
-                ep,
-                "timestamp_not_monotonic",
-                format!("at frame {} ({} -> {})", i + 1, ts[i], ts[i + 1]),
-            );
-        }
-        if let Some((i, x)) = ts
-            .iter()
-            .enumerate()
-            .find(|(i, x)| (**x - *i as f64 / ds.info.fps).abs() > TIMESTAMP_TOL_S)
-        {
-            push(
-                Error,
-                ep,
-                "timestamp_drift",
+/// Load one data file and check every episode stored in it. `eps` all share `eps[0].data_file`.
+fn check_group(ds: &Dataset, action: Option<&str>, start: usize, eps: &[Episode]) -> Vec<Tagged> {
+    use Severity::Error;
+    let first = &eps[0];
+    let at_first = |code, message: String| {
+        vec![tag(
+            Some(start),
+            PHASE_DATA,
+            Error,
+            Some(first.index),
+            code,
+            message,
+        )]
+    };
+    // One read syscall for the whole file: parquet's own reader issues many small preads, which stopped
+    // scaling past ~3 threads (synthetic_v2 jobs10: 98 ms with File, 42 ms with this).
+    let Ok(bytes) = std::fs::read(&first.data_file) else {
+        return at_first("data_missing", format!("{}", first.data_file.display()));
+    };
+    let d = match parse_file(bytes.into(), ds) {
+        Ok(d) if d.ts.len() != d.rows => {
+            return at_first(
+                "column_missing",
                 format!(
-                    "frame {i}: t={x:.5}s, expected {:.5}s at {} fps",
-                    i as f64 / ds.info.fps,
-                    ds.info.fps
+                    "{}: `timestamp` column missing or not a float",
+                    first.data_file.display()
                 ),
             );
         }
-        if !d.fi.is_empty() && d.fi[s..t].iter().enumerate().any(|(i, f)| *f != i as i64) {
-            push(Error, ep, "frame_index", "frame_index is not 0..n-1".into());
-        }
-        for (k, (vals, w)) in &d.floats {
-            let Some(slice) = vals.get(s * w..t * w) else {
+        Ok(d) => d,
+        Err(err) => return at_first("data_unreadable", format!("{err:#}")),
+    };
+    let runs = episode_runs(&d);
+    eps.iter()
+        .enumerate()
+        .flat_map(|(i, e)| {
+            check_episode(ds, action, e, &d, &runs)
+                .into_iter()
+                .map(move |x| (Some(start + i), PHASE_DATA, x))
+        })
+        .collect()
+}
+
+fn check_episode(
+    ds: &Dataset,
+    action: Option<&str>,
+    e: &Episode,
+    d: &FileData,
+    runs: &HashMap<i64, Run>,
+) -> Vec<Issue> {
+    use Severity::*;
+    let mut v = Vec::new();
+    let mut push = |s, code, message: String| {
+        v.push(Issue {
+            severity: s,
+            episode: Some(e.index),
+            code,
+            message,
+        })
+    };
+
+    // This episode's rows: its run in a packed file, or the whole file if there is no episode_index column.
+    let (s, t) = match &d.ep {
+        Some(_) => match runs.get(&(e.index as i64)) {
+            Some(r) => *r,
+            None => {
                 push(
                     Error,
-                    ep,
-                    "column_shape",
+                    "episode_rows_missing",
+                    "no rows with this episode_index in its data file".into(),
+                );
+                return v;
+            }
+        },
+        None => (0, d.ts.len()),
+    };
+    if t - s != e.length {
+        push(
+            Error,
+            "length_mismatch",
+            format!("metadata says {} frames, data file has {}", e.length, t - s),
+        );
+    }
+    if let (Some((from, _)), Some(idx)) = (e.range, &d.idx)
+        && idx[s..t]
+            .iter()
+            .enumerate()
+            .any(|(i, x)| *x != from + i as i64)
+    {
+        push(
+            Error,
+            "index_mismatch",
+            format!("global `index` column does not run from {from}"),
+        );
+    }
+    let ts = &d.ts[s..t];
+    if let Some(i) = ts.windows(2).position(|w| w[1] <= w[0]) {
+        push(
+            Error,
+            "timestamp_not_monotonic",
+            format!("at frame {} ({} -> {})", i + 1, ts[i], ts[i + 1]),
+        );
+    }
+    if let Some((i, x)) = ts
+        .iter()
+        .enumerate()
+        .find(|(i, x)| (**x - *i as f64 / ds.info.fps).abs() > TIMESTAMP_TOL_S)
+    {
+        push(
+            Error,
+            "timestamp_drift",
+            format!(
+                "frame {i}: t={x:.5}s, expected {:.5}s at {} fps",
+                i as f64 / ds.info.fps,
+                ds.info.fps
+            ),
+        );
+    }
+    if !d.fi.is_empty() && d.fi[s..t].iter().enumerate().any(|(i, f)| *f != i as i64) {
+        push(Error, "frame_index", "frame_index is not 0..n-1".into());
+    }
+    for (k, (vals, w)) in &d.floats {
+        let Some(slice) = vals.get(s * w..t * w) else {
+            push(
+                Error,
+                "column_shape",
+                format!(
+                    "{k}: {} values do not fit {} rows of width {w}",
+                    vals.len(),
+                    d.rows
+                ),
+            );
+            continue;
+        };
+        let n = slice.iter().filter(|x| !x.is_finite()).count();
+        if n > 0 {
+            push(Error, "non_finite", format!("{k}: {n} NaN/Inf values"));
+        }
+        if Some(k.as_str()) == action && *w > 0 && slice.len() > *w {
+            let idle = idle_profile(slice, *w);
+            if idle.idle == idle.transitions {
+                push(
+                    Warning,
+                    "action_constant",
+                    "action is identical on every frame".into(),
+                );
+            } else if idle.idle as f64 > IDLE_FRACTION * idle.transitions as f64 {
+                push(
+                    Warning,
+                    "idle_episode",
                     format!(
-                        "{k}: {} values do not fit {} rows of width {w}",
-                        vals.len(),
-                        d.rows
+                        "{:.0}% of frames repeat the previous action; it first changes at frame {} and last at frame {} of {}",
+                        100.0 * idle.idle as f64 / idle.transitions as f64,
+                        idle.first_move.unwrap_or(0),
+                        idle.last_move.unwrap_or(0),
+                        idle.transitions + 1
                     ),
                 );
-                continue;
-            };
-            let n = slice.iter().filter(|x| !x.is_finite()).count();
-            if n > 0 {
-                push(Error, ep, "non_finite", format!("{k}: {n} NaN/Inf values"));
-            }
-            if Some(k.as_str()) == action && *w > 0 && slice.len() > *w {
-                let idle = idle_profile(slice, *w);
-                if idle.idle == idle.transitions {
-                    push(
-                        Warning,
-                        ep,
-                        "action_constant",
-                        "action is identical on every frame".into(),
-                    );
-                } else if idle.idle as f64 > IDLE_FRACTION * idle.transitions as f64 {
-                    push(
-                        Warning,
-                        ep,
-                        "idle_episode",
-                        format!(
-                            "{:.0}% of frames repeat the previous action; it first changes at frame {} and last at frame {} of {}",
-                            100.0 * idle.idle as f64 / idle.transitions as f64,
-                            idle.first_move.unwrap_or(0),
-                            idle.last_move.unwrap_or(0),
-                            idle.transitions + 1
-                        ),
-                    );
-                }
             }
         }
     }
-    Ok(v)
+    v
 }
 
 fn as_f64(c: &ArrayRef) -> Vec<f64> {

@@ -1,6 +1,7 @@
 //! Shared test helpers: a minimal mp4 writer. Only the boxes the parser reads are emitted, and no
 //! frame data, so fixtures are a few hundred bytes.
 #![allow(dead_code)]
+pub mod synth;
 
 fn bx(kind: &[u8; 4], payload: &[u8]) -> Vec<u8> {
     let mut v = ((payload.len() + 8) as u32).to_be_bytes().to_vec();

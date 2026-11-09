@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 use lecop::{
     dataset::Dataset,
-    validate::{Severity, validate},
+    validate::{Severity, validate_with},
 };
 use std::{path::PathBuf, process::ExitCode};
 
@@ -17,7 +17,12 @@ enum Cmd {
     /// Print dataset summary (metadata only, instant)
     Inspect { path: PathBuf },
     /// Check metadata, files, timestamps and values; exit 1 on errors
-    Validate { path: PathBuf },
+    Validate {
+        path: PathBuf,
+        /// Worker threads (default: one per core). The report is identical for any value.
+        #[arg(short, long, default_value_t = 0)]
+        jobs: usize,
+    },
 }
 
 fn main() -> Result<ExitCode> {
@@ -39,8 +44,8 @@ fn main() -> Result<ExitCode> {
             }
             Ok(ExitCode::SUCCESS)
         }
-        Cmd::Validate { path } => {
-            let issues = validate(&Dataset::open(path)?)?;
+        Cmd::Validate { path, jobs } => {
+            let issues = validate_with(&Dataset::open(path)?, jobs)?;
             for x in &issues {
                 let ep = x.episode.map_or("-".into(), |e| e.to_string());
                 println!(

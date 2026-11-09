@@ -5,7 +5,7 @@ use arrow_schema::{DataType, Field, Schema};
 use common::Mp4;
 use lecop::{
     dataset::Dataset,
-    validate::{Issue, Severity, validate},
+    validate::{Issue, Severity, validate, validate_with},
 };
 use parquet::arrow::ArrowWriter;
 use std::{fs, path::Path, sync::Arc};
@@ -603,4 +603,42 @@ fn does_not_mistake_a_sibling_feature_for_the_action() {
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["nonstandard_features"]);
     assert!(!v[0].message.contains("action_mask"), "{}", v[0].message);
+}
+
+#[test]
+fn report_is_identical_for_any_thread_count() {
+    use common::synth::{Synth, write_v2, write_v3};
+    let s = Synth {
+        episodes: 40,
+        frames: 50,
+        dim: 3,
+        fps: 30,
+        per_file: 7,
+    };
+    for v3 in [false, true] {
+        let dir = tempfile::tempdir().unwrap();
+        if v3 {
+            write_v3(dir.path(), &s);
+        } else {
+            write_v2(dir.path(), &s);
+        }
+        // Wrong fps and frame total: findings in every episode, every phase, in many files.
+        edit_info(dir.path(), |v| {
+            v["fps"] = 31.into();
+            v["total_frames"] = 1.into();
+        });
+        let ds = Dataset::open(dir.path()).unwrap();
+        let one = format!("{:?}", validate_with(&ds, 1).unwrap());
+        assert!(
+            one.contains("timestamp_drift"),
+            "fixture must have findings"
+        );
+        for jobs in [2, 8] {
+            assert_eq!(
+                one,
+                format!("{:?}", validate_with(&ds, jobs).unwrap()),
+                "v3={v3} jobs={jobs}"
+            );
+        }
+    }
 }
