@@ -75,6 +75,8 @@ something (no network, dataset not downloaded), say so rather than claim it work
 - `docs/agent/` holds everything meant for AI agents rather than people: the decision log
   (`decisions.md`, append, do not rewrite), working notes, conventions. Record a decision there when it
   changes scope, a format assumption, a dependency, or a public contract.
+- Work that is not being done now becomes a GitHub issue with a priority, see `issues.md`. Do not park it
+  only in a note.
 - Verified-versus-assumed matters: when a note rests on an assumption about the LeRobot format, say so, and
   update it once real data confirms or refutes it.
 - Everything else in `docs/` and the top-level `README.md` is for people who use the project: how to run it,
@@ -92,7 +94,8 @@ supported format version. A README that claims less or more than the code does i
 
 ## Git
 
-- Branch from `main` for feature work. The repository is public: ask before pushing or publishing
+- Branch from `main` for feature work, naming the branch after the issue when there is one
+  (`feat/12-short-name`, see `issues.md`). The repository is public: ask before pushing or publishing
   (crates.io, releases).
 - Commit messages: short imperative summary, prefixed with the area where it helps
   (`validate: ...`, `dataset: ...`, `docs: ...`), body explains *why* if non-obvious.
