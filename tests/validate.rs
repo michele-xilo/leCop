@@ -108,6 +108,7 @@ fn write_ds(root: &Path, eps: &[Ep], claimed_total_frames: Option<usize>) {
         }
     });
     fs::write(root.join("meta/info.json"), info.to_string()).unwrap();
+    common::write_stats(root);
     let jsonl: String = eps
         .iter()
         .enumerate()
@@ -274,6 +275,7 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
         }
     });
     fs::write(root.join("meta/info.json"), info.to_string()).unwrap();
+    common::write_stats(root);
 
     let (mut from, mut cols): (i64, [Vec<i64>; 4]) = (0, Default::default()); // ep, len, from, to
     let mut file_idx = Vec::new();
@@ -563,6 +565,7 @@ fn edit_info(root: &Path, f: impl FnOnce(&mut serde_json::Value)) {
     let mut v: serde_json::Value = serde_json::from_slice(&fs::read(&p).unwrap()).unwrap();
     f(&mut v);
     fs::write(p, v.to_string()).unwrap();
+    common::write_stats(root);
 }
 
 /// Rename a feature in info.json and its column in every data file, as a real dataset would have it.
@@ -988,4 +991,46 @@ fn v3_reads_the_task_count_from_tasks_parquet() {
     edit_info(dir.path(), |v| v["total_tasks"] = 1.into());
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["tasks_missing"], "{v:?}");
+}
+
+fn stats_path(root: &Path) -> std::path::PathBuf {
+    root.join("meta/episodes_stats.jsonl")
+}
+
+#[test]
+fn warns_when_the_statistics_file_is_missing() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    fs::remove_file(stats_path(dir.path())).unwrap();
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["stats_missing"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Warning);
+}
+
+#[test]
+fn warns_when_a_feature_has_no_statistics() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    fs::write(
+        stats_path(dir.path()),
+        "{\"episode_index\":0,\"stats\":{\"action\":{}}}\n",
+    )
+    .unwrap();
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["stats_features"], "{v:?}");
+    assert!(v[0].message.contains("timestamp"), "{}", v[0].message);
+    assert!(!v[0].message.contains("action"), "{}", v[0].message);
+}
+
+#[test]
+fn v3_reads_stats_json() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds_v3(dir.path(), &[good(20)]);
+    let p = dir.path().join("meta/stats.json");
+    fs::write(&p, r#"{"action": {}}"#).unwrap();
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["stats_features"], "{v:?}");
+    fs::write(&p, "not json").unwrap();
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["stats_missing"], "{v:?}");
 }

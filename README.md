@@ -108,7 +108,8 @@ All checks read metadata and parquet only: no video frame is decoded.
 | Camera features are video-backed, not images | Not yet | |
 | `total_tasks` matches the task metadata (`tasks.jsonl` lines, `tasks.parquet` rows) | Covered; the file missing is an error, a different count a warning | `tasks_missing`, `tasks_count` |
 | Every `task_index` is in the task metadata | Not yet | |
-| `meta/stats.json` exists and matches the data | Not yet | |
+| The statistics file (`stats.json`, or `episodes_stats.jsonl` for v2.1) exists and has an entry for every non-string feature | Covered (warnings; v2.1 reads the first episode's entry only) | `stats_missing`, `stats_features` |
+| The statistics match the data | Not yet | |
 
 Beyond what LeRobot checks: NaN or Inf in float features (`non_finite`), an `action` that never changes
 (`action_constant`), and episodes where more than half the frames repeat the previous action (`idle_episode`, a
@@ -128,16 +129,16 @@ installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **15 ms** | 848 ms | n/a | 57x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 633 ms | n/a | 70x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 574 ms | n/a | 72x |
-| `v3_pusht` (v3.0) | 🏆 **9 ms** | 765 ms | 17,410 ms | 85x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **8 ms** | 577 ms | 2,999 ms | 72x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **9 ms** | 553 ms | 3,483 ms | 61x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **28 ms** | 589 ms | 759 ms | 21x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **15 ms** | 599 ms | 8,464 ms | 40x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 523 ms | 3,051 ms | 40x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 586 ms | 8,168 ms | 42x |
+| `pusht` (v2.1) | 🏆 **16 ms** | 855 ms | n/a | 53x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 576 ms | n/a | 64x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **7 ms** | 548 ms | n/a | 78x |
+| `v3_pusht` (v3.0) | 🏆 **9 ms** | 731 ms | 17,449 ms | 81x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **9 ms** | 578 ms | 2,925 ms | 64x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **8 ms** | 544 ms | 3,435 ms | 68x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **28 ms** | 577 ms | 738 ms | 21x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **14 ms** | 589 ms | 8,133 ms | 42x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 498 ms | 2,984 ms | 42x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 580 ms | 8,088 ms | 41x |
 
 The tools check different things (see the coverage table below), so this compares speed only.
 
@@ -171,7 +172,7 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Extreme outliers, distribution shift across episodes | ⚠️ outliers only | ✅ | ❌ |
 | Duplicate episodes | ✅ exact action sequences | ✅ near-duplicates | ✅ exact |
 | Episode length: empty, too short, outliers | ✅ | ✅ | ❌ |
-| `stats.json` present and consistent with the data | ❌ | ✅ | ❌ |
+| Statistics file present and covering every feature | ✅ | ✅ | ❌ |
 | Video file exists, readable mp4, frame rate | ✅ | ✅ | ✅ |
 | Video frame count against the episode (container tables) | ✅ | ✅ | ❌ |
 | Video resolution against `info.json` | ✅ | ✅ | ❌ |
