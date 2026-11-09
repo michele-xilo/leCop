@@ -24,6 +24,21 @@ struct Ep {
     video_delta: i32,
     video_fps: u32,
     video_garbage: bool,
+    /// v3: this episode's frames are spaced at half the rate in the shared video (dropped frames).
+    video_sparse: bool,
+}
+
+/// One video per data file: constant rate, except episodes marked `video_sparse` whose frames are twice as far apart.
+fn v3_video_bytes(group: &[Ep]) -> Vec<u8> {
+    if group[0].video_garbage {
+        return video_bytes(0, &group[0]);
+    }
+    let mut m = Mp4::constant_fps(0, group[0].video_fps);
+    m.stts = group
+        .iter()
+        .map(|e| (e.len as u32, if e.video_sparse { 2048 } else { 1024 }))
+        .collect();
+    m.bytes()
 }
 
 fn video_bytes(frames: i64, e: &Ep) -> Vec<u8> {
@@ -45,6 +60,7 @@ fn good(len: usize) -> Ep {
         video_delta: 0,
         video_fps: FPS as u32,
         video_garbage: false,
+        video_sparse: false,
     }
 }
 
@@ -251,7 +267,7 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
         if group[0].with_video {
             fs::write(
                 root.join(format!("videos/{vk}/chunk-000/file-{g:03}.mp4")),
-                video_bytes(group.iter().map(|e| e.len as i64).sum(), &group[0]),
+                v3_video_bytes(group),
             )
             .unwrap();
         }
@@ -435,6 +451,25 @@ fn v3_flags_span_not_matching_length_and_beyond_end() {
     let c = codes(&run_v3(vec![good(10), e, good(10)]));
     assert!(c.contains(&"video_span_length"), "{c:?}");
     assert!(c.contains(&"video_span_beyond_end"), "{c:?}"); // episode 1 is last in its file
+}
+
+#[test]
+fn v3_flags_episodes_whose_span_holds_the_wrong_number_of_frames() {
+    let mut sparse = good(10);
+    sparse.video_sparse = true; // its frames are 0.2 s apart, so the 1 s span holds 5 of them
+    let v = run_v3(vec![good(10), sparse]); // both in one shared video
+    let bad: Vec<_> = v
+        .iter()
+        .filter(|i| i.code == "video_frame_count")
+        .map(|i| i.episode)
+        .collect();
+    assert_eq!(bad, [Some(1)], "{v:?}");
+}
+
+#[test]
+fn v3_healthy_packed_dataset_has_no_frame_count_findings() {
+    let v = run_v3(vec![good(10), good(12), good(7)]);
+    assert!(v.is_empty(), "{v:?}");
 }
 
 #[test]

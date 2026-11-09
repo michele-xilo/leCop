@@ -34,7 +34,7 @@ any error in every format.
 
 - episode and frame counts in `info.json` vs the episode metadata (`episodes.jsonl` in v2, `meta/episodes/` in v3), and episode index continuity
 - every data parquet and video file exists
-- **video, without decoding a frame**: each mp4's frame count and duration are read from its container metadata. v2: frame count equals the episode length. v3: the episode's `[from, to)` span inside the shared video matches its length and lies within the video. A video whose frame rate differs from `info.json` is a warning, and a truncated or corrupt file is reported as unreadable
+- **video, without decoding a frame**: each mp4's frame count and duration are read from its container metadata. v2: frame count equals the episode length. v3: the episode's `[from, to)` span inside the shared video matches its length, lies within the video, and holds exactly as many frames as the episode has (dropped or duplicated frames show up as `video_frame_count`). A video whose frame rate differs from `info.json` is a warning, and a truncated or corrupt file is reported as unreadable
 - parquet row count matches `episodes.jsonl`
 - timestamps are monotonic and match `frame_index / fps` (1e-4 s tolerance)
 - `frame_index` runs `0..n-1`
@@ -71,7 +71,7 @@ The CLI wall time on the real datasets (6-8 ms for the three above, 27 ms for `c
 
 ## Not yet supported
 
-- Decoding frames (frozen or black frames, A/V drift inside a video), and v3 per-episode frame counts inside a shared video
+- Decoding frames (frozen or black frames, A/V drift inside a video)
 - Remote (Hub) datasets
 
 See [PLAN.md](PLAN.md) for the roadmap.

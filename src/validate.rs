@@ -369,6 +369,9 @@ fn metadata_and_video_issues(ds: &Dataset, reads: &HashMap<PathBuf, VideoRead>) 
                         ),
                         Some((from, to)) => {
                             let expected = e.length as f64 * frame;
+                            let span_ok = ((to - from) - expected).abs() <= frame
+                                && from >= -frame
+                                && to <= info.duration_s() + frame;
                             if ((to - from) - expected).abs() > frame {
                                 vid(
                                     Error,
@@ -389,6 +392,18 @@ fn metadata_and_video_issues(ds: &Dataset, reads: &HashMap<PathBuf, VideoRead>) 
                                         "{}: span [{from:.3}, {to:.3}) s outside video of {:.3} s",
                                         v.key,
                                         info.duration_s()
+                                    ),
+                                );
+                            }
+                            // A span with the right length can still hold the wrong frames (dropped or duplicated).
+                            let n = info.samples_in(from, to);
+                            if span_ok && n != e.length as u64 {
+                                vid(
+                                    Error,
+                                    "video_frame_count",
+                                    format!(
+                                        "{}: span [{from:.3}, {to:.3}) s holds {n} frames, episode has {}",
+                                        v.key, e.length
                                     ),
                                 );
                             }

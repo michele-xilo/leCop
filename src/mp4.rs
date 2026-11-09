@@ -13,11 +13,13 @@ use std::{
 /// Real `moov` boxes are well under a few MB even for hour-long videos; anything bigger is corrupt.
 const MAX_MOOV_BYTES: u64 = 512 << 20;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct VideoInfo {
     pub timescale: u32,
     pub sample_count: u64,
     pub duration_ticks: u64,
+    /// `stts` runs: (sample count, ticks per sample). One run for a constant frame rate.
+    runs: Vec<(u64, u64)>,
 }
 
 impl VideoInfo {
@@ -27,6 +29,27 @@ impl VideoInfo {
 
     pub fn fps(&self) -> f64 {
         self.sample_count as f64 / self.duration_s()
+    }
+
+    /// Samples whose decode time lies in `[from_s, to_s)`, with the span shifted back by half a frame so a
+    /// frame stamped a hair after the boundary still belongs to its episode.
+    // ponytail: decode time, not presentation time; B-frame reordering (ctts) moves a frame by at most a
+    // few ticks but could in theory move one across a boundary. Read ctts if real data shows it.
+    pub fn samples_in(&self, from_s: f64, to_s: f64) -> u64 {
+        let ts = self.timescale as f64;
+        let (mut start, mut n) = (0u64, 0u64);
+        for &(count, delta) in &self.runs {
+            let half = delta as f64 / 2.0;
+            let (lo, hi) = (from_s * ts - half, to_s * ts - half);
+            // sample i has time start + i*delta; count i in [0, count) with lo <= time < hi
+            let first = (((lo - start as f64) / delta as f64).ceil()).max(0.0);
+            let end = (((hi - start as f64) / delta as f64).ceil()).clamp(0.0, count as f64);
+            if end > first {
+                n += (end - first) as u64;
+            }
+            start += count * delta;
+        }
+        n
     }
 }
 
@@ -145,6 +168,7 @@ fn parse_moov(moov: &[u8]) -> Result<VideoInfo> {
 
         let stts = need(stbl, b"stts")?;
         let (mut stts_samples, mut ticks) = (0u64, 0u64);
+        let mut runs = Vec::new();
         for i in 0..be32(stts, 4)? as usize {
             let (count, delta) = (
                 be32(stts, 8 + i * 8)? as u64,
@@ -152,6 +176,9 @@ fn parse_moov(moov: &[u8]) -> Result<VideoInfo> {
             );
             stts_samples += count;
             ticks += count * delta;
+            if delta > 0 {
+                runs.push((count, delta));
+            }
         }
         let sample_count = be32(need(stbl, b"stsz")?, 8)? as u64;
         if sample_count != stts_samples {
@@ -163,6 +190,7 @@ fn parse_moov(moov: &[u8]) -> Result<VideoInfo> {
             timescale,
             sample_count,
             duration_ticks: ticks,
+            runs,
         });
     }
     bail!("no video track in moov")

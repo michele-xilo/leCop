@@ -82,3 +82,23 @@ fn errors_instead_of_overflowing_on_a_huge_64_bit_box_size() {
     b.extend(u64::MAX.to_be_bytes());
     assert!(read(b).is_err());
 }
+
+#[test]
+fn counts_samples_whose_time_falls_inside_a_span() {
+    let i = read(Mp4::constant_fps(30, 10).bytes()).unwrap();
+    assert_eq!(i.samples_in(0.0, 1.0), 10);
+    assert_eq!(i.samples_in(1.0, 2.0), 10);
+    assert_eq!(i.samples_in(2.0, 5.0), 10); // clipped at the end of the video
+    assert_eq!(i.samples_in(5.0, 6.0), 0);
+}
+
+#[test]
+fn counts_samples_across_runs_with_different_frame_durations() {
+    // 10 frames at 10 fps, then 10 frames at 5 fps (dropped frames): the second run covers 1 s to 3 s.
+    let mut m = Mp4::constant_fps(0, 10);
+    m.stts = vec![(10, 1024), (10, 2048)];
+    let i = read(m.bytes()).unwrap();
+    assert_eq!(i.samples_in(0.0, 1.0), 10);
+    assert_eq!(i.samples_in(1.0, 2.0), 5);
+    assert_eq!(i.samples_in(1.0, 3.0), 10);
+}
