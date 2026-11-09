@@ -1,0 +1,25 @@
+# name	repo	revision (commit)	expected errors	expected warnings
+# Counts are what lecop reports today; change them in the same commit as a check that moves them.
+pusht	lerobot/pusht	6e1d9c95aaf8abb19342e723935b6af7c54b5903	0	0
+aloha_sim_transfer_cube_human	lerobot/aloha_sim_transfer_cube_human	8f81f044cbc65d9c1efbe5a302e8f9f4c16a86ed	0	0
+aloha_sim_insertion_human	lerobot/aloha_sim_insertion_human	a7de9cf6a59d1ad641d4c8e17e4f586abfe70580	0	0
+svla_so101_pickplace	lerobot/svla_so101_pickplace	e18e43de5e31997effab6abbe3810ff0e2e637d5	0	0
+xarm_lift_medium	lerobot/xarm_lift_medium	89d5752c021e580d26d90ceec7e8192ef01e7c30	0	0
+v3_pusht	lerobot/pusht	7628202a2180972f291ba1bc6723834921e72c19	0	0
+v3_aloha_sim_transfer_cube_human	lerobot/aloha_sim_transfer_cube_human	6a43d500f101255823a9d2b9dc244eeb01a2cd31	0	0
+v3_aloha_sim_insertion_human	lerobot/aloha_sim_insertion_human	cc571a3c661df81b566dbfde3d5c1e85fcdf7884	0	0
+c_so101_block_box_50episodes_final_20261107_190045	kei111111/so101_block_box_50episodes_final_20261107_190045	40f7429398dcb3e02471df8c882cb68a75656f45	0	0
+c_so101_my_task_50ep_20261107_20261107_191948	ei1234/so101_my_task_50ep_20261107_20261107_191948	73b42cc861cce4a43a2b313c192ccb012d842d06	0	5
+c_black-stressball-tutorial_20261107_222510	SergeAlhalbi/black-stressball-tutorial_20261107_222510	de761c88e6021dd36c281047c914169a150a3f12	0	0
+c_so101_pill_sorting_medoc	TomasAnderegg/so101_pill_sorting_medoc	5fa2a224f01339fe8fdde8a076eda75e70ad2d06	0	0
+c_piperx-two-color-block-sorting	tianxiwei/piperx-two-color-block-sorting	7b210f57c5d843162fe3ac5bfbb40f63a7db88c5	0	1
+c_careattrs_mug2v2	Aaronng456/careattrs_mug2v2	7ed6203cdb625a01e0a045651da4a48edda95683	0	0
+c_d3il_avoiding_vision_224	shivakanthsujit/d3il_avoiding_vision_224	e7c3f92f5e816e006e643f170ffc88dda2f58a8d	0	0
+# Candidates not downloaded yet (screened on the Hub with meta/info.json + meta/episodes.jsonl only):
+# jchandru08/so100_press_red_button @ b8544ee7cb9075efbf5f4d2c49f7a6aa93fe0e09, v2.1, 1.34 GB: info.json says
+#   19028 frames, episodes.jsonl sums to 17156 over 29 episodes. Expect a frame_count error: a true positive.
+# v2.0 (older layout, untested by lecop, none under 377 MB): saaduddinM/rbo_oxe_base_language_table_lerobot @
+#   65191b1538a6c2896376c4cc999cd7af0c469692 (377 MB), IPEC-COMMUNITY/kuka_lerobot @
+#   e17b0de50bf8711222d957aac2b21245ef33af75 (440 MB).
+# Screen of 598 LeRobot-tagged Hub datasets (2026-11-09): 349 v3.0, 149 v2.1, 16 v2.0; 79 had no readable
+#   meta/info.json at main (gated or other layout); of the 149 v2.1 only the one above had a metadata mismatch.

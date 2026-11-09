@@ -8,7 +8,7 @@ top-level README.md and PLAN.md instead.
 
 ## Working conventions
 - Build/test: `cargo test`. Smoke tests use synthetic fixtures in `tests/validate.rs`.
-- Real datasets live in `datasets/` (gitignored, never commit). Fetch with
-  `uvx --from huggingface_hub hf download <repo> --repo-type dataset --revision v2.1 --local-dir datasets/<name>`.
+- Real datasets live in `datasets/` (gitignored, never commit). `scripts/datasets.tsv` pins repo, commit and
+  expected counts; `scripts/fetch-datasets.sh --yes` downloads (ask the user first: state name and size).
 - Bug fixes: write the failing test first (fixture reproducing the real-data case), then fix.
 - Keep scope per PLAN.md. Ask before pushing; the repo is public.
