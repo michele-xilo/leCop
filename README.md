@@ -31,15 +31,48 @@ cargo install --path .
 
 ```bash
 lecop inspect  path/to/dataset   # summary from metadata only
-lecop validate path/to/dataset   # exits 1 if any error is found
-lecop validate path/to/dataset -j 4   # worker threads (default: one per core)
+lecop validate                   # scan the current directory for datasets
+lecop validate path/to/dataset   # one dataset, or a directory that contains many
 ```
 
-The report and exit code are identical for every `-j`.
+`validate` takes any number of paths. A path that holds `meta/info.json` is a dataset; any other directory is
+searched for datasets (`.gitignore` is respected). Datasets are checked in parallel and reported in sorted order.
 
-`--format json` prints one object (`errors`, `warnings`, `issues[]` with `severity`, `episode`, `code`, `message`) for
-scripts; `--format github` prints `::error`/`::warning` annotations for GitHub Actions. The exit code is 1 on
-any error in every format.
+```
+$ lecop validate datasets
+datasets/c_so100_press_red_button: ERROR   ep 7      video_frame_count        observation.images.left has 591 frames, episode has 588
+datasets/c_so101_my_task_50ep: WARNING ep 18     idle_episode             64% of frames repeat the previous action; ...
+Found 22 errors and 6 warnings in 3 datasets.
+```
+
+A clean run prints `All checks passed!`. Exit code: 0 clean (warnings do not fail), 1 if any error, 2 if a dataset,
+the config or an argument cannot be read.
+
+| Option | |
+|---|---|
+| `--format text\|full\|json\|github` (alias `--output-format`) | `full` adds the location and a one-line explanation per finding; `json` is one object (`errors`, `warnings`, `ignored`, `issues[]`); `github` prints `::error`/`::warning` annotations |
+| `--statistics` | findings per issue code |
+| `-q`, `--quiet` | summary only, nothing on success |
+| `--no-color` | colour is also off when piped or when `NO_COLOR` is set |
+| `--ignore a,b`, `--select a,b` | drop, or keep only, these issue codes |
+| `--config FILE`, `--isolated` | use this config, or none |
+| `-j N` | worker threads (default: one per core); output is identical for every `-j` |
+
+### Config file
+
+`lecop.toml` in the scanned directory or any parent (nearest wins):
+
+```toml
+ignore = ["idle_episode"]          # drop these codes
+# select = ["frame_count"]         # or keep only these
+# error = ["video_fps"]            # promote a warning to an error
+# warn = ["frame_count"]           # demote an error to a warning
+
+[per-dataset."datasets/messy"]     # path relative to this file
+ignore = ["video_frame_count"]
+```
+
+Unknown issue codes are an error. Ignored findings are counted: `Ignored by config: idle_episode (5)`.
 
 `validate` supports LeRobot **v2.x** (one file per episode) and **v3.x** (episodes packed into shared files).
 
@@ -74,12 +107,6 @@ All checks read metadata and parquet only: no video frame is decoded.
 Beyond what LeRobot checks: NaN or Inf in float features (`non_finite`), an `action` that never changes
 (`action_constant`), and episodes where more than half the frames repeat the previous action (`idle_episode`, a
 warning that says where the robot first and last moves). Malformed files are reported, not crashed on.
-
-Each finding is one line (format shown for illustration):
-
-```
-ERROR   ep 3      timestamp_drift          frame 10: t=1.05000s, expected 1.00000s at 10 fps
-```
 
 ## Speed
 
