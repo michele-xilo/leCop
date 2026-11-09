@@ -19,7 +19,7 @@ c_d3il_avoiding_vision_224	shivakanthsujit/d3il_avoiding_vision_224	e7c3f92f5e81
 # episode_rows_missing (episodes 14-28 have no rows in their data file). `hf download` fails the size check
 # on 7 videos because the Hub serves bytes that differ from the listed size (top/episode_000001.mp4 and
 # episode_000007.mp4 are byte-identical), so fetch with plain curl; the script does not handle this yet.
-c_so100_press_red_button	jchandru08/so100_press_red_button	b8544ee7cb9075efbf5f4d2c49f7a6aa93fe0e09	22	0
+c_so100_press_red_button	jchandru08/so100_press_red_button	b8544ee7cb9075efbf5f4d2c49f7a6aa93fe0e09	22	2
 # Candidates not downloaded yet (screened on the Hub with meta/info.json + meta/episodes.jsonl only):
 # v2.0 (older layout, untested by lecop, none under 377 MB): saaduddinM/rbo_oxe_base_language_table_lerobot @
 #   65191b1538a6c2896376c4cc999cd7af0c469692 (377 MB), IPEC-COMMUNITY/kuka_lerobot @

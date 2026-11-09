@@ -110,7 +110,10 @@ Beyond what LeRobot checks: NaN or Inf in float features (`non_finite`), an `act
 warning that says where the robot first and last moves), empty, shorter-than-a-second and statistically long
 or short episodes (`episode_empty`, `episode_short`, `episode_length_outlier`: more than 3 standard deviations from the
 mean, judged from 10 episodes up) and an episode whose action sequence repeats an earlier one (`duplicate_episode`).
-These last four are warnings except `episode_empty`. Malformed files are reported, not crashed on.
+These last four are warnings except `episode_empty`. In the action and the `observation.*` vectors it also warns on a
+dimension that never changes (`constant_dimension`), one that sits on its minimum or maximum in over 99% of the frames
+(`clipped_dimension`), and values more than 10 standard deviations from the mean of their dimension
+(`outlier_values`), judged from 100 frames up. Malformed files are reported, not crashed on.
 
 ## Speed
 
@@ -158,9 +161,9 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Numeric limits per feature | ❌ | ❌ | 🏆 **⚠️ needs config** |
 | Implausible jumps between frames | ❌ | 🏆 **✅** | ⚠️ needs config |
 | Constant or frozen action, idle episodes | 🏆 **✅** | 🏆 **✅** | ❌ |
-| Stuck or constant dimensions, zero variance | ❌ | 🏆 **✅** | ❌ |
-| Values clipped at their min or max | ❌ | 🏆 **✅** | ❌ |
-| Extreme outliers, distribution shift across episodes | ❌ | 🏆 **✅** | ❌ |
+| Stuck or constant dimensions, zero variance | 🏆 **✅** | 🏆 **✅** | ❌ |
+| Values clipped at their min or max | 🏆 **✅ over 99% of frames** | 🏆 **✅** | ❌ |
+| Extreme outliers, distribution shift across episodes | ⚠️ outliers only | 🏆 **✅** | ❌ |
 | Duplicate episodes | ✅ exact action sequences | ✅ near-duplicates | ✅ exact |
 | Episode length: empty, too short, outliers | 🏆 **✅** | 🏆 **✅** | ❌ |
 | `stats.json` present and consistent with the data | ❌ | 🏆 **✅** | ❌ |

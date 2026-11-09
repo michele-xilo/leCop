@@ -827,3 +827,56 @@ fn does_not_flag_same_length_episodes_with_different_actions() {
     let v = run(vec![first, other], None);
     assert!(!codes(&v).contains(&"duplicate_episode"), "{v:?}");
 }
+
+// ---------------------------------------------------------------- numeric anomalies
+
+fn action_column_run(f: impl Fn(usize, usize) -> f32) -> Vec<Issue> {
+    let mut e = good(150);
+    e.action = (0..150)
+        .flat_map(|row| (0..DIM as usize).map(move |d| (row, d)))
+        .map(|(row, d)| f(row, d))
+        .collect();
+    run(vec![e], None)
+}
+
+#[test]
+fn a_varying_action_has_no_numeric_findings() {
+    let v = action_column_run(|row, d| row as f32 * 0.01 + d as f32);
+    assert!(v.is_empty(), "{v:?}");
+}
+
+#[test]
+fn warns_on_a_dimension_that_never_changes() {
+    let v = action_column_run(|row, d| if d == 0 { row as f32 * 0.01 } else { 0.5 });
+    let f: Vec<_> = v
+        .iter()
+        .filter(|i| i.code == "constant_dimension")
+        .collect();
+    assert_eq!(f.len(), 1, "{v:?}");
+    assert_eq!(f[0].severity, Severity::Warning);
+    assert!(
+        f[0].message.contains("action") && f[0].message.contains('1'),
+        "{}",
+        f[0].message
+    );
+}
+
+#[test]
+fn warns_on_a_dimension_stuck_at_its_maximum() {
+    let v = action_column_run(|row, d| match (d, row) {
+        (0, _) => row as f32 * 0.01,
+        (_, 3) => 4.0,
+        _ => 5.0,
+    });
+    assert!(codes(&v).contains(&"clipped_dimension"), "{v:?}");
+}
+
+#[test]
+fn warns_on_a_value_far_from_the_rest() {
+    let v = action_column_run(|row, d| match (d, row) {
+        (1, 70) => 1000.0,
+        _ => row as f32 * 0.01 + d as f32,
+    });
+    let f: Vec<_> = v.iter().filter(|i| i.code == "outlier_values").collect();
+    assert_eq!(f.len(), 1, "{v:?}");
+}
