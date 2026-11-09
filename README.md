@@ -111,15 +111,22 @@ All checks read metadata and parquet only: no video frame is decoded.
 | The statistics file (`stats.json`, or `episodes_stats.jsonl` for v2.1) exists and has an entry for every non-string feature | Covered (warnings; v2.1 reads the first episode's entry only) | `stats_missing`, `stats_features` |
 | The statistics match the data | Not yet | |
 
-Beyond what LeRobot checks: NaN or Inf in float features (`non_finite`), an `action` that never changes
-(`action_constant`), and episodes where more than half the frames repeat the previous action (`idle_episode`, a
-warning that says where the robot first and last moves), empty, shorter-than-a-second and statistically long
-or short episodes (`episode_empty`, `episode_short`, `episode_length_outlier`: more than 3 standard deviations from the
-mean, judged from 10 episodes up) and an episode whose action sequence repeats an earlier one (`duplicate_episode`).
-These last four are warnings except `episode_empty`. In the action and the `observation.*` vectors it also warns on a
-dimension that never changes (`constant_dimension`), one that sits on its minimum or maximum in over 99% of the frames
-(`clipped_dimension`), and values more than 10 standard deviations from the mean of their dimension
-(`outlier_values`), judged from 100 frames up. Malformed files are reported, not crashed on.
+Beyond what LeRobot checks:
+
+| What leCop checks | Severity | Issue code |
+|---|---|---|
+| NaN or Inf in float features | error | `non_finite` |
+| `action` never changes | warning | `action_constant` |
+| More than half the frames repeat the previous action (says where the robot first and last moves) | warning | `idle_episode` |
+| Empty episode | error | `episode_empty` |
+| Episode shorter than a second | warning | `episode_short` |
+| Episode length more than 3 standard deviations from the mean (judged from 10 episodes up) | warning | `episode_length_outlier` |
+| Episode whose action sequence repeats an earlier one | warning | `duplicate_episode` |
+| Dimension of `action` or `observation.*` that never changes | warning | `constant_dimension` |
+| Dimension on its minimum or maximum in over 99% of frames | warning | `clipped_dimension` |
+| Values more than 10 standard deviations from the mean of their dimension (judged from 100 frames up) | warning | `outlier_values` |
+
+Malformed files are reported, not crashed on.
 
 ## Speed
 
