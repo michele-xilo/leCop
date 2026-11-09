@@ -43,17 +43,37 @@ any error in every format.
 
 `validate` supports LeRobot **v2.x** (one file per episode) and **v3.x** (episodes packed into shared files). It checks:
 
-- episode and frame counts in `info.json` vs the episode metadata (`episodes.jsonl` in v2, `meta/episodes/` in v3), and episode index continuity
-- every data parquet and video file exists
-- **video, without decoding a frame**: each mp4's frame count and duration are read from its container metadata. v2: frame count equals the episode length. v3: the episode's `[from, to)` span inside the shared video matches its length, lies within the video, and holds exactly as many frames as the episode has (dropped or duplicated frames show up as `video_frame_count`). A video whose frame rate differs from `info.json` is a warning, and a truncated or corrupt file is reported as unreadable
-- parquet row count matches `episodes.jsonl`
-- timestamps are monotonic and match `frame_index / fps` (1e-4 s tolerance)
-- `frame_index` runs `0..n-1`
-- no NaN/Inf in float features
-- warns if `action` is identical on every frame, or if more than half of an episode's frames repeat the previous action (`idle_episode`: dead time, with the frames where it first and last changes)
-- warns if there is no `action` feature (policies expect that name); action checks then use `actions` if present
-- malformed data is reported, not crashed on: a missing or non-float `timestamp` column, ragged or wrongly shaped feature columns, `fps` that is not a positive number
-- v3 only: each episode's frame range matches its length, ranges are contiguous, and the global `index` column agrees
+LeRobot does not publish a list of dataset checks. The table is derived from its
+[v3 format docs](https://github.com/huggingface/lerobot/blob/main/docs/source/lerobot-dataset-v3.mdx) and from what its
+[loader and writer](https://github.com/huggingface/lerobot/tree/main/src/lerobot/datasets) enforce or assume.
+All checks read metadata and parquet only: no video frame is decoded.
+
+| What LeRobot expects | Status | Issue code |
+|---|---|---|
+| `meta/info.json` exists, parses, has a supported `codebase_version` | Covered (v2.x, v3.x; other versions are rejected, v2.0 is untested) | error on open |
+| `fps` is a positive number | Covered | error on open |
+| `total_episodes` matches the episode metadata | Covered | `episode_count` |
+| `total_frames` matches the sum of episode lengths | Covered | `frame_count` |
+| Episode indices run `0..n-1` | Covered | `episode_index` |
+| Episode frame ranges match their length, are contiguous, and the global `index` column agrees (v3) | Covered | `range_length`, `range_gap`, `index_mismatch` |
+| Every data parquet exists and is readable (an unfinalized or truncated file is not) | Covered | `data_missing`, `data_unreadable` |
+| Each episode has the rows its metadata says | Covered | `length_mismatch`, `episode_rows_missing` |
+| `timestamp` equals `frame_index / fps` within 1e-4 s, and increases | Covered | `timestamp_drift`, `timestamp_not_monotonic` |
+| `frame_index` runs `0..n-1` within each episode | Covered | `frame_index` |
+| The `timestamp` column exists and is a float | Covered | `column_missing` |
+| Feature columns match the dtype and shape in `info.json` | Partial: float list columns are checked for consistent width, declared dtype and shape are not | `column_shape` |
+| Every video file exists and is a readable mp4 | Covered | `video_missing`, `video_unreadable` |
+| Video frame rate matches `fps` | Covered (warning) | `video_fps` |
+| Video holds the episode's frames: v2 frame count, v3 span length, bounds and frames in the span | Covered, from the container's sample tables | `video_frame_count`, `video_span_length`, `video_span_beyond_end` |
+| An `action` feature exists (policies expect that name) | Covered (warning; `actions` is accepted for the other checks) | `nonstandard_features` |
+| `observation.state` exists | Not yet | |
+| Camera features are video-backed, not images | Not yet | |
+| `meta/tasks` exists and every `task_index` is in it | Not yet | |
+| `meta/stats.json` exists and matches the data | Not yet | |
+
+Beyond what LeRobot checks: NaN or Inf in float features (`non_finite`), an `action` that never changes
+(`action_constant`), and episodes where more than half the frames repeat the previous action (`idle_episode`, a
+warning that says where the robot first and last moves). Malformed files are reported, not crashed on.
 
 Each finding is one line (format shown for illustration):
 
