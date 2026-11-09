@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="lecop: a robot cop with sunglasses" width="160">
+  <img src="assets/logo.svg" alt="leCop: a robot cop with sunglasses" width="160">
 </p>
 
-<h1 align="center">lecop</h1>
+<h1 align="center">leCop</h1>
 
 <p align="center"><em>The police of your robot dataset.</em></p>
 
@@ -132,10 +132,10 @@ The CLI wall time on the real datasets (6-8 ms for the three above, 27 ms for `c
 
 What [lerobot-doctor](https://pypi.org/project/lerobot-doctor/) 0.2.0 and
 [physlint](https://pypi.org/project/physlint/) 0.4.0 check, read from their installed rule lists and source,
-against what lecop checks. physlint also validates MCAP and ROS 2 recordings, which is out of scope here.
+against what leCop checks. physlint also validates MCAP and ROS 2 recordings, which is out of scope here.
 `yes` means the tool reports it, `config` means it needs thresholds you set, `no` means it does not check it.
 
-| Check | lecop | lerobot-doctor | physlint |
+| Check | leCop | lerobot-doctor | physlint |
 |---|---|---|---|
 | `info.json` readable, version supported, `fps` positive | yes | yes | yes |
 | `info.json` required fields present | partial (parse error) | yes | yes |
@@ -165,19 +165,19 @@ against what lecop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Frames decode, frozen frames, black frames | no (opt-in decode planned) | first frame only | yes |
 | Portability: absolute paths, symlinks, unreadable or oversized files | no | yes | no |
 | Training readiness: normalisation, policy windows, `delta_timestamps` | no | yes | no |
-| Only lecop: v3 video span checks, `range_*`, `index_mismatch` | yes | no | no |
+| Only leCop: v3 video span checks, `range_*`, `index_mismatch` | yes | no | no |
 
 Gaps are tracked as issues by priority; see the open issues labelled `feature`.
 
 ### Speed compared with other checkers
 
-`scripts/compare.py` times lecop against [lerobot-doctor](https://pypi.org/project/lerobot-doctor/) 0.2.0 and
+`scripts/compare.py` times leCop against [lerobot-doctor](https://pypi.org/project/lerobot-doctor/) 0.2.0 and
 [physlint](https://pypi.org/project/physlint/) 0.4.0 (installed from PyPI into separate venvs) on the same
 datasets: median of 3 runs after one warm-up, warm page cache, wall time including process start, Apple M2 Pro,
-Python 3.12, lecop `release` build. The tools check different things, so this is speed only, not coverage.
+Python 3.12, leCop `release` build. The tools check different things, so this is speed only, not coverage.
 physlint reads v3 only.
 
-| Dataset | lecop | lerobot-doctor | physlint |
+| Dataset | leCop | lerobot-doctor | physlint |
 |---|---|---|---|
 | `pusht` (v2.1) | 14 ms | 853 ms | n/a |
 | `svla_so101_pickplace` (v2.1) | 9 ms | 578 ms | n/a |
@@ -195,7 +195,7 @@ physlint reads v3 only.
 - Decoding frames (frozen or black frames, A/V drift inside a video)
 - Remote (Hub) datasets
 
-See [PLAN.md](PLAN.md) for the roadmap.
+The roadmap is the [open issues](https://github.com/michele-xilo/lecop/issues), by priority.
 
 ## Development
 
