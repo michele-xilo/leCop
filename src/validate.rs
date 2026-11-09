@@ -27,8 +27,10 @@ pub struct Issue {
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 39] = [
+pub const ALL_CODES: [&str; 41] = [
     "episode_count",
+    "stats_missing",
+    "stats_features",
     "tasks_missing",
     "tasks_count",
     "frame_count",
@@ -73,6 +75,10 @@ pub const ALL_CODES: [&str; 39] = [
 pub fn explain(code: &str) -> &'static str {
     match code {
         "episode_count" => "info.json total_episodes disagrees with the episode metadata",
+        "stats_missing" => "the statistics file for this format version is missing or unreadable",
+        "stats_features" => {
+            "a non-string feature declared in info.json has no entry in the statistics"
+        }
         "tasks_missing" => {
             "info.json declares tasks but the task metadata file is missing or unreadable"
         }
@@ -760,6 +766,55 @@ fn task_count(ds: &Dataset) -> Option<usize> {
     }
 }
 
+/// Feature names in the statistics file of this format version (`meta/stats.json` for v2.0 and v3,
+/// `meta/episodes_stats.jsonl` for v2.1), or why there are none.
+fn stats_keys(ds: &Dataset) -> Result<Vec<String>, String> {
+    let v2_1 = ds.info.codebase_version.starts_with("v2.1");
+    let name = if v2_1 {
+        "episodes_stats.jsonl"
+    } else {
+        "stats.json"
+    };
+    let text = std::fs::read_to_string(ds.root.join("meta").join(name))
+        .map_err(|_| format!("meta/{name} is missing or unreadable"))?;
+    // ponytail: v2.1 reads the first episode's entry only; a feature dropped from later episodes is not seen.
+    let json = if v2_1 {
+        text.lines().next().unwrap_or("")
+    } else {
+        &text
+    };
+    let value: serde_json::Value =
+        serde_json::from_str(json).map_err(|e| format!("meta/{name} is not valid JSON: {e}"))?;
+    let stats = if v2_1 { &value["stats"] } else { &value };
+    match stats.as_object() {
+        Some(o) => Ok(o.keys().cloned().collect()),
+        None => Err(format!("meta/{name} has no statistics object")),
+    }
+}
+
+fn stats_findings(ds: &Dataset) -> Vec<(&'static str, String)> {
+    match stats_keys(ds) {
+        Err(m) => vec![("stats_missing", m)],
+        Ok(keys) => {
+            let missing: Vec<&str> = ds
+                .info
+                .features
+                .iter()
+                .filter(|(k, f)| f.dtype != "string" && !keys.contains(k))
+                .map(|(k, _)| k.as_str())
+                .collect();
+            if missing.is_empty() {
+                vec![]
+            } else {
+                vec![(
+                    "stats_features",
+                    format!("no statistics for {}", missing.join(", ")),
+                )]
+            }
+        }
+    }
+}
+
 /// `total_tasks` from info.json against the tasks found. A dataset that does not declare tasks is not checked.
 pub fn task_finding(
     declared: Option<usize>,
@@ -809,6 +864,16 @@ fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
                 ds.info.total_episodes,
                 ds.episodes.len()
             ),
+        ));
+    }
+    for (code, message) in stats_findings(ds) {
+        v.push(tag(
+            None,
+            PHASE_META,
+            Severity::Warning,
+            None,
+            code,
+            message,
         ));
     }
     if let Some((sev, code, message)) = task_finding(ds.info.total_tasks, task_count(ds)) {

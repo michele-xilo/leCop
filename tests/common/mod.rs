@@ -3,6 +3,31 @@
 #![allow(dead_code)]
 pub mod synth;
 
+/// Writes the statistics file the dataset's version uses, with an entry for every non-string feature in
+/// info.json. Call it after the last edit of info.json.
+pub fn write_stats(root: &std::path::Path) {
+    let info: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(root.join("meta/info.json")).unwrap()).unwrap();
+    let stats: serde_json::Map<String, serde_json::Value> = info["features"]
+        .as_object()
+        .unwrap()
+        .iter()
+        .filter(|(_, f)| f["dtype"] != "string")
+        .map(|(k, _)| (k.clone(), serde_json::json!({})))
+        .collect();
+    let (name, body) = if info["codebase_version"]
+        .as_str()
+        .unwrap()
+        .starts_with("v2.1")
+    {
+        let line = serde_json::json!({"episode_index": 0, "stats": stats});
+        ("episodes_stats.jsonl", format!("{line}\n"))
+    } else {
+        ("stats.json", serde_json::Value::Object(stats).to_string())
+    };
+    std::fs::write(root.join("meta").join(name), body).unwrap();
+}
+
 fn bx(kind: &[u8; 4], payload: &[u8]) -> Vec<u8> {
     let mut v = ((payload.len() + 8) as u32).to_be_bytes().to_vec();
     v.extend(kind);

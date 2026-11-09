@@ -142,6 +142,7 @@ pub fn write_v2(root: &Path, s: &Synth) {
         ),
     )
     .unwrap();
+    super::write_stats(root);
     let jsonl: String = (0..s.episodes)
         .map(|e| {
             format!(
@@ -182,6 +183,7 @@ pub fn write_v3(root: &Path, s: &Synth) {
         ),
     )
     .unwrap();
+    super::write_stats(root);
     let mut rng = Rng(0x9E3779B97F4A7C15);
     let fps = s.fps as f64;
     let (mut ep_col, mut len, mut from, mut to, mut file, mut vfrom, mut vto) =
