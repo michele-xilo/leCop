@@ -1,5 +1,7 @@
 # lecop
 
+[![CI](https://github.com/michele-xilo/lecop/actions/workflows/ci.yml/badge.svg)](https://github.com/michele-xilo/lecop/actions/workflows/ci.yml)
+
 The police of your robot dataset. A fast, single-binary health check for
 [LeRobot](https://github.com/huggingface/lerobot)-format datasets, written in Rust.
 
@@ -53,7 +55,15 @@ See [PLAN.md](PLAN.md) for the roadmap.
 ```bash
 cargo test
 cargo bench   # criterion; see .claude/rules/performance.md
+
+scripts/fetch-datasets.sh          # list real test datasets that are missing
+scripts/fetch-datasets.sh --yes    # download them into datasets/ (git-ignored)
 ```
+
+`cargo test` also checks the error and warning counts on every downloaded dataset listed in
+`scripts/datasets.tsv` and skips the ones you do not have.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [STYLE_GUIDE.md](STYLE_GUIDE.md).
 
 ## License
 
