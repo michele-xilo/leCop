@@ -1,5 +1,7 @@
 # lecop
 
+[![CI](https://github.com/michele-xilo/lecop/actions/workflows/ci.yml/badge.svg)](https://github.com/michele-xilo/lecop/actions/workflows/ci.yml)
+
 The police of your robot dataset. A fast, single-binary health check for
 [LeRobot](https://github.com/huggingface/lerobot)-format datasets, written in Rust.
 
