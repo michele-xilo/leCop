@@ -18,6 +18,8 @@ pub struct VideoInfo {
     pub timescale: u32,
     pub sample_count: u64,
     pub duration_ticks: u64,
+    /// (width, height) from the first `stsd` sample entry, if the entry is long enough to hold them.
+    pub size: Option<(u32, u32)>,
     /// `stts` runs: (sample count, ticks per sample). One run for a constant frame rate.
     runs: Vec<(u64, u64)>,
 }
@@ -146,6 +148,16 @@ fn be32(b: &[u8], off: usize) -> Result<u32> {
     Ok(u32::from_be_bytes([s[0], s[1], s[2], s[3]]))
 }
 
+/// Width and height of a VisualSampleEntry: the first entry of `stsd` (8 bytes of table header, 8 of entry header,
+/// then 24 bytes before the two 16-bit fields). None when the entry is too short, so unusual files are not rejected.
+fn visual_size(stsd: &[u8]) -> Option<(u32, u32)> {
+    let b = stsd.get(40..44)?;
+    Some((
+        u16::from_be_bytes([b[0], b[1]]) as u32,
+        u16::from_be_bytes([b[2], b[3]]) as u32,
+    ))
+}
+
 fn parse_moov(moov: &[u8]) -> Result<VideoInfo> {
     for (kind, trak) in boxes(moov)? {
         if &kind != b"trak" {
@@ -190,6 +202,7 @@ fn parse_moov(moov: &[u8]) -> Result<VideoInfo> {
             timescale,
             sample_count,
             duration_ticks: ticks,
+            size: child(stbl, b"stsd")?.and_then(visual_size),
             runs,
         });
     }

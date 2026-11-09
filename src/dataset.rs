@@ -13,6 +13,34 @@ pub struct Feature {
     pub dtype: String,
     #[serde(default)]
     pub shape: Vec<usize>,
+    /// Axis names, e.g. `["height", "width", "channels"]`; absent or `null` in some datasets.
+    #[serde(default)]
+    pub names: Option<serde_json::Value>,
+}
+
+impl Feature {
+    /// (width, height) of an image or video feature. Uses the axis names when present, else assumes
+    /// height-width-channels unless the last axis is the large one (channels first).
+    pub fn frame_size(&self) -> Option<(usize, usize)> {
+        let [a, b, c] = self.shape[..] else {
+            return None;
+        };
+        let names: Vec<&str> = self
+            .names
+            .as_ref()
+            .and_then(|n| n.as_array())
+            .map(|n| n.iter().filter_map(|x| x.as_str()).collect())
+            .unwrap_or_default();
+        if names.len() == 3 {
+            let at = |s: &str| names.iter().position(|x| x.contains(s));
+            if let (Some(h), Some(w)) = (at("height"), at("width")) {
+                let dims = [a, b, c];
+                return Some((dims[w], dims[h]));
+            }
+        }
+        // ponytail: without axis names, a last axis of 4 or less is taken as channels.
+        Some(if c <= 4 { (b, a) } else { (c, b) })
+    }
 }
 
 #[derive(Debug, Deserialize)]

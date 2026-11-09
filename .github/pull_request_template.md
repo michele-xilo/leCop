@@ -36,6 +36,7 @@ Evidence, not claims:
   (`scripts/fetch-datasets.sh`) and a mutation test on a copy.
 * Hot path: criterion before/after (`cargo bench -- --baseline before`) with dataset, machine, Rust version
   and thread count.
+* A new or changed check: the README speed table re-measured with `scripts/compare.py` on this commit.
 * Anything you could not run, and why.
 -->
 

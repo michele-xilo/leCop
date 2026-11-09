@@ -102,3 +102,15 @@ fn counts_samples_across_runs_with_different_frame_durations() {
     assert_eq!(i.samples_in(1.0, 2.0), 5);
     assert_eq!(i.samples_in(1.0, 3.0), 10);
 }
+
+#[test]
+fn reads_the_frame_size_from_the_sample_description() {
+    let mut m = Mp4::constant_fps(10, 10);
+    m.size = Some((640, 480));
+    assert_eq!(read(m.bytes()).unwrap().size, Some((640, 480)));
+}
+
+#[test]
+fn has_no_frame_size_without_a_sample_description() {
+    assert_eq!(read(Mp4::constant_fps(10, 10).bytes()).unwrap().size, None);
+}
