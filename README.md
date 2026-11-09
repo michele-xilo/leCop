@@ -125,16 +125,16 @@ installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **14 ms** | 853 ms | n/a | 61x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 578 ms | n/a | 64x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **7 ms** | 559 ms | n/a | 80x |
-| `v3_pusht` (v3.0) | 🏆 **9 ms** | 702 ms | 16,235 ms | 78x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **8 ms** | 581 ms | 2,951 ms | 73x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **8 ms** | 548 ms | 3,482 ms | 68x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **30 ms** | 594 ms | 746 ms | 20x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **15 ms** | 576 ms | 7,695 ms | 38x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 472 ms | 2,726 ms | 39x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **13 ms** | 559 ms | 7,868 ms | 43x |
+| `pusht` (v2.1) | 🏆 **15 ms** | 864 ms | n/a | 58x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **8 ms** | 592 ms | n/a | 74x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 569 ms | n/a | 71x |
+| `v3_pusht` (v3.0) | 🏆 **9 ms** | 750 ms | 16,738 ms | 83x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **9 ms** | 549 ms | 2,864 ms | 61x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **9 ms** | 527 ms | 3,377 ms | 59x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **29 ms** | 559 ms | 729 ms | 19x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **14 ms** | 577 ms | 7,970 ms | 41x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 486 ms | 2,909 ms | 40x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 573 ms | 7,662 ms | 41x |
 
 The tools check different things (see the coverage table below), so this compares speed only.
 
