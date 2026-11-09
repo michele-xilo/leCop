@@ -51,6 +51,8 @@ pub struct Info {
     pub fps: f64,
     pub total_episodes: usize,
     pub total_frames: usize,
+    #[serde(default)]
+    pub total_tasks: Option<usize>,
     #[serde(default = "default_chunks_size")]
     pub chunks_size: usize,
     pub data_path: String,

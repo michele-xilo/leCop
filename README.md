@@ -106,7 +106,8 @@ All checks read metadata and parquet only: no video frame is decoded.
 | An `action` feature exists (policies expect that name) | Covered (warning; `actions` is accepted for the other checks) | `nonstandard_features` |
 | `observation.state` exists | Not yet | |
 | Camera features are video-backed, not images | Not yet | |
-| `meta/tasks` exists and every `task_index` is in it | Not yet | |
+| `total_tasks` matches the task metadata (`tasks.jsonl` lines, `tasks.parquet` rows) | Covered; the file missing is an error, a different count a warning | `tasks_missing`, `tasks_count` |
+| Every `task_index` is in the task metadata | Not yet | |
 | `meta/stats.json` exists and matches the data | Not yet | |
 
 Beyond what LeRobot checks: NaN or Inf in float features (`non_finite`), an `action` that never changes
@@ -127,16 +128,16 @@ installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **15 ms** | 864 ms | n/a | 58x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **8 ms** | 592 ms | n/a | 74x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 569 ms | n/a | 71x |
-| `v3_pusht` (v3.0) | 🏆 **9 ms** | 750 ms | 16,738 ms | 83x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **9 ms** | 549 ms | 2,864 ms | 61x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **9 ms** | 527 ms | 3,377 ms | 59x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **29 ms** | 559 ms | 729 ms | 19x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **14 ms** | 577 ms | 7,970 ms | 41x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 486 ms | 2,909 ms | 40x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 573 ms | 7,662 ms | 41x |
+| `pusht` (v2.1) | 🏆 **15 ms** | 848 ms | n/a | 57x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 633 ms | n/a | 70x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 574 ms | n/a | 72x |
+| `v3_pusht` (v3.0) | 🏆 **9 ms** | 765 ms | 17,410 ms | 85x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **8 ms** | 577 ms | 2,999 ms | 72x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **9 ms** | 553 ms | 3,483 ms | 61x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **28 ms** | 589 ms | 759 ms | 21x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **15 ms** | 599 ms | 8,464 ms | 40x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 523 ms | 3,051 ms | 40x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 586 ms | 8,168 ms | 42x |
 
 The tools check different things (see the coverage table below), so this compares speed only.
 
@@ -145,39 +146,39 @@ The tools check different things (see the coverage table below), so this compare
 What [lerobot-doctor](https://pypi.org/project/lerobot-doctor/) 0.2.0 and
 [physlint](https://pypi.org/project/physlint/) 0.4.0 check, read from their installed rule lists and source,
 against what leCop checks. physlint also validates MCAP and ROS 2 recordings, which is out of scope here.
-✅ checked, ⚠️ partly checked or needs thresholds you set, ❌ not checked, 🏆 the tool that does it best (no mark when all three are equal or none checks it).
+✅ checked, ⚠️ partly checked or needs thresholds you set, ❌ not checked.
 
 | Check | leCop | lerobot-doctor | physlint |
 |---|---|---|---|
 | `info.json` readable, version supported, `fps` positive | ✅ | ✅ | ✅ |
-| `info.json` required fields present | ⚠️ parse error | 🏆 **✅** | 🏆 **✅** |
+| `info.json` required fields present | ⚠️ parse error | ✅ | ✅ |
 | `total_episodes`, `total_frames` match the metadata | ✅ | ✅ | ✅ |
-| `total_tasks` matches the task metadata | ❌ | 🏆 **✅** | ❌ |
+| `total_tasks` matches the task metadata | ✅ | ✅ | ❌ |
 | Data and episode-metadata files exist and are readable | ✅ | ✅ | ✅ |
-| Episode ids unique, contiguous, boundaries and global `index` valid | 🏆 **✅** | ⚠️ | 🏆 **✅** |
+| Episode ids unique, contiguous, boundaries and global `index` valid | ✅ | ⚠️ | ✅ |
 | Timestamps monotonic, match `fps`, no dropped-frame gaps | ✅ | ✅ | ✅ gap limit by config |
-| `frame_index` sequential within each episode | 🏆 **✅** | 🏆 **✅** | ❌ |
-| Declared dtype and shape match the stored data | 🏆 **✅ float list widths** | ⚠️ | 🏆 **✅** |
-| Same features in every episode (missing, extra, dtype, shape) | 🏆 **✅** | 🏆 **✅** | ⚠️ |
-| Required streams present (`observation.state`, ...) | 🏆 **⚠️ `action`, `timestamp`** | ❌ | ⚠️ needs config |
-| Streams cover whole episodes; observation/action delay | ❌ | ❌ | 🏆 **✅ delay by config** |
+| `frame_index` sequential within each episode | ✅ | ✅ | ❌ |
+| Declared dtype and shape match the stored data | ✅ float list widths | ⚠️ | ✅ |
+| Same features in every episode (missing, extra, dtype, shape) | ✅ | ✅ | ⚠️ |
+| Required streams present (`observation.state`, ...) | ⚠️ `action`, `timestamp` | ❌ | ⚠️ needs config |
+| Streams cover whole episodes; observation/action delay | ❌ | ❌ | ✅ delay by config |
 | NaN and Inf in feature columns | ✅ | ✅ | ✅ |
-| Numeric limits per feature | ❌ | ❌ | 🏆 **⚠️ needs config** |
-| Implausible jumps between frames | ❌ | 🏆 **✅** | ⚠️ needs config |
-| Constant or frozen action, idle episodes | 🏆 **✅** | 🏆 **✅** | ❌ |
-| Stuck or constant dimensions, zero variance | 🏆 **✅** | 🏆 **✅** | ❌ |
-| Values clipped at their min or max | 🏆 **✅ over 99% of frames** | 🏆 **✅** | ❌ |
-| Extreme outliers, distribution shift across episodes | ⚠️ outliers only | 🏆 **✅** | ❌ |
+| Numeric limits per feature | ❌ | ❌ | ⚠️ needs config |
+| Implausible jumps between frames | ❌ | ✅ | ⚠️ needs config |
+| Constant or frozen action, idle episodes | ✅ | ✅ | ❌ |
+| Stuck or constant dimensions, zero variance | ✅ | ✅ | ❌ |
+| Values clipped at their min or max | ✅ over 99% of frames | ✅ | ❌ |
+| Extreme outliers, distribution shift across episodes | ⚠️ outliers only | ✅ | ❌ |
 | Duplicate episodes | ✅ exact action sequences | ✅ near-duplicates | ✅ exact |
-| Episode length: empty, too short, outliers | 🏆 **✅** | 🏆 **✅** | ❌ |
-| `stats.json` present and consistent with the data | ❌ | 🏆 **✅** | ❌ |
+| Episode length: empty, too short, outliers | ✅ | ✅ | ❌ |
+| `stats.json` present and consistent with the data | ❌ | ✅ | ❌ |
 | Video file exists, readable mp4, frame rate | ✅ | ✅ | ✅ |
-| Video frame count against the episode (container tables) | 🏆 **✅** | 🏆 **✅** | ❌ |
-| Video resolution against `info.json` | 🏆 **✅** | 🏆 **✅** | ❌ |
-| Frames decode, frozen frames, black frames | ❌ opt-in decode planned | ⚠️ first frame only | 🏆 **✅** |
-| Portability: absolute paths, symlinks, unreadable or oversized files | ❌ | 🏆 **✅** | ❌ |
-| Training readiness: normalisation, policy windows, `delta_timestamps` | ❌ | 🏆 **✅** | ❌ |
-| Only leCop: v3 video span checks, `range_*`, `index_mismatch` | 🏆 **✅** | ❌ | ❌ |
+| Video frame count against the episode (container tables) | ✅ | ✅ | ❌ |
+| Video resolution against `info.json` | ✅ | ✅ | ❌ |
+| Frames decode, frozen frames, black frames | ❌ opt-in decode planned | ⚠️ first frame only | ✅ |
+| Portability: absolute paths, symlinks, unreadable or oversized files | ❌ | ✅ | ❌ |
+| Training readiness: normalisation, policy windows, `delta_timestamps` | ❌ | ✅ | ❌ |
+| Only leCop: v3 video span checks, `range_*`, `index_mismatch` | ✅ | ❌ | ❌ |
 
 Gaps are tracked as issues by priority; see the open issues labelled `feature`.
 

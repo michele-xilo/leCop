@@ -925,3 +925,67 @@ fn reads_channel_first_shapes_from_the_feature_names() {
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert!(v.is_empty(), "{v:?}");
 }
+
+fn write_tasks_parquet(root: &Path, n: usize) {
+    let schema = Arc::new(Schema::new(vec![Field::new(
+        "task_index",
+        DataType::Int64,
+        false,
+    )]));
+    let col: ArrayRef = i64s((0..n as i64).collect());
+    let batch = RecordBatch::try_new(schema.clone(), vec![col]).unwrap();
+    let f = fs::File::create(root.join("meta/tasks.parquet")).unwrap();
+    let mut w = ArrowWriter::try_new(f, schema, None).unwrap();
+    w.write(&batch).unwrap();
+    w.close().unwrap();
+}
+
+fn run_with_tasks(declared: usize, jsonl_lines: Option<usize>) -> Vec<Issue> {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    edit_info(dir.path(), |v| v["total_tasks"] = declared.into());
+    if let Some(n) = jsonl_lines {
+        let lines: Vec<String> = (0..n)
+            .map(|i| format!("{{\"task_index\": {i}, \"task\": \"t{i}\"}}"))
+            .collect();
+        fs::write(dir.path().join("meta/tasks.jsonl"), lines.join("\n")).unwrap();
+    }
+    validate(&Dataset::open(dir.path()).unwrap()).unwrap()
+}
+
+#[test]
+fn flags_declared_tasks_without_task_metadata() {
+    let v = run_with_tasks(1, None);
+    assert_eq!(codes(&v), ["tasks_missing"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Error);
+}
+
+#[test]
+fn warns_when_total_tasks_disagrees_with_the_task_file() {
+    let v = run_with_tasks(1, Some(2));
+    assert_eq!(codes(&v), ["tasks_count"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Warning);
+}
+
+#[test]
+fn matching_task_file_is_clean() {
+    let v = run_with_tasks(2, Some(2));
+    assert!(v.is_empty(), "{v:?}");
+}
+
+#[test]
+fn v3_reads_the_task_count_from_tasks_parquet() {
+    for (rows, want) in [(1, vec![]), (3, vec!["tasks_count"])] {
+        let dir = tempfile::tempdir().unwrap();
+        write_ds_v3(dir.path(), &[good(20)]);
+        edit_info(dir.path(), |v| v["total_tasks"] = 1.into());
+        write_tasks_parquet(dir.path(), rows);
+        let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+        assert_eq!(codes(&v), want, "{v:?}");
+    }
+    let dir = tempfile::tempdir().unwrap();
+    write_ds_v3(dir.path(), &[good(20)]);
+    edit_info(dir.path(), |v| v["total_tasks"] = 1.into());
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["tasks_missing"], "{v:?}");
+}
