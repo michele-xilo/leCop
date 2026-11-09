@@ -268,7 +268,14 @@ pub fn validate_paths(
     Ok(pool.install(|| {
         paths
             .par_iter()
-            .map(|p| (p.clone(), Dataset::open(p.clone()).map(|ds| run(&ds))))
+            .map(|p| {
+                let issues = Dataset::open(p.clone()).map(|ds| run(&ds));
+                match &issues {
+                    Ok(i) => tracing::info!(dataset = %p.display(), findings = i.len(), "validated"),
+                    Err(e) => tracing::warn!(dataset = %p.display(), error = %format!("{e:#}"), "cannot open"),
+                }
+                (p.clone(), issues)
+            })
             .collect()
     }))
 }
@@ -356,9 +363,18 @@ fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
 
 fn read_video(path: &Path) -> VideoRead {
     if !path.exists() {
+        tracing::debug!(file = %path.display(), "video file missing");
         return Err(("video_missing", format!("{}", path.display())));
     }
-    read_video_info(path).map_err(|err| ("video_unreadable", format!("{err:#}")))
+    let started = std::time::Instant::now();
+    let r = read_video_info(path).map_err(|err| ("video_unreadable", format!("{err:#}")));
+    tracing::debug!(
+        file = %path.display(),
+        ok = r.is_ok(),
+        elapsed_ms = started.elapsed().as_secs_f64() * 1e3,
+        "read video metadata"
+    );
+    r
 }
 
 /// Each distinct video file once, in first-use order. A v3 file is shared by many episodes.
@@ -512,10 +528,21 @@ fn check_group(ds: &Dataset, action: Option<&str>, start: usize, eps: &[Episode]
     };
     // One read syscall for the whole file: parquet's own reader issues many small preads, which stopped
     // scaling past ~3 threads (synthetic_v2 jobs10: 98 ms with File, 42 ms with this).
+    let started = std::time::Instant::now();
     let Ok(bytes) = std::fs::read(&first.data_file) else {
+        tracing::debug!(file = %first.data_file.display(), "data file missing");
         return at_first("data_missing", format!("{}", first.data_file.display()));
     };
-    let d = match parse_file(bytes.into(), ds) {
+    let size = bytes.len();
+    let parsed = parse_file(bytes.into(), ds);
+    tracing::debug!(
+        file = %first.data_file.display(),
+        bytes = size,
+        episodes = eps.len(),
+        elapsed_ms = started.elapsed().as_secs_f64() * 1e3,
+        "read data file"
+    );
+    let d = match parsed {
         Ok(d) if d.ts.len() != d.rows => {
             return at_first(
                 "column_missing",
