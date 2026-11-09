@@ -12,6 +12,9 @@ use std::{io::IsTerminal, path::PathBuf, process::ExitCode};
 #[derive(Parser)]
 #[command(about = "Fast health checks for robot-learning datasets")]
 struct Cli {
+    /// Log to stderr: -v for progress, -vv for per-file timings. RUST_LOG overrides.
+    #[arg(short, long, action = clap::ArgAction::Count, global = true)]
+    verbose: u8,
     #[command(subcommand)]
     cmd: Cmd,
 }
@@ -168,8 +171,25 @@ fn inspect(path: PathBuf) -> Result<u8> {
     Ok(0)
 }
 
+fn init_logging(verbose: u8) {
+    let default = match verbose {
+        0 => "off",
+        1 => "info",
+        _ => "debug",
+    };
+    let filter = tracing_subscriber::EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new(default));
+    tracing_subscriber::fmt()
+        .with_env_filter(filter)
+        .with_writer(std::io::stderr)
+        .with_ansi(std::io::stderr().is_terminal())
+        .init();
+}
+
 fn main() -> ExitCode {
-    let result = match Cli::parse().cmd {
+    let cli = Cli::parse();
+    init_logging(cli.verbose);
+    let result = match cli.cmd {
         Cmd::Inspect { path } => inspect(path),
         Cmd::Validate {
             paths,

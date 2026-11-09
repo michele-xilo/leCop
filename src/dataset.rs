@@ -76,6 +76,12 @@ impl Dataset {
             v if v.starts_with("v3") => episodes_v3(&root, &info)?,
             v => bail!("unsupported codebase_version {v:?} (supported: v2.x, v3.x)"),
         };
+        tracing::debug!(
+            root = %root.display(),
+            version = %info.codebase_version,
+            episodes = episodes.len(),
+            "opened dataset"
+        );
         Ok(Self {
             root,
             info,

@@ -56,6 +56,7 @@ the config or an argument cannot be read.
 | `--no-color` | colour is also off when piped or when `NO_COLOR` is set |
 | `--ignore a,b`, `--select a,b` | drop, or keep only, these issue codes |
 | `--config FILE`, `--isolated` | use this config, or none |
+| `-v`, `-vv` | log progress, then per-file timings, to stderr (never stdout); `RUST_LOG` overrides |
 | `-j N` | worker threads (default: one per core); output is identical for every `-j` |
 
 ### Config file

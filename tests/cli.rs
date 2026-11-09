@@ -219,3 +219,29 @@ fn unknown_code_in_flag_or_config_exits_two() {
     assert_eq!(o.status.code(), Some(2));
     assert!(String::from_utf8_lossy(&o.stderr).contains("unknown issue code"));
 }
+
+#[test]
+fn logging_is_silent_by_default_and_goes_to_stderr_with_v() {
+    let d = dataset();
+    let path = d.path().to_str().unwrap();
+    let quiet = lecop(&["validate", path]);
+    assert!(quiet.stderr.is_empty(), "{:?}", quiet.stderr);
+
+    let v = lecop(&["validate", path, "-v"]);
+    assert!(String::from_utf8_lossy(&v.stderr).contains("validated"));
+    assert_eq!(v.stdout, quiet.stdout);
+
+    let vv = lecop(&["validate", path, "-vv"]);
+    assert!(String::from_utf8_lossy(&vv.stderr).contains("read data file"));
+}
+
+#[test]
+fn rust_log_overrides_the_verbosity_flag() {
+    let d = dataset();
+    let o = Command::new(env!("CARGO_BIN_EXE_lecop"))
+        .env("RUST_LOG", "off")
+        .args(["validate", d.path().to_str().unwrap(), "-vv"])
+        .output()
+        .unwrap();
+    assert!(o.stderr.is_empty());
+}
