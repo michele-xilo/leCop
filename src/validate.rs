@@ -27,7 +27,7 @@ pub struct Issue {
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 25] = [
+pub const ALL_CODES: [&str; 29] = [
     "episode_count",
     "frame_count",
     "episode_index",
@@ -43,6 +43,10 @@ pub const ALL_CODES: [&str; 25] = [
     "frame_index",
     "column_missing",
     "column_shape",
+    "feature_missing",
+    "feature_dtype",
+    "feature_shape",
+    "feature_extra",
     "video_missing",
     "video_unreadable",
     "video_fps",
@@ -73,6 +77,10 @@ pub fn explain(code: &str) -> &'static str {
         "frame_index" => "frame_index does not run 0..n-1 within the episode",
         "column_missing" => "the timestamp column is missing or not a float",
         "column_shape" => "a feature column does not have a consistent row width",
+        "feature_missing" => "a feature declared in info.json has no column in the data files",
+        "feature_dtype" => "a data column has a different type than info.json declares",
+        "feature_shape" => "a data column has a different width than info.json declares",
+        "feature_extra" => "a data column is not declared in info.json",
         "video_missing" => "a video file listed by the metadata does not exist",
         "video_unreadable" => "a video file is truncated or not a valid mp4",
         "video_fps" => "a video's frame rate differs from the fps in info.json",
@@ -113,11 +121,20 @@ struct FileData {
     ep: Option<Vec<i64>>,
     idx: Option<Vec<i64>>,
     floats: BTreeMap<String, (Vec<f64>, usize)>,
+    /// Findings about the file's columns against info.json; the same for every file of a healthy dataset.
+    schema: Vec<SchemaProblem>,
 }
 
+/// (severity, code, message) for a column-level finding.
+type SchemaProblem = (Severity, &'static str, String);
+
 fn parse_file(bytes: bytes::Bytes, ds: &Dataset) -> Result<FileData> {
-    let reader = ParquetRecordBatchReaderBuilder::try_new(bytes)?.build()?;
-    let mut d = FileData::default();
+    let builder = ParquetRecordBatchReaderBuilder::try_new(bytes)?;
+    let mut d = FileData {
+        schema: schema_problems(&ds.info.features, builder.schema()),
+        ..FileData::default()
+    };
+    let reader = builder.build()?;
     for batch in reader {
         let batch = batch?;
         d.rows += batch.num_rows();
@@ -152,11 +169,103 @@ fn parse_file(bytes: bytes::Bytes, ds: &Dataset) -> Result<FileData> {
             let Some((vals, w)) = batch.column_by_name(key).and_then(flatten) else {
                 continue;
             };
+            if let [declared] = f.shape[..]
+                && declared != w
+                && !d
+                    .schema
+                    .iter()
+                    .any(|p| p.2.starts_with(&format!("`{key}`")))
+            {
+                d.schema.push((
+                    Severity::Error,
+                    "feature_shape",
+                    format!("`{key}` has width {w} but info.json declares {declared}"),
+                ));
+            }
             let e = d.floats.entry(key.clone()).or_insert((Vec::new(), w));
             e.0.extend(vals);
         }
     }
     Ok(d)
+}
+
+/// Arrow type a numeric info.json dtype is stored as; None for dtypes not checked here (video, image, string).
+fn arrow_type(dtype: &str) -> Option<arrow_schema::DataType> {
+    use arrow_schema::DataType as T;
+    Some(match dtype {
+        "float32" => T::Float32,
+        "float64" => T::Float64,
+        "int8" => T::Int8,
+        "int16" => T::Int16,
+        "int32" => T::Int32,
+        "int64" => T::Int64,
+        "uint8" => T::UInt8,
+        "bool" => T::Boolean,
+        _ => return None,
+    })
+}
+
+/// Declared features against the columns of one data file. A shape [1] feature is a scalar column.
+/// ponytail: row width is checked for float features only (see parse_file); int list columns pass unchecked.
+fn schema_problems(
+    features: &BTreeMap<String, crate::dataset::Feature>,
+    schema: &arrow_schema::Schema,
+) -> Vec<SchemaProblem> {
+    use arrow_schema::DataType as T;
+    let mut out = Vec::new();
+    for (key, f) in features {
+        if f.dtype == "video" {
+            continue;
+        }
+        let Ok(field) = schema.field_with_name(key) else {
+            out.push((
+                Severity::Error,
+                "feature_missing",
+                format!("`{key}` is declared in info.json but has no column in the data files"),
+            ));
+            continue;
+        };
+        let (elem, is_list) = match field.data_type() {
+            T::FixedSizeList(i, _) | T::List(i) => (i.data_type(), true),
+            t => (t, false),
+        };
+        if arrow_type(&f.dtype).is_some_and(|want| &want != elem) {
+            out.push((
+                Severity::Error,
+                "feature_dtype",
+                format!(
+                    "`{key}` is {elem} in the data but info.json declares {}",
+                    f.dtype
+                ),
+            ));
+        } else if !is_list
+            && f.shape.len() == 1
+            && f.shape[0] != 1
+            && arrow_type(&f.dtype).is_some()
+        {
+            out.push((
+                Severity::Error,
+                "feature_shape",
+                format!(
+                    "`{key}` is a scalar column but info.json declares width {}",
+                    f.shape[0]
+                ),
+            ));
+        }
+    }
+    for field in schema.fields() {
+        if !features.contains_key(field.name()) {
+            out.push((
+                Severity::Warning,
+                "feature_extra",
+                format!(
+                    "`{}` is a data column that info.json does not declare",
+                    field.name()
+                ),
+            ));
+        }
+    }
+    out
 }
 
 /// Row ranges per episode_index inside a file (episodes are stored contiguously).
@@ -304,7 +413,11 @@ fn run(ds: &Dataset) -> Vec<Issue> {
         .into_par_iter()
         .map(|(start, eps)| check_group(ds, action, start, eps))
         .collect();
-    tagged.extend(data.into_iter().flatten());
+    // A schema fault is the same in every file of the dataset: report it once, at the first file.
+    let mut seen = std::collections::HashSet::new();
+    tagged.extend(data.into_iter().flatten().filter(|(_, _, i)| {
+        !i.code.starts_with("feature_") || seen.insert((i.code, i.message.clone()))
+    }));
 
     // Stable sort: ties keep their within-phase order, so the report does not depend on thread scheduling.
     tagged.sort_by_key(|(pos, phase, _)| (*pos, *phase));
@@ -556,14 +669,22 @@ fn check_group(ds: &Dataset, action: Option<&str>, start: usize, eps: &[Episode]
         Err(err) => return at_first("data_unreadable", format!("{err:#}")),
     };
     let runs = episode_runs(&d);
-    eps.iter()
-        .enumerate()
-        .flat_map(|(i, e)| {
-            check_episode(ds, action, e, &d, &runs)
-                .into_iter()
-                .map(move |x| (Some(start + i), PHASE_DATA, x))
-        })
-        .collect()
+    let schema = d.schema.iter().map(|(sev, code, msg)| {
+        tag(
+            Some(start),
+            PHASE_DATA,
+            *sev,
+            Some(first.index),
+            code,
+            msg.clone(),
+        )
+    });
+    let per_episode = eps.iter().enumerate().flat_map(|(i, e)| {
+        check_episode(ds, action, e, &d, &runs)
+            .into_iter()
+            .map(move |x| (Some(start + i), PHASE_DATA, x))
+    });
+    schema.chain(per_episode).collect()
 }
 
 fn check_episode(

@@ -95,7 +95,7 @@ All checks read metadata and parquet only: no video frame is decoded.
 | `timestamp` equals `frame_index / fps` within 1e-4 s, and increases | Covered | `timestamp_drift`, `timestamp_not_monotonic` |
 | `frame_index` runs `0..n-1` within each episode | Covered | `frame_index` |
 | The `timestamp` column exists and is a float | Covered | `column_missing` |
-| Feature columns match the dtype and shape in `info.json` | Partial: float list columns are checked for consistent width, declared dtype and shape are not | `column_shape` |
+| Every declared feature has a data column of the declared dtype and width; no undeclared columns | Covered (list width for float features only; multi-dimensional shapes are not checked) | `feature_missing`, `feature_dtype`, `feature_shape`, `column_shape`, `feature_extra` (warning) |
 | Every video file exists and is a readable mp4 | Covered | `video_missing`, `video_unreadable` |
 | Video frame rate matches `fps` | Covered (warning) | `video_fps` |
 | Video holds the episode's frames: v2 frame count, v3 span length, bounds and frames in the span | Covered, from the container's sample tables | `video_frame_count`, `video_span_length`, `video_span_beyond_end` |
@@ -147,8 +147,8 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Episode ids unique, contiguous, boundaries and global `index` valid | 🏆 **✅** | ⚠️ | 🏆 **✅** |
 | Timestamps monotonic, match `fps`, no dropped-frame gaps | ✅ | ✅ | ✅ gap limit by config |
 | `frame_index` sequential within each episode | 🏆 **✅** | 🏆 **✅** | ❌ |
-| Declared dtype and shape match the stored data | ⚠️ width only | ⚠️ | 🏆 **✅** |
-| Same features in every episode (missing, extra, dtype, shape) | ❌ | 🏆 **✅** | ⚠️ |
+| Declared dtype and shape match the stored data | 🏆 **✅ float list widths** | ⚠️ | 🏆 **✅** |
+| Same features in every episode (missing, extra, dtype, shape) | 🏆 **✅** | 🏆 **✅** | ⚠️ |
 | Required streams present (`observation.state`, ...) | 🏆 **⚠️ `action`, `timestamp`** | ❌ | ⚠️ needs config |
 | Streams cover whole episodes; observation/action delay | ❌ | ❌ | 🏆 **✅ delay by config** |
 | NaN and Inf in feature columns | ✅ | ✅ | ✅ |
