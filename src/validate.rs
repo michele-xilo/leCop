@@ -26,6 +26,67 @@ pub struct Issue {
     pub message: String,
 }
 
+/// Every issue code lecop can report.
+pub const ALL_CODES: [&str; 25] = [
+    "episode_count",
+    "frame_count",
+    "episode_index",
+    "range_length",
+    "range_gap",
+    "index_mismatch",
+    "data_missing",
+    "data_unreadable",
+    "length_mismatch",
+    "episode_rows_missing",
+    "timestamp_drift",
+    "timestamp_not_monotonic",
+    "frame_index",
+    "column_missing",
+    "column_shape",
+    "video_missing",
+    "video_unreadable",
+    "video_fps",
+    "video_frame_count",
+    "video_span_length",
+    "video_span_beyond_end",
+    "nonstandard_features",
+    "non_finite",
+    "action_constant",
+    "idle_episode",
+];
+
+/// One sentence saying what an issue code means.
+pub fn explain(code: &str) -> &'static str {
+    match code {
+        "episode_count" => "info.json total_episodes disagrees with the episode metadata",
+        "frame_count" => "info.json total_frames disagrees with the sum of the episode lengths",
+        "episode_index" => "episode indices do not run 0..n-1 in order",
+        "range_length" => "an episode's dataset index range is not as long as the episode",
+        "range_gap" => "an episode does not start where the previous one ended",
+        "index_mismatch" => "the global index column does not continue across the episode",
+        "data_missing" => "a data parquet file listed by the metadata does not exist",
+        "data_unreadable" => "a data parquet file is truncated, unfinalized or not parquet",
+        "length_mismatch" => "an episode has a different number of rows than its metadata says",
+        "episode_rows_missing" => "the data file has no rows for an episode its metadata lists",
+        "timestamp_drift" => "a timestamp differs from frame_index / fps by more than 1e-4 s",
+        "timestamp_not_monotonic" => "timestamps do not strictly increase within an episode",
+        "frame_index" => "frame_index does not run 0..n-1 within the episode",
+        "column_missing" => "the timestamp column is missing or not a float",
+        "column_shape" => "a feature column does not have a consistent row width",
+        "video_missing" => "a video file listed by the metadata does not exist",
+        "video_unreadable" => "a video file is truncated or not a valid mp4",
+        "video_fps" => "a video's frame rate differs from the fps in info.json",
+        "video_frame_count" => "the video holds a different number of frames than the episode",
+        "video_span_length" => "the episode's span in a shared video is not as long as the episode",
+        "video_span_beyond_end" => "the episode's span reaches past the end of the video",
+        "nonstandard_features" => "there is no action feature, which policies expect",
+        "non_finite" => "a float feature contains NaN or Inf",
+        "action_constant" => "the action is identical on every frame",
+        "idle_episode" => "more than half of the frames repeat the previous action",
+        _ => "",
+    }
+}
+
 /// Timestamps may deviate from frame_index/fps by this much (LeRobot's default tolerance).
 const TIMESTAMP_TOL_S: f64 = 1e-4;
 
@@ -192,6 +253,24 @@ pub fn validate_with(ds: &Dataset, jobs: usize) -> Result<Vec<Issue>> {
         .build()
         .context("building thread pool")?;
     Ok(pool.install(|| run(ds)))
+}
+
+/// Validate several datasets on one shared pool of `jobs` threads (0 = one per core). Results come back in
+/// input order, so the report does not depend on scheduling.
+pub fn validate_paths(
+    paths: &[PathBuf],
+    jobs: usize,
+) -> Result<Vec<(PathBuf, Result<Vec<Issue>>)>> {
+    let pool = rayon::ThreadPoolBuilder::new()
+        .num_threads(jobs)
+        .build()
+        .context("building thread pool")?;
+    Ok(pool.install(|| {
+        paths
+            .par_iter()
+            .map(|p| (p.clone(), Dataset::open(p.clone()).map(|ds| run(&ds))))
+            .collect()
+    }))
 }
 
 fn run(ds: &Dataset) -> Vec<Issue> {
