@@ -1,6 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="128" height="128" role="img" aria-label="lecop">
-  <title>lecop</title>
-  <path d="M32 3 56 11v19c0 15-10 25-24 31C18 55 8 45 8 30V11Z" fill="#D9481F"/>
-  <path d="M32 3 56 11v19c0 15-10 25-24 31V3Z" fill="#000" opacity=".12"/>
-  <path d="m20 32 9 9 16-18" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 380" width="400" height="380" role="img" aria-label="lecop robot cop, line drawing" fill="none" stroke="#14202E" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+<title>lecop</title>
+<rect width="400" height="380" rx="28" fill="#F3EFE6" stroke="none"/>
+<g fill="#F3EFE6">
+<path d="M104 330Q104 298 150 294H250Q296 298 296 330V346H104Z"/>
+<rect x="176" y="272" width="48" height="26" rx="6"/>
+<rect x="98" y="176" width="22" height="50" rx="7"/>
+<rect x="280" y="176" width="22" height="50" rx="7"/>
+<rect x="118" y="124" width="164" height="154" rx="30"/>
+</g>
+<path d="M118 150H282M118 252Q200 266 282 252" stroke-width="1.4" opacity=".5"/>
+<g fill="#F3EFE6">
+<path d="M108 124Q108 70 200 66Q292 70 292 124Z"/>
+<path d="M92 132Q200 156 308 132L292 124H108Z"/>
+</g>
+<path d="M200 66V42" stroke-width="2.4"/><circle cx="200" cy="34" r="8" fill="#D9481F" stroke="#14202E"/>
+<path d="M182 34H170M230 34h-12M188 22l-6-7M212 22l6-7" stroke="#D9481F" stroke-width="2.4"/>
+<path d="M200 82l17 6v13c0 10-7 17-17 21-10-4-17-11-17-21V88Z" fill="#D9481F" stroke="#14202E" stroke-width="2"/>
+<path d="m192 102 6 6 11-12" stroke="#F3EFE6" stroke-width="3"/>
+<g fill="#14202E">
+<path d="M136 172H190Q195 172 194 178L187 206Q185 215 176 215H152Q143 215 141 206L135 180Q134 172 136 172Z"/>
+<path d="M264 172H210Q205 172 206 178L213 206Q215 215 224 215H248Q257 215 259 206L265 180Q266 172 264 172Z"/>
+</g>
+<path d="M194 181Q200 176 206 181M136 182L120 184M264 182L280 184" stroke-width="2.6"/>
+<path d="M146 186l12-8M156 202l20-18M224 186l12-8M234 202l20-18" stroke="#F3EFE6" stroke-width="1.8" opacity=".75"/>
+<path d="M178 244Q200 254 222 244"/>
+<path d="M200 312l11 4v8c0 7-5 12-11 14-6-2-11-7-11-14v-8Z" fill="#D9481F" stroke-width="2"/>
+<path d="M150 346H250" stroke-width="1.4" opacity=".6"/>
 </svg>

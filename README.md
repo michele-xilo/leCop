@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="lecop" width="96">
+  <img src="assets/logo.svg" alt="lecop: a robot cop with sunglasses" width="160">
 </p>
 
 <h1 align="center">lecop</h1>
