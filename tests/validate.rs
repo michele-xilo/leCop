@@ -1463,3 +1463,137 @@ fn no_chunk_size_means_no_chunk_check() {
     assert!(run_chunk(None).is_empty());
     assert!(run_chunk(Some(10)).is_empty());
 }
+
+fn v2_with_edit(edit: impl FnOnce(&Path)) -> Vec<Issue> {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(10), good(10)], None);
+    edit(dir.path());
+    validate(&Dataset::open(dir.path()).unwrap()).unwrap()
+}
+
+#[test]
+fn flags_metadata_length_that_differs_from_the_data_file() {
+    let v = v2_with_edit(|root| {
+        let rows = r#"{"episode_index": 0, "length": 12, "tasks": ["t"]}
+{"episode_index": 1, "length": 10, "tasks": ["t"]}
+"#;
+        fs::write(root.join("meta/episodes.jsonl"), rows).unwrap();
+    });
+    let m = v
+        .iter()
+        .find(|i| i.code == "length_mismatch")
+        .expect("{v:?}");
+    assert_eq!((m.severity, m.episode), (Severity::Error, Some(0)));
+    assert!(
+        m.message.contains("12") && m.message.contains("10"),
+        "{v:?}"
+    );
+}
+
+#[test]
+fn flags_total_episodes_that_disagrees_with_the_metadata() {
+    let v = v2_with_edit(|root| edit_info(root, |i| i["total_episodes"] = 5.into()));
+    assert_eq!(codes(&v), ["episode_count"], "{v:?}");
+}
+
+#[test]
+fn flags_an_episode_whose_index_is_not_its_position() {
+    let v = v2_with_edit(|root| {
+        let rows = r#"{"episode_index": 0, "length": 10, "tasks": ["t"]}
+{"episode_index": 4, "length": 10, "tasks": ["t"]}
+"#;
+        fs::write(root.join("meta/episodes.jsonl"), rows).unwrap();
+    });
+    let m = v.iter().find(|i| i.code == "episode_index").expect("{v:?}");
+    assert!(m.message.contains("position 1"), "{v:?}");
+}
+
+#[test]
+fn flags_a_scalar_column_declared_wider_in_info_json() {
+    let v = v2_with_edit(|root| {
+        edit_info(root, |i| {
+            i["features"]["timestamp"]["shape"] = serde_json::json!([3])
+        });
+    });
+    let m = v.iter().find(|i| i.code == "feature_shape").expect("{v:?}");
+    assert!(m.message.contains("`timestamp`"), "{v:?}");
+}
+
+#[test]
+fn reports_a_data_file_that_is_not_parquet() {
+    let v = v2_with_edit(|root| {
+        fs::write(
+            root.join("data/chunk-000/episode_000001.parquet"),
+            b"not parquet",
+        )
+        .unwrap();
+    });
+    let m = v
+        .iter()
+        .find(|i| i.code == "data_unreadable")
+        .expect("{v:?}");
+    assert_eq!(m.episode, Some(1));
+}
+
+fn single_episode_batch(timestamps: ArrayRef, frame_index: Vec<i64>) -> RecordBatch {
+    let float = timestamps.data_type().clone();
+    let schema = Arc::new(Schema::new(vec![
+        Field::new("timestamp", float, false),
+        Field::new("frame_index", DataType::Int64, false),
+        Field::new("task_index", DataType::Int64, false),
+        Field::new(
+            "action",
+            DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM),
+            false,
+        ),
+        Field::new(
+            "observation.state",
+            DataType::FixedSizeList(Arc::new(Field::new("item", DataType::Float32, true)), DIM),
+            false,
+        ),
+    ]));
+    let e = good(10);
+    RecordBatch::try_new(
+        schema,
+        vec![
+            timestamps,
+            Arc::new(Int64Array::from(frame_index)),
+            i64s(vec![0; 10]),
+            fsl(e.action),
+            fsl(ramp(10)),
+        ],
+    )
+    .unwrap()
+}
+
+#[test]
+fn flags_a_frame_index_that_does_not_run_from_zero() {
+    let ts: Vec<f32> = (0..10).map(|i| i as f32 / FPS).collect();
+    let batch = single_episode_batch(Arc::new(Float32Array::from(ts)), (1..=10).collect());
+    let v = run_with_data_file(batch);
+    assert!(codes(&v).contains(&"frame_index"), "{v:?}");
+}
+
+#[test]
+fn reads_float64_timestamps() {
+    let ts: Vec<f64> = (0..10).map(|i| i as f64 / FPS as f64).collect();
+    let batch = single_episode_batch(Arc::new(Float64Array::from(ts)), (0..10).collect());
+    let v = run_with_data_file(batch);
+    // Only the declared float32 dtype is wrong: the values themselves are judged like float32 ones.
+    assert_eq!(codes(&v), ["feature_dtype"], "{v:?}");
+}
+
+#[test]
+fn step_limit_counts_the_other_episodes_that_break_it() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20), good(20), good(20)], None);
+    let limits: Limits =
+        serde_json::from_value(serde_json::json!({ "action": {"max_step": 0.001} })).unwrap();
+    let checks = Checks {
+        limits,
+        ..Checks::default()
+    };
+    let v = validate_with_checks(&Dataset::open(dir.path()).unwrap(), 1, &checks).unwrap();
+    assert_eq!(codes(&v), ["step_limit"], "{v:?}");
+    assert!(v[0].message.contains("and 2 more episodes"), "{v:?}");
+}

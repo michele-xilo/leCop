@@ -183,3 +183,13 @@ pub(super) fn numeric_issues(extras: &[GroupExtra], action: Option<&str>) -> Vec
         })
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn zero_width_columns_have_no_dimensions() {
+        assert!(dim_stats(&[1.0, 2.0], 0).is_empty());
+    }
+}
