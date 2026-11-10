@@ -16,6 +16,13 @@ struct PerDataset {
 
 #[derive(Debug, Default, Deserialize)]
 #[serde(deny_unknown_fields)]
+struct Training {
+    /// Frames a training window spans: a policy's chunk size.
+    chunk_size: Option<usize>,
+}
+
+#[derive(Debug, Default, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Config {
     #[serde(default)]
     ignore: Vec<String>,
@@ -29,6 +36,8 @@ pub struct Config {
     /// Per-feature value bounds and the largest action step; a breach is an error.
     #[serde(default)]
     limits: Limits,
+    #[serde(default)]
+    training: Training,
     #[serde(default, rename = "per-dataset")]
     per_dataset: BTreeMap<String, PerDataset>,
     #[serde(skip)]
@@ -69,8 +78,15 @@ impl Config {
                 bail!("limits.{name} in {what}: `max_step` is only available for the action");
             }
         }
+        if c.training.chunk_size == Some(0) {
+            bail!("training.chunk_size in {what} must be at least 1");
+        }
         c.dir = path.parent().map(Path::to_path_buf).unwrap_or_default();
         Ok(c)
+    }
+
+    pub fn chunk_size(&self) -> Option<usize> {
+        self.training.chunk_size
     }
 
     pub fn limits(&self) -> &Limits {
