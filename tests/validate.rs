@@ -63,8 +63,13 @@ fn good(len: usize) -> Ep {
     Ep {
         len,
         ts: (0..len).map(|i| i as f32 / FPS).collect(),
+        // Steps that vary a little: a perfectly linear action has a step deviation of float noise, and every
+        // ordinary step would then look like a jump.
         action: (0..len * DIM as usize)
-            .map(|i| base + i as f32 * 0.1)
+            .map(|i| {
+                let row = i / DIM as usize;
+                base + i as f32 * 0.1 + ((row * 7) % 5) as f32 * 0.05
+            })
             .collect(),
         with_video: true,
         with_data: true,
@@ -1124,4 +1129,80 @@ fn v2_0_datasets_use_stats_json_and_are_otherwise_checked_like_v2_1() {
     fs::remove_file(dir.path().join("meta/stats.json")).unwrap();
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["stats_missing"], "{v:?}");
+}
+
+#[test]
+fn flags_an_episode_whose_action_jumps_and_names_it() {
+    let mut eps: Vec<Ep> = (0..8).map(|_| good(20)).collect();
+    eps[3].action[2 * DIM as usize] += 1000.0;
+    eps[3].action[2 * DIM as usize + 1] += 1000.0;
+    let v = run(eps, None);
+    let j: Vec<_> = v.iter().filter(|i| i.code == "action_jump").collect();
+    assert_eq!(j.len(), 1, "{v:?}");
+    assert_eq!((j[0].episode, j[0].severity), (Some(3), Severity::Warning));
+    assert!(j[0].message.starts_with("2 "), "{}", j[0].message);
+}
+
+#[test]
+fn flags_action_jumps_in_a_packed_v3_dataset() {
+    let mut eps: Vec<Ep> = (0..8).map(|_| good(20)).collect();
+    eps[6].action[5 * DIM as usize] += 1000.0;
+    eps[6].action[5 * DIM as usize + 1] += 1000.0;
+    let v = run_v3(eps);
+    let j: Vec<_> = v.iter().filter(|i| i.code == "action_jump").collect();
+    assert_eq!(j.len(), 1, "{v:?}");
+    assert_eq!(j[0].episode, Some(6));
+}
+
+#[test]
+fn lists_at_most_five_jumping_episodes_and_counts_the_rest() {
+    // Jumps inflate the step deviation they are judged by, so there are many ordinary episodes among the seven.
+    let mut eps: Vec<Ep> = (0..40).map(|_| good(20)).collect();
+    for e in eps.iter_mut().take(7) {
+        for a in e.action.iter_mut().skip(2 * DIM as usize) {
+            *a += 1000.0;
+        }
+    }
+    let v = run(eps, None);
+    let j: Vec<_> = v.iter().filter(|i| i.code == "action_jump").collect();
+    assert_eq!(j.len(), 6, "{v:?}");
+    let summary = j.iter().find(|i| i.episode.is_none()).unwrap();
+    assert!(summary.message.contains("2 more"), "{}", summary.message);
+}
+
+fn drifting(n: usize, shift: f32) -> Vec<Ep> {
+    (0..n)
+        .map(|i| {
+            let mut e = good(20);
+            let off = if i >= n - n / 4 { shift } else { 0.0 };
+            // The same action in every episode, so only the offset can move the mean.
+            e.action = (0..20 * DIM as usize)
+                .map(|k| k as f32 * 0.1 + off)
+                .collect();
+            e.action
+                .iter_mut()
+                .enumerate()
+                .for_each(|(k, a)| *a += (i % 2) as f32 * 0.01 * k as f32);
+            e
+        })
+        .collect()
+}
+
+#[test]
+fn flags_a_shift_between_the_first_and_last_quarter_of_episodes() {
+    let v = run(drifting(12, 50.0), None);
+    let s: Vec<_> = v
+        .iter()
+        .filter(|i| i.code == "distribution_shift")
+        .collect();
+    assert_eq!(s.len(), 1, "{v:?}");
+    assert!(s[0].message.starts_with("action: "), "{}", s[0].message);
+}
+
+#[test]
+fn no_shift_without_a_drift_and_none_under_ten_episodes() {
+    let v = run(drifting(12, 0.0), None);
+    assert!(v.iter().all(|i| i.code != "distribution_shift"), "{v:?}");
+    let v = run(drifting(9, 50.0), None);
+    assert!(v.iter().all(|i| i.code != "distribution_shift"), "{v:?}");
 }

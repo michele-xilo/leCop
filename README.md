@@ -125,6 +125,8 @@ Beyond what LeRobot checks:
 | Dimension of `action` or `observation.*` that never changes | warning | `constant_dimension` |
 | Dimension on its minimum or maximum in over 99% of frames | warning | `clipped_dimension` |
 | Values more than 10 standard deviations from the mean of their dimension (judged from 100 frames up) | warning | `outlier_values` |
+| A frame-to-frame action change whose mean over the dimensions is more than 8 standard deviations from the usual step (up to 5 episodes listed, the rest counted) | warning | `action_jump` |
+| The mean of the action or a state column in the last quarter of the episodes more than 3 standard deviations (of the first quarter) from the first quarter's (judged from 10 episodes up) | warning | `distribution_shift` |
 
 Malformed files are reported, not crashed on.
 
@@ -136,16 +138,16 @@ installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **13 ms** | 706 ms | n/a | 54x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **8 ms** | 452 ms | n/a | 56x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **7 ms** | 431 ms | n/a | 62x |
-| `v3_pusht` (v3.0) | 🏆 **8 ms** | 622 ms | 15,792 ms | 78x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 483 ms | 2,738 ms | 48x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **8 ms** | 427 ms | 3,218 ms | 53x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **27 ms** | 463 ms | 683 ms | 17x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **14 ms** | 475 ms | 7,845 ms | 34x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 425 ms | 2,965 ms | 35x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **13 ms** | 481 ms | 7,326 ms | 37x |
+| `pusht` (v2.1) | 🏆 **14 ms** | 739 ms | n/a | 53x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 471 ms | n/a | 52x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 458 ms | n/a | 57x |
+| `v3_pusht` (v3.0) | 🏆 **12 ms** | 635 ms | 16,505 ms | 53x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 482 ms | 2,919 ms | 48x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **9 ms** | 452 ms | 3,527 ms | 50x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **29 ms** | 498 ms | 770 ms | 17x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **20 ms** | 511 ms | 7,812 ms | 26x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 400 ms | 2,876 ms | 33x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **15 ms** | 493 ms | 7,936 ms | 33x |
 
 The tools check different things (see the coverage table below), so this compares speed only.
 
@@ -172,11 +174,11 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Streams cover whole episodes; observation/action delay | ❌ | ❌ | ✅ delay by config |
 | NaN and Inf in feature columns | ✅ | ✅ | ✅ |
 | Numeric limits per feature | ❌ | ❌ | ⚠️ needs config |
-| Implausible jumps between frames | ❌ | ✅ | ⚠️ needs config |
+| Implausible jumps between frames | ✅ | ✅ | ⚠️ needs config |
 | Constant or frozen action, idle episodes | ✅ | ✅ | ❌ |
 | Stuck or constant dimensions, zero variance | ✅ | ✅ | ❌ |
 | Values clipped at their min or max | ✅ over 99% of frames | ✅ | ❌ |
-| Extreme outliers, distribution shift across episodes | ⚠️ outliers only | ✅ | ❌ |
+| Extreme outliers, distribution shift across episodes | ✅ | ✅ | ❌ |
 | Duplicate episodes | ✅ exact action sequences | ✅ near-duplicates | ✅ exact |
 | Episode length: empty, too short, outliers | ✅ | ✅ | ❌ |
 | Statistics file present and covering every feature | ✅ | ✅ | ❌ |
