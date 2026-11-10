@@ -38,7 +38,7 @@ fn bench(c: &mut Criterion) {
     for real in [
         "v3_aloha_sim_insertion_human",
         "svla_so101_pickplace",
-        "c_careattrs_mug2v2",
+        "c_so101_pill_sorting_medoc",
     ] {
         let p = Path::new("datasets").join(real);
         if p.exists() {

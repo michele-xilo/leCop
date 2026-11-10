@@ -100,6 +100,9 @@ max_step = 0.2                     # largest change of any action dimension betw
 
 [training]
 chunk_size = 100                   # frames a policy window spans; episodes shorter than this are reported
+
+[numeric]
+clipped_fraction = 0.05            # report a dimension with this fraction of its values (or more) on its min or max
 ```
 
 Unknown issue codes are an error. Ignored findings are counted: `Ignored by config: idle_episode (5)`.
@@ -149,7 +152,7 @@ Beyond what LeRobot checks:
 | Episode length more than 3 standard deviations from the mean (judged from 10 episodes up) | warning | `episode_length_outlier` |
 | Episode whose action sequence repeats an earlier one | warning | `duplicate_episode` |
 | Dimension of `action` or `observation.*` that never changes | warning | `constant_dimension` |
-| Dimension on its minimum or maximum in over 99% of frames | warning | `clipped_dimension` |
+| Dimension with 5% or more of its frames on its minimum or maximum (`clipped_fraction` under `[numeric]`; a gripper that stays closed counts) | warning | `clipped_dimension` |
 | Values more than 10 standard deviations from the mean of their dimension (judged from 100 frames up) | warning | `outlier_values` |
 | A frame-to-frame action change whose mean over the dimensions is more than 8 standard deviations from the usual step (up to 5 episodes listed, the rest counted) | warning | `action_jump` |
 | The mean of the action or a state column in the last quarter of the episodes more than 3 standard deviations (of the first quarter) from the first quarter's (judged from 10 episodes up) | warning | `distribution_shift` |
@@ -174,16 +177,16 @@ installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **14 ms** | 705 ms | n/a | 50x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **8 ms** | 453 ms | n/a | 57x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **7 ms** | 437 ms | n/a | 62x |
-| `v3_pusht` (v3.0) | 🏆 **10 ms** | 607 ms | 16,166 ms | 61x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 482 ms | 2,790 ms | 48x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **9 ms** | 427 ms | 3,334 ms | 47x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **29 ms** | 506 ms | 702 ms | 17x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **18 ms** | 491 ms | 8,126 ms | 27x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 410 ms | 2,880 ms | 32x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **15 ms** | 513 ms | 8,072 ms | 34x |
+| `pusht` (v2.1) | 🏆 **14 ms** | 757 ms | n/a | 54x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 474 ms | n/a | 53x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 471 ms | n/a | 59x |
+| `v3_pusht` (v3.0) | 🏆 **11 ms** | 612 ms | 15,735 ms | 56x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 556 ms | 3,409 ms | 56x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **10 ms** | 506 ms | 3,954 ms | 51x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **33 ms** | 566 ms | 859 ms | 17x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **22 ms** | 580 ms | 8,077 ms | 26x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 406 ms | 2,711 ms | 31x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 466 ms | 7,512 ms | 33x |
 
 The tools check different things (see the coverage table below), so this compares speed only.
 
@@ -213,7 +216,7 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Implausible jumps between frames | ✅ also `max_step` by config | ✅ | ⚠️ needs config |
 | Constant or frozen action, idle episodes | ✅ | ✅ | ❌ |
 | Stuck or constant dimensions, zero variance | ✅ | ✅ | ❌ |
-| Values clipped at their min or max | ✅ over 99% of frames | ✅ | ❌ |
+| Values clipped at their min or max | ✅ 5% of frames or more, configurable | ✅ | ❌ |
 | Extreme outliers, distribution shift across episodes | ✅ | ✅ | ❌ |
 | Duplicate episodes | ✅ exact action sequences | ✅ near-duplicates | ✅ exact |
 | Episode length: empty, too short, outliers | ✅ | ✅ | ❌ |

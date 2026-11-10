@@ -44,17 +44,14 @@ impl DimStats {
     }
 }
 
-/// Per-dimension statistics of `rows * width` values, row-major. The counts at the extremes are only needed for
-/// dimensions that sit on one (clipping), so a sample of rows decides which dimensions get an exact count pass:
-/// counting every value cost about a third of the whole statistics time (criterion, synthetic 600k frames).
-// ponytail: a dimension counts as possibly clipped when over 90% of every 16th row is on an extreme; a file where
-// that holds for under 90% of rows but the whole dataset is over 99% on the extreme is missed. Count exactly if it matters.
+/// Per-dimension statistics of `rows * width` values, row-major, including how many values sit exactly on each
+/// dimension's minimum and maximum.
 pub fn dim_stats(vals: &[f64], width: usize) -> Vec<DimStats> {
     let mut st = vec![DimStats::empty(); width];
     if width == 0 {
         return st;
     }
-    // Separate arrays rather than a Vec<DimStats>: the loop vectorizes over dimensions.
+    // Separate arrays rather than a Vec<DimStats>: the loops vectorize over dimensions.
     let (mut mn, mut mx) = (vec![f64::INFINITY; width], vec![f64::NEG_INFINITY; width]);
     let (mut sum, mut sumsq) = (vec![0.0f64; width], vec![0.0f64; width]);
     for row in vals.chunks_exact(width) {
@@ -66,29 +63,32 @@ pub fn dim_stats(vals: &[f64], width: usize) -> Vec<DimStats> {
             sumsq[j] += x * x;
         }
     }
-    for (j, s) in st.iter_mut().enumerate() {
-        (s.min, s.max, s.sum, s.sumsq) = (mn[j], mx[j], sum[j], sumsq[j]);
-    }
-    let rows = vals.len() / width;
-    let (mut lo, mut hi, mut sampled) = (vec![0u64; width], vec![0u64; width], 0u64);
-    for row in vals.chunks_exact(width).step_by(16) {
-        sampled += 1;
-        for (j, &x) in row.iter().enumerate() {
-            lo[j] += u64::from(x == st[j].min);
-            hi[j] += u64::from(x == st[j].max);
+    let (mut lo, mut hi) = (vec![0u64; width], vec![0u64; width]);
+    for row in vals.chunks_exact(width) {
+        for j in 0..width {
+            lo[j] += u64::from(row[j] == mn[j]);
+            hi[j] += u64::from(row[j] == mx[j]);
         }
     }
+    let rows = (vals.len() / width) as u64;
     for (j, s) in st.iter_mut().enumerate() {
-        s.n = rows as u64;
-        if lo[j] * 10 > sampled * 9 || hi[j] * 10 > sampled * 9 {
-            for row in vals.chunks_exact(width) {
-                s.at_min += u64::from(row[j] == s.min);
-                s.at_max += u64::from(row[j] == s.max);
-            }
-        }
+        *s = DimStats {
+            n: rows,
+            min: mn[j],
+            max: mx[j],
+            sum: sum[j],
+            sumsq: sumsq[j],
+            at_min: lo[j],
+            at_max: hi[j],
+        };
     }
     st
 }
+
+/// A dimension is reported as clipped when this fraction of its values or more sit on its minimum or maximum
+/// (lerobot-doctor's bar). Grippers that stay closed and actions that saturate by design reach it too, so it is
+/// configurable under `[numeric]` in lecop.toml.
+pub(super) const DEFAULT_CLIPPED_FRACTION: f64 = 0.05;
 
 /// Dataset-wide warnings for one feature from its merged dimension statistics: dimensions that never change, sit on
 /// one extreme, or reach values far from the mean. Judged from 100 frames up. `(code, message)`.
@@ -96,6 +96,7 @@ pub fn numeric_findings(
     feature: &str,
     st: &[DimStats],
     is_action: bool,
+    clipped_fraction: f64,
 ) -> Vec<(&'static str, String)> {
     let mut out = Vec::new();
     let n = st.first().map_or(0, |s| s.n);
@@ -121,7 +122,7 @@ pub fn numeric_findings(
         } else {
             (s.at_min, s.min, "minimum")
         };
-        if at as f64 / nf > 0.99 {
+        if at as f64 / nf >= clipped_fraction {
             out.push((
                 "clipped_dimension",
                 format!(
@@ -171,11 +172,15 @@ pub(super) fn merge_stats(extras: &[GroupExtra]) -> BTreeMap<&str, Vec<DimStats>
     merged
 }
 
-pub(super) fn numeric_issues(extras: &[GroupExtra], action: Option<&str>) -> Vec<Tagged> {
+pub(super) fn numeric_issues(
+    extras: &[GroupExtra],
+    action: Option<&str>,
+    clipped_fraction: f64,
+) -> Vec<Tagged> {
     merge_stats(extras)
         .iter()
         .flat_map(|(key, st)| {
-            numeric_findings(key, st, Some(*key) == action)
+            numeric_findings(key, st, Some(*key) == action, clipped_fraction)
                 .into_iter()
                 .map(|(code, message)| {
                     tag(None, PHASE_DATA, Severity::Warning, None, code, message)

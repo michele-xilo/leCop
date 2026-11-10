@@ -20,7 +20,7 @@ use self::episodes::{
 };
 use self::jump_shift::{jump_issues, shift_issues};
 use self::limits::limit_issues;
-use self::numeric::numeric_issues;
+use self::numeric::{DEFAULT_CLIPPED_FRACTION, numeric_issues};
 use self::portability::portability_findings;
 use self::stats::{stats_findings, zero_std_findings};
 use self::tasks::{task_count, task_ids, task_index_issue};
@@ -59,6 +59,8 @@ pub struct Checks {
     pub decode: bool,
     /// Frames a training window spans (a policy's chunk size); episodes shorter than this are reported.
     pub chunk_size: Option<usize>,
+    /// Fraction of a dimension's values at its minimum or maximum from which it is reported as clipped; 0.05 if unset.
+    pub clipped_fraction: Option<f64>,
 }
 
 /// Every issue code lecop can report.
@@ -337,7 +339,11 @@ pub(super) fn run_tagged(ds: &Dataset, checks: &Checks) -> Vec<Tagged> {
         .flat_map(|e| e.tasks.iter().copied())
         .collect();
     tagged.extend(task_index_issue(&used, task_ids(ds).as_ref()));
-    tagged.extend(numeric_issues(&extras, action));
+    tagged.extend(numeric_issues(
+        &extras,
+        action,
+        checks.clipped_fraction.unwrap_or(DEFAULT_CLIPPED_FRACTION),
+    ));
     tagged.extend(limit_issues(ds, action, &extras, &checks.limits));
     tagged.extend(shift_issues(ds, &extras));
     tagged.extend(jump_issues(ds, action, &extras));

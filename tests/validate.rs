@@ -1597,3 +1597,41 @@ fn step_limit_counts_the_other_episodes_that_break_it() {
     assert_eq!(codes(&v), ["step_limit"], "{v:?}");
     assert!(v[0].message.contains("and 2 more episodes"), "{v:?}");
 }
+
+/// 200 frames whose first action dimension rises until frame 160 and then stays at that value: 20% of it is at its maximum.
+fn run_clipped(fraction: Option<f64>) -> Vec<Issue> {
+    let mut e = good(200);
+    let cap = e.action[160 * DIM as usize];
+    for row in 160..200 {
+        e.action[row * DIM as usize] = cap;
+    }
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[e], None);
+    validate_with_checks(
+        &Dataset::open(dir.path()).unwrap(),
+        1,
+        &Checks {
+            clipped_fraction: fraction,
+            ..Checks::default()
+        },
+    )
+    .unwrap()
+}
+
+#[test]
+fn warns_on_a_dimension_with_5_percent_of_its_values_at_an_extreme() {
+    let v = run_clipped(None);
+    assert_eq!(codes(&v), ["clipped_dimension"], "{v:?}");
+    assert!(v[0].message.starts_with("action: dimension 0"), "{v:?}");
+    assert!(v[0].message.contains("20.0%"), "{v:?}");
+}
+
+#[test]
+fn a_higher_clipped_fraction_lets_it_pass() {
+    assert!(run_clipped(Some(0.5)).is_empty());
+}
+
+#[test]
+fn a_lower_clipped_fraction_still_flags_it() {
+    assert_eq!(codes(&run_clipped(Some(0.1))), ["clipped_dimension"]);
+}

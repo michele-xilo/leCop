@@ -32,4 +32,3 @@ known_miss	c_so100_press_red_button	lerobot-doctor	distribution_shift	doctor tre
 known_miss	c_so100_press_red_button	lerobot-doctor	index_not_sequential	same dataset, episodes 14-28 have no rows; lecop reports episode_rows_missing
 known_miss	c_so100_press_red_button	lerobot-doctor	missing_episode_indices	same dataset, lecop reports episode_rows_missing
 known_miss	c_so100_press_red_button	physlint	duplication.exact_episodes	empty episodes 15-28 compare equal to episode 14; lecop reports episode_rows_missing
-known_miss	c_careattrs_mug2v2	lerobot-doctor	clipped_dimension	#50 doctor flags 66% at minimum, lecop requires 99%
