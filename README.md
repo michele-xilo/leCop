@@ -152,6 +152,8 @@ Beyond what LeRobot checks:
 | The mean of the action or a state column in the last quarter of the episodes more than 3 standard deviations (of the first quarter) from the first quarter's (judged from 10 episodes up) | warning | `distribution_shift` |
 | `data_path` or `video_path` is an absolute path (the dataset only works on this machine) | warning | `path_absolute` |
 | A file in `data/` that is not parquet (`.DS_Store`, leftovers) | warning | `data_stray_file` |
+| A symbolic link in the dataset (not reported inside a Hub cache `snapshots/` directory, where links are the layout) | warning | `symlink` |
+| A file over 5 GB, the size the Hub recommends staying under | warning | `file_oversized` |
 | With `--decode`: video frames the decoder rejects | error | `video_decode` |
 | With `--decode`: 30 or more frames in a row identical to the one before, or black | warning | `video_frozen`, `video_black` |
 | A value below `min` or above `max` set under `[limits."feature"]` in `lecop.toml` (a list of the wrong width is `limits_width`) | error | `out_of_range`, `limits_width` |
@@ -215,8 +217,7 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Video frame count against the episode (container tables) | ✅ | ✅ | ❌ |
 | Video resolution against `info.json` | ✅ | ✅ | ❌ |
 | Frames decode, frozen frames, black frames | ✅ opt-in `--decode` (H.264 and AV1) | ⚠️ first frame only | ✅ |
-| Portability: absolute paths, stray files in `data/` | ✅ | ✅ | ❌ |
-| Portability: symlinks, oversized files | ❌ | ✅ | ❌ |
+| Portability: absolute paths, symlinks, stray files in `data/`, oversized files | ✅ | ✅ | ❌ |
 | Training readiness: normalisation, policy windows, `delta_timestamps` | ❌ | ✅ | ❌ |
 | Only leCop: v3 video span checks, `range_*`, `index_mismatch` | ✅ | ❌ | ❌ |
 

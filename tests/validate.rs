@@ -1345,3 +1345,52 @@ fn decode_says_when_a_video_cannot_be_decoded_at_all() {
     assert_eq!(f.severity, Severity::Warning, "{v:?}");
     assert!(f.message.contains("not decoded"), "{v:?}");
 }
+
+/// Replace an episode's data file with a symlink to a copy stored in `blobs/` next to the dataset, as a Hub cache does.
+#[cfg(unix)]
+fn symlink_data_file(ds_root: &Path, blobs: &Path) {
+    fs::create_dir_all(blobs).unwrap();
+    let file = ds_root.join("data/chunk-000/episode_000000.parquet");
+    let blob = blobs.join("blob");
+    fs::rename(&file, &blob).unwrap();
+    std::os::unix::fs::symlink(&blob, &file).unwrap();
+}
+
+#[cfg(unix)]
+#[test]
+fn warns_on_a_symlink_inside_the_dataset() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    symlink_data_file(dir.path(), &dir.path().join("elsewhere"));
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    let c = codes(&v);
+    assert!(c.contains(&"symlink"), "{v:?}");
+    let s = v.iter().find(|i| i.code == "symlink").unwrap();
+    assert_eq!(s.severity, Severity::Warning);
+    assert!(s.message.contains("episode_000000.parquet"), "{v:?}");
+}
+
+#[cfg(unix)]
+#[test]
+fn does_not_warn_on_symlinks_in_a_hub_cache_snapshot() {
+    let dir = tempfile::tempdir().unwrap();
+    let root = dir.path().join("datasets--org--name/snapshots/abc123");
+    write_ds(&root, &[good(20)], None);
+    symlink_data_file(&root, &dir.path().join("datasets--org--name/blobs"));
+    let v = validate(&Dataset::open(&root).unwrap()).unwrap();
+    assert!(v.is_empty(), "{v:?}");
+}
+
+#[test]
+fn warns_on_a_file_over_5_gb() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    // A sparse file: it reports 6 GiB and takes no disk.
+    fs::File::create(dir.path().join("meta/big.bin"))
+        .unwrap()
+        .set_len(6 << 30)
+        .unwrap();
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["file_oversized"], "{v:?}");
+    assert!(v[0].message.contains("meta/big.bin"), "{v:?}");
+}
