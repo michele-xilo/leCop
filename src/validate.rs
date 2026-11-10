@@ -56,7 +56,7 @@ pub struct Checks {
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 52] = [
+pub const ALL_CODES: [&str; 54] = [
     "episode_count",
     "action_jump",
     "distribution_shift",
@@ -109,6 +109,8 @@ pub const ALL_CODES: [&str; 52] = [
     "video_decode",
     "video_frozen",
     "video_black",
+    "symlink",
+    "file_oversized",
 ];
 
 /// One sentence saying what an issue code means.
@@ -135,6 +137,10 @@ pub fn explain(code: &str) -> &'static str {
         }
         "out_of_range" => "a value is outside the min or max set for its feature in lecop.toml",
         "step_limit" => "the action changes between two frames by more than max_step in lecop.toml",
+        "symlink" => {
+            "the dataset contains a symbolic link, which breaks when it is copied or uploaded"
+        }
+        "file_oversized" => "a file is over 5 GB, the size the Hub recommends staying under",
         "video_decode" => "video frames could not be decoded (only with --decode)",
         "video_frozen" => {
             "a camera repeats the same picture for a second or more (only with --decode)"
@@ -1146,6 +1152,21 @@ pub fn validate_paths(
 }
 
 fn run(ds: &Dataset, checks: &Checks) -> Vec<Issue> {
+    // The file walk is mostly waiting on the filesystem: run it beside the checks instead of before them.
+    let (port, mut tagged) = rayon::join(|| portability_findings(ds), || run_tagged(ds, checks));
+    tagged.extend(
+        port.into_iter()
+            .map(|(code, m)| tag(None, PHASE_META, Severity::Warning, None, code, m)),
+    );
+    // Stable sort: ties keep their within-phase order, so the report does not depend on thread scheduling.
+    tagged.sort_by_key(|(pos, phase, _)| (*pos, *phase));
+    // A data file missing from several separate runs of episodes is reported once.
+    let mut seen = std::collections::HashSet::new();
+    tagged.retain(|(_, _, i)| i.code != "data_missing" || seen.insert(i.message.clone()));
+    tagged.into_iter().map(|(_, _, i)| i).collect()
+}
+
+fn run_tagged(ds: &Dataset, checks: &Checks) -> Vec<Tagged> {
     let action = action_key(ds);
     let mut tagged = global_issues(ds, action);
 
@@ -1192,13 +1213,7 @@ fn run(ds: &Dataset, checks: &Checks) -> Vec<Issue> {
     tagged.extend(data.into_iter().flatten().filter(|(_, _, i)| {
         !i.code.starts_with("feature_") || seen.insert((i.code, i.message.clone()))
     }));
-
-    // Stable sort: ties keep their within-phase order, so the report does not depend on thread scheduling.
-    tagged.sort_by_key(|(pos, phase, _)| (*pos, *phase));
-    // A data file missing from several separate runs of episodes is reported once.
-    let mut seen = std::collections::HashSet::new();
-    tagged.retain(|(_, _, i)| i.code != "data_missing" || seen.insert(i.message.clone()));
-    tagged.into_iter().map(|(_, _, i)| i).collect()
+    tagged
 }
 
 /// Episodes shorter than this many frames are suspect: one second, and never fewer than 5 frames.
@@ -1425,21 +1440,30 @@ fn portability_findings(ds: &Dataset) -> Vec<(&'static str, String)> {
             )
         })
         .collect();
-    let stray = stray_files(&ds.root.join("data"));
-    if !stray.is_empty() {
-        let shown: Vec<&str> = stray.iter().take(5).map(String::as_str).collect();
-        let more = stray.len().saturating_sub(shown.len());
-        let tail = if more > 0 {
-            format!(" and {more} more")
-        } else {
-            String::new()
-        };
+    let scan = scan_files(&ds.root, LARGE_FILE);
+    if !scan.stray.is_empty() {
         out.push((
             "data_stray_file",
             format!(
-                "data/ holds files that are not parquet: {}{tail}",
-                shown.join(", ")
+                "data/ holds files that are not parquet: {}",
+                list_some(&scan.stray)
             ),
+        ));
+    }
+    // A Hub cache snapshot is made of symlinks into `blobs/` by design.
+    if !scan.symlinks.is_empty() && !ds.root.components().any(|c| c.as_os_str() == "snapshots") {
+        out.push((
+            "symlink",
+            format!(
+                "symbolic links break when the dataset is copied or uploaded: {}",
+                list_some(&scan.symlinks)
+            ),
+        ));
+    }
+    if !scan.large.is_empty() {
+        out.push((
+            "file_oversized",
+            format!("files over 5 GB: {}", list_some(&scan.large)),
         ));
     }
     out
@@ -1452,24 +1476,65 @@ fn is_absolute_template(t: &str) -> bool {
         || (b.len() > 2 && b[0].is_ascii_alphabetic() && b[1] == b':')
 }
 
-/// Paths relative to `dir` of every file below it whose extension is not `parquet`, sorted.
-fn stray_files(dir: &Path) -> Vec<String> {
-    let mut out = Vec::new();
-    let mut stack = vec![dir.to_path_buf()];
+/// Above this the Hub recommends splitting a file.
+const LARGE_FILE: u64 = 5 << 30;
+
+/// At most five of `items`, then how many more there are.
+fn list_some(items: &[String]) -> String {
+    let shown: Vec<&str> = items.iter().take(5).map(String::as_str).collect();
+    match items.len().saturating_sub(shown.len()) {
+        0 => shown.join(", "),
+        more => format!("{} and {more} more", shown.join(", ")),
+    }
+}
+
+/// What a walk over the dataset's files found; paths are relative to the root and sorted.
+#[derive(Default)]
+struct Scan {
+    /// Files below `data/` that are not parquet.
+    stray: Vec<String>,
+    symlinks: Vec<String>,
+    /// Files of at least `limit` bytes, with their size.
+    large: Vec<String>,
+}
+
+/// Walk every file below `root` without following links.
+fn scan_files(root: &Path, limit: u64) -> Scan {
+    let mut out = Scan::default();
+    let mut stack = vec![root.to_path_buf()];
     while let Some(d) = stack.pop() {
         let Ok(rd) = std::fs::read_dir(&d) else {
             continue;
         };
         for e in rd.flatten() {
-            let p = e.path();
-            if e.file_type().is_ok_and(|t| t.is_dir()) {
+            let (p, Ok(kind)) = (e.path(), e.file_type()) else {
+                continue;
+            };
+            let name = || p.strip_prefix(root).unwrap_or(&p).display().to_string();
+            if kind.is_symlink() {
+                out.symlinks.push(name());
+            } else if kind.is_dir() {
                 stack.push(p);
-            } else if p.extension().is_none_or(|x| x != "parquet") {
-                out.push(p.strip_prefix(dir).unwrap_or(&p).display().to_string());
+            } else {
+                if p.extension().is_none_or(|x| x != "parquet") && p.starts_with(root.join("data"))
+                {
+                    out.stray.push(name());
+                }
+                if let Ok(m) = e.metadata()
+                    && m.len() >= limit
+                {
+                    out.large.push(format!(
+                        "{} ({:.1} GB)",
+                        name(),
+                        m.len() as f64 / (1u64 << 30) as f64
+                    ));
+                }
             }
         }
     }
-    out.sort();
+    out.stray.sort();
+    out.symlinks.sort();
+    out.large.sort();
     out
 }
 
@@ -1512,9 +1577,6 @@ fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
                 ds.episodes.len()
             ),
         ));
-    }
-    for (code, message) in portability_findings(ds) {
-        v.push(tag(None, PHASE_META, Warning, None, code, message));
     }
     for (code, message) in stats_findings(ds) {
         v.push(tag(
@@ -2066,6 +2128,12 @@ fn flatten(c: &ArrayRef) -> Option<(Vec<f64>, usize)> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn scanning_a_directory_that_cannot_be_read_finds_nothing() {
+        let scan = super::scan_files(std::path::Path::new("no/such/dir"), 1);
+        assert!(scan.stray.is_empty() && scan.symlinks.is_empty() && scan.large.is_empty());
+    }
+
     #[test]
     fn absolute_templates_are_recognised() {
         assert!(super::is_absolute_template(
