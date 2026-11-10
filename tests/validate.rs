@@ -1393,6 +1393,7 @@ fn warns_on_a_file_over_5_gb() {
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["file_oversized"], "{v:?}");
     assert!(v[0].message.contains("meta/big.bin"), "{v:?}");
+}
 
 fn v3_with_action_std(std: serde_json::Value) -> Vec<Issue> {
     let dir = tempfile::tempdir().unwrap();
@@ -1402,6 +1403,19 @@ fn v3_with_action_std(std: serde_json::Value) -> Vec<Issue> {
     stats["action"] = serde_json::json!({ "std": std });
     fs::write(&path, stats.to_string()).unwrap();
     validate(&Dataset::open(dir.path()).unwrap()).unwrap()
+}
+
+#[test]
+fn a_statistics_file_that_is_not_an_object_is_reported_once_and_not_judged_for_std() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds_v3(dir.path(), &[good(20)]);
+    fs::write(dir.path().join("meta/stats.json"), "[1, 2]").unwrap();
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert!(!codes(&v).contains(&"stats_zero_std"), "{v:?}");
+    assert!(
+        v.iter().any(|i| i.message.contains("no statistics object")),
+        "{v:?}"
+    );
 }
 
 #[test]

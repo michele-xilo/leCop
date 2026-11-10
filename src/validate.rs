@@ -2221,6 +2221,11 @@ mod tests {
     }
 
     #[test]
+    fn zero_std_ignores_statistics_that_are_not_an_object() {
+        assert!(super::zero_std_dims(&serde_json::json!([1, 2])).is_empty());
+    }
+
+    #[test]
     fn absolute_templates_are_recognised() {
         assert!(super::is_absolute_template(
             "/data/ep_{episode_index}.parquet"
