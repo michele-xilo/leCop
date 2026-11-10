@@ -27,7 +27,7 @@ pub struct Issue {
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 44] = [
+pub const ALL_CODES: [&str; 46] = [
     "episode_count",
     "action_jump",
     "distribution_shift",
@@ -72,6 +72,8 @@ pub const ALL_CODES: [&str; 44] = [
     "non_finite",
     "action_constant",
     "idle_episode",
+    "path_absolute",
+    "data_stray_file",
 ];
 
 /// One sentence saying what an issue code means.
@@ -93,6 +95,10 @@ pub fn explain(code: &str) -> &'static str {
         "tasks_count" => {
             "info.json total_tasks disagrees with the number of tasks in the task metadata"
         }
+        "path_absolute" => {
+            "data_path or video_path in info.json is an absolute path, so the dataset only works on this machine"
+        }
+        "data_stray_file" => "the data directory holds a file that is not a parquet file",
         "frame_count" => "info.json total_frames disagrees with the sum of the episode lengths",
         "episode_index" => "episode indices do not run 0..n-1 in order",
         "range_length" => "an episode's dataset index range is not as long as the episode",
@@ -1227,6 +1233,72 @@ pub fn task_finding(
     }
 }
 
+/// Templates that start at the filesystem root make `root.join(template)` ignore the dataset root, so the files
+/// are read from wherever the template points; stray files in `data/` ship with the dataset to the Hub.
+fn portability_findings(ds: &Dataset) -> Vec<(&'static str, String)> {
+    let templates = [
+        ("data_path", Some(ds.info.data_path.as_str())),
+        ("video_path", ds.info.video_path.as_deref()),
+    ];
+    let mut out: Vec<(&'static str, String)> = templates
+        .into_iter()
+        .filter_map(|(name, t)| Some((name, t?)))
+        .filter(|(_, t)| is_absolute_template(t))
+        .map(|(name, t)| {
+            (
+                "path_absolute",
+                format!("{name} is the absolute path `{t}`"),
+            )
+        })
+        .collect();
+    let stray = stray_files(&ds.root.join("data"));
+    if !stray.is_empty() {
+        let shown: Vec<&str> = stray.iter().take(5).map(String::as_str).collect();
+        let more = stray.len().saturating_sub(shown.len());
+        let tail = if more > 0 {
+            format!(" and {more} more")
+        } else {
+            String::new()
+        };
+        out.push((
+            "data_stray_file",
+            format!(
+                "data/ holds files that are not parquet: {}{tail}",
+                shown.join(", ")
+            ),
+        ));
+    }
+    out
+}
+
+fn is_absolute_template(t: &str) -> bool {
+    let b = t.as_bytes();
+    t.starts_with('/')
+        || t.starts_with('\\')
+        || (b.len() > 2 && b[0].is_ascii_alphabetic() && b[1] == b':')
+}
+
+/// Paths relative to `dir` of every file below it whose extension is not `parquet`, sorted.
+fn stray_files(dir: &Path) -> Vec<String> {
+    let mut out = Vec::new();
+    let mut stack = vec![dir.to_path_buf()];
+    while let Some(d) = stack.pop() {
+        let Ok(rd) = std::fs::read_dir(&d) else {
+            continue;
+        };
+        for e in rd.flatten() {
+            let p = e.path();
+            if e.file_type().is_ok_and(|t| t.is_dir()) {
+                stack.push(p);
+            } else if p.extension().is_none_or(|x| x != "parquet") {
+                out.push(p.strip_prefix(dir).unwrap_or(&p).display().to_string());
+            }
+        }
+    }
+    out.sort();
+    out
+}
+
 fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
     use Severity::*;
     let mut v = Vec::new();
@@ -1266,6 +1338,9 @@ fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
                 ds.episodes.len()
             ),
         ));
+    }
+    for (code, message) in portability_findings(ds) {
+        v.push(tag(None, PHASE_META, Warning, None, code, message));
     }
     for (code, message) in stats_findings(ds) {
         v.push(tag(
@@ -1751,6 +1826,17 @@ fn flatten(c: &ArrayRef) -> Option<(Vec<f64>, usize)> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn absolute_templates_are_recognised() {
+        assert!(super::is_absolute_template(
+            "/data/ep_{episode_index}.parquet"
+        ));
+        assert!(super::is_absolute_template("C:\\data\\ep.parquet"));
+        assert!(!super::is_absolute_template(
+            "data/chunk-{episode_chunk:03d}/ep.parquet"
+        ));
+    }
+
     use super::*;
 
     #[test]
