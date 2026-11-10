@@ -25,8 +25,8 @@ lerobot-doctor	video_frame_count	video_frame_count	matched
 physlint	duplication.exact_episodes	duplicate_episode	matched
 physlint	episode.valid_boundaries	episode_rows_missing,range_length,range_gap,episode_empty	matched
 physlint	manifest.required_streams	nonstandard_features	matched
-physlint	video.decode	-	gap	#29 opt-in frame decoding
-physlint	video.frozen_frames	-	gap	#29 opt-in frame decoding
+physlint	video.decode	-	gap	--decode reports video_decode; the default test runs without the decode feature
+physlint	video.frozen_frames	-	gap	--decode reports video_frozen (repeated pictures); physlint's rule also flags simulated and d3il videos that leCop does not
 # known_miss	dataset	tool	kind	reason: a mapped finding lecop deliberately does not report on this dataset
 known_miss	c_so100_press_red_button	lerobot-doctor	distribution_shift	doctor treats its 29 data files as episodes; lecop sees no rows in the last quarter of episodes
 known_miss	c_so100_press_red_button	lerobot-doctor	index_not_sequential	same dataset, episodes 14-28 have no rows; lecop reports episode_rows_missing

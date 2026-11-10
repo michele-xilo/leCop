@@ -5,7 +5,7 @@ use lecop::{
     dataset::Dataset,
     discover::find_datasets,
     report::{self, DatasetReport, Format, Options},
-    validate::validate_paths,
+    validate::{Checks, validate_paths},
 };
 use std::{io::IsTerminal, path::PathBuf, process::ExitCode};
 
@@ -56,6 +56,10 @@ enum Cmd {
         /// Print only the summary, and nothing on success
         #[arg(short, long)]
         quiet: bool,
+        /// Decode the video frames and report undecodable, frozen and black cameras. Slow; needs a build with
+        /// `--features decode`.
+        #[arg(long)]
+        decode: bool,
         /// Use this config file instead of the nearest lecop.toml
         #[arg(long, conflicts_with = "isolated")]
         config: Option<PathBuf>,
@@ -78,6 +82,7 @@ struct ValidateArgs {
     no_color: bool,
     statistics: bool,
     quiet: bool,
+    decode: bool,
     config: Option<PathBuf>,
     isolated: bool,
     ignore: Vec<String>,
@@ -93,6 +98,9 @@ fn color_enabled(no_color: bool, format: Format) -> bool {
 }
 
 fn validate(a: ValidateArgs) -> Result<u8> {
+    if a.decode && !cfg!(feature = "decode") {
+        bail!("--decode needs a build with `--features decode`");
+    }
     let mut datasets = Vec::new();
     for p in &a.paths {
         datasets.extend(find_datasets(p)?);
@@ -117,25 +125,32 @@ fn validate(a: ValidateArgs) -> Result<u8> {
     };
     config.add_cli(&a.ignore, &a.select)?;
 
-    let reports: Vec<DatasetReport> = validate_paths(&datasets, a.jobs, config.limits())?
-        .into_iter()
-        .map(|(path, outcome)| match outcome {
-            Ok(issues) => {
-                let (issues, ignored) = config.apply(&path, issues);
-                DatasetReport {
-                    path,
-                    issues,
-                    ignored,
-                    open_error: None,
-                }
+    let reports: Vec<DatasetReport> = validate_paths(
+        &datasets,
+        a.jobs,
+        &Checks {
+            limits: config.limits().clone(),
+            decode: a.decode,
+        },
+    )?
+    .into_iter()
+    .map(|(path, outcome)| match outcome {
+        Ok(issues) => {
+            let (issues, ignored) = config.apply(&path, issues);
+            DatasetReport {
+                path,
+                issues,
+                ignored,
+                open_error: None,
             }
-            Err(e) => {
-                let mut r = DatasetReport::new(path, Vec::new());
-                r.open_error = Some(format!("{e:#}"));
-                r
-            }
-        })
-        .collect();
+        }
+        Err(e) => {
+            let mut r = DatasetReport::new(path, Vec::new());
+            r.open_error = Some(format!("{e:#}"));
+            r
+        }
+    })
+    .collect();
 
     let format = match a.format {
         Output::Text => Format::Text,
@@ -148,6 +163,7 @@ fn validate(a: ValidateArgs) -> Result<u8> {
         color: color_enabled(a.no_color, format),
         statistics: a.statistics,
         quiet: a.quiet,
+        decoded: a.decode,
     };
     print!("{}", report::render(&reports, &options));
     Ok(report::exit_code(&reports))
@@ -212,6 +228,7 @@ fn main() -> ExitCode {
             no_color,
             statistics,
             quiet,
+            decode,
             config,
             isolated,
             ignore,
@@ -223,6 +240,7 @@ fn main() -> ExitCode {
             no_color,
             statistics,
             quiet,
+            decode,
             config,
             isolated,
             ignore,

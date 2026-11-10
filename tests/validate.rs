@@ -5,7 +5,7 @@ use arrow_schema::{DataType, Field, Schema};
 use common::Mp4;
 use lecop::{
     dataset::Dataset,
-    validate::{Issue, Limits, Severity, validate, validate_with, validate_with_limits},
+    validate::{Checks, Issue, Limits, Severity, validate, validate_with, validate_with_checks},
 };
 use parquet::arrow::ArrowWriter;
 use std::{fs, path::Path, sync::Arc};
@@ -1249,7 +1249,15 @@ fn run_limits(limits: serde_json::Value) -> Vec<Issue> {
     let dir = tempfile::tempdir().unwrap();
     write_ds(dir.path(), &[good(20)], None);
     let limits: Limits = serde_json::from_value(serde_json::json!({ "action": limits })).unwrap();
-    validate_with_limits(&Dataset::open(dir.path()).unwrap(), 1, &limits).unwrap()
+    validate_with_checks(
+        &Dataset::open(dir.path()).unwrap(),
+        1,
+        &Checks {
+            limits,
+            ..Checks::default()
+        },
+    )
+    .unwrap()
 }
 
 #[test]

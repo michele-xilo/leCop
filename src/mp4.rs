@@ -208,3 +208,166 @@ fn parse_moov(moov: &[u8]) -> Result<VideoInfo> {
     }
     bail!("no video track in moov")
 }
+
+/// How the samples of a video track are coded, from the `stsd` entry's configuration box.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Codec {
+    /// `avcC`: parameter sets and the byte width of the length prefix that starts each NAL unit in a sample.
+    H264 {
+        sps: Vec<Vec<u8>>,
+        pps: Vec<Vec<u8>>,
+        length_size: usize,
+    },
+    /// `av1C`: the sequence header OBUs.
+    Av1 { config: Vec<u8> },
+}
+
+/// The coded samples of the first video track, in decode order.
+pub struct Track {
+    pub codec: Codec,
+    pub samples: Vec<Vec<u8>>,
+}
+
+/// Read every sample of the video track. Unlike [`read_video_info`] this touches all the frame data.
+pub fn read_track(path: &Path) -> Result<Track> {
+    let mut f = File::open(path).with_context(|| format!("opening {}", path.display()))?;
+    let moov = read_moov(&mut f).with_context(|| format!("{}", path.display()))?;
+    let (codec, locations) = parse_track(&moov).with_context(|| format!("{}", path.display()))?;
+    let len = f.metadata()?.len();
+    let mut samples = Vec::with_capacity(locations.len());
+    for (offset, size) in locations {
+        if offset + size as u64 > len {
+            bail!("sample at byte {offset} of {size} bytes runs past the end of the file");
+        }
+        f.seek(SeekFrom::Start(offset))?;
+        let mut s = vec![0u8; size as usize];
+        f.read_exact(&mut s)?;
+        samples.push(s);
+    }
+    Ok(Track { codec, samples })
+}
+
+/// The codec and the (offset, size) of every sample, from the sample tables.
+fn parse_track(moov: &[u8]) -> Result<(Codec, Vec<(u64, u32)>)> {
+    for (kind, trak) in boxes(moov)? {
+        if &kind != b"trak" {
+            continue;
+        }
+        let mdia = need(trak, b"mdia")?;
+        if need(mdia, b"hdlr")?.get(8..12) != Some(b"vide".as_slice()) {
+            continue;
+        }
+        let stbl = need(need(mdia, b"minf")?, b"stbl")?;
+        let codec = parse_codec(need(stbl, b"stsd")?)?;
+        return Ok((codec, sample_locations(stbl)?));
+    }
+    bail!("no video track in moov")
+}
+
+fn parse_codec(stsd: &[u8]) -> Result<Codec> {
+    // 8 bytes of table header, 8 of entry header, 78 of VisualSampleEntry, then the codec's boxes.
+    let kind = stsd.get(12..16).context("truncated stsd")?;
+    let children = stsd
+        .get(94..)
+        .context("stsd entry has no codec configuration")?;
+    match kind {
+        b"avc1" | b"avc3" => {
+            let c = need(children, b"avcC")?;
+            let length_size = (c.get(4).context("truncated avcC")? & 3) as usize + 1;
+            let mut at = 6;
+            let sets = |n: usize, at: &mut usize| -> Result<Vec<Vec<u8>>> {
+                (0..n)
+                    .map(|_| {
+                        let len = u16::from_be_bytes([
+                            *c.get(*at).context("truncated avcC")?,
+                            *c.get(*at + 1).context("truncated avcC")?,
+                        ]) as usize;
+                        let v = c.get(*at + 2..*at + 2 + len).context("truncated avcC")?;
+                        *at += 2 + len;
+                        Ok(v.to_vec())
+                    })
+                    .collect()
+            };
+            let sps = sets(
+                (c.get(5).context("truncated avcC")? & 0x1f) as usize,
+                &mut at,
+            )?;
+            let n_pps = *c.get(at).context("truncated avcC")? as usize;
+            at += 1;
+            let pps = sets(n_pps, &mut at)?;
+            Ok(Codec::H264 {
+                sps,
+                pps,
+                length_size,
+            })
+        }
+        b"av01" => {
+            let c = need(children, b"av1C")?;
+            Ok(Codec::Av1 {
+                config: c.get(4..).unwrap_or_default().to_vec(),
+            })
+        }
+        other => bail!(
+            "unsupported video codec `{}`",
+            String::from_utf8_lossy(other)
+        ),
+    }
+}
+
+/// Resolve `stsc` (samples per chunk), `stco`/`co64` (chunk offsets) and `stsz` (sample sizes) to one
+/// (offset, size) per sample.
+fn sample_locations(stbl: &[u8]) -> Result<Vec<(u64, u32)>> {
+    let stsz = need(stbl, b"stsz")?;
+    let (uniform, count) = (be32(stsz, 4)?, be32(stsz, 8)? as usize);
+    let size = |i: usize| -> Result<u32> {
+        if uniform != 0 {
+            Ok(uniform)
+        } else {
+            be32(stsz, 12 + i * 4)
+        }
+    };
+    let chunk_offsets: Vec<u64> = match child(stbl, b"stco")? {
+        Some(t) => (0..be32(t, 4)? as usize)
+            .map(|i| be32(t, 8 + i * 4).map(u64::from))
+            .collect::<Result<_>>()?,
+        None => {
+            let t = need(stbl, b"co64")?;
+            (0..be32(t, 4)? as usize)
+                .map(|i| {
+                    let b = t.get(8 + i * 8..16 + i * 8).context("truncated co64")?;
+                    Ok(u64::from_be_bytes(b.try_into()?))
+                })
+                .collect::<Result<_>>()?
+        }
+    };
+    let stsc = need(stbl, b"stsc")?;
+    let runs: Vec<(usize, usize)> = (0..be32(stsc, 4)? as usize)
+        .map(|i| {
+            Ok((
+                be32(stsc, 8 + i * 12)? as usize,
+                be32(stsc, 12 + i * 12)? as usize,
+            ))
+        })
+        .collect::<Result<_>>()?;
+    let mut out = Vec::with_capacity(count);
+    for (chunk, &offset) in chunk_offsets.iter().enumerate() {
+        let per = runs
+            .iter()
+            .rev()
+            .find(|(first, _)| *first <= chunk + 1)
+            .map_or(0, |r| r.1);
+        let mut at = offset;
+        for _ in 0..per {
+            if out.len() == count {
+                break;
+            }
+            let s = size(out.len())?;
+            out.push((at, s));
+            at += s as u64;
+        }
+    }
+    if out.len() != count {
+        bail!("sample tables place {} of {count} samples", out.len());
+    }
+    Ok(out)
+}
