@@ -371,3 +371,72 @@ fn sample_locations(stbl: &[u8]) -> Result<Vec<(u64, u32)>> {
     }
     Ok(out)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn bx(kind: &[u8; 4], payload: &[u8]) -> Vec<u8> {
+        let mut v = ((payload.len() + 8) as u32).to_be_bytes().to_vec();
+        v.extend(kind);
+        v.extend(payload);
+        v
+    }
+
+    fn be(x: u32) -> Vec<u8> {
+        x.to_be_bytes().to_vec()
+    }
+
+    #[test]
+    fn reads_the_av1_configuration() {
+        let mut entry = vec![0u8; 78];
+        entry.extend(bx(b"av1C", &[0x81, 0, 0, 0, 10, 11]));
+        let mut stsd = vec![0u8; 4];
+        stsd.extend(be(1));
+        stsd.extend(bx(b"av01", &entry));
+        assert_eq!(
+            parse_codec(&stsd).unwrap(),
+            Codec::Av1 {
+                config: vec![10, 11]
+            }
+        );
+    }
+
+    #[test]
+    fn rejects_a_codec_it_cannot_decode() {
+        let mut stsd = vec![0u8; 4];
+        stsd.extend(be(1));
+        stsd.extend(bx(b"hvc1", &[0u8; 78]));
+        assert!(parse_codec(&stsd).unwrap_err().to_string().contains("hvc1"));
+    }
+
+    #[test]
+    fn places_samples_from_chunks_with_64_bit_offsets() {
+        let mut stsz = vec![0u8; 4];
+        stsz.extend([be(0), be(3), be(10), be(20), be(30)].concat());
+        // Two chunks: the first holds two samples, the second one.
+        let mut stsc = vec![0u8; 4];
+        stsc.extend([be(2), be(1), be(2), be(1), be(2), be(1), be(1), be(1)].concat());
+        let mut co64 = vec![0u8; 4];
+        co64.extend(be(2));
+        co64.extend(1000u64.to_be_bytes());
+        co64.extend(5000u64.to_be_bytes());
+        let stbl = [bx(b"stsz", &stsz), bx(b"stsc", &stsc), bx(b"co64", &co64)].concat();
+        assert_eq!(
+            sample_locations(&stbl).unwrap(),
+            [(1000, 10), (1010, 20), (5000, 30)]
+        );
+    }
+
+    #[test]
+    fn rejects_tables_that_place_fewer_samples_than_counted() {
+        let mut stsz = vec![0u8; 4];
+        stsz.extend([be(7), be(3)].concat());
+        let mut stsc = vec![0u8; 4];
+        stsc.extend([be(1), be(1), be(1), be(1)].concat());
+        let mut stco = vec![0u8; 4];
+        stco.extend([be(1), be(100)].concat());
+        let stbl = [bx(b"stsz", &stsz), bx(b"stsc", &stsc), bx(b"stco", &stco)].concat();
+        assert!(sample_locations(&stbl).is_err());
+    }
+}

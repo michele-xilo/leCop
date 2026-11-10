@@ -1296,3 +1296,52 @@ fn flags_the_episode_whose_frame_to_frame_change_exceeds_max_step() {
     assert_eq!(codes(&v), ["step_limit"], "{v:?}");
     assert_eq!(v[0].episode, Some(0));
 }
+
+#[cfg(feature = "decode")]
+fn decode_run(replace_video: Option<&[(u8, u8)]>) -> Vec<Issue> {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(40)], None);
+    if let Some(frames) = replace_video {
+        let p = dir
+            .path()
+            .join("videos/chunk-000/observation.images.top/episode_000000.mp4");
+        common::h264::video(&p, frames, None);
+    }
+    validate_with_checks(
+        &Dataset::open(dir.path()).unwrap(),
+        1,
+        &Checks {
+            decode: true,
+            ..Checks::default()
+        },
+    )
+    .unwrap()
+}
+
+#[cfg(feature = "decode")]
+#[test]
+fn decode_reports_a_frozen_camera_on_its_episode() {
+    let mut frames = vec![(100, 3); 5];
+    frames.extend(vec![(100, 0); 35]);
+    let v = decode_run(Some(&frames));
+    let f = v.iter().find(|i| i.code == "video_frozen").expect("frozen");
+    assert_eq!(
+        (f.episode, f.severity),
+        (Some(0), Severity::Warning),
+        "{v:?}"
+    );
+    assert!(f.message.contains("episode_000000.mp4"), "{v:?}");
+}
+
+#[cfg(feature = "decode")]
+#[test]
+fn decode_says_when_a_video_cannot_be_decoded_at_all() {
+    // The synthetic videos carry no codec configuration.
+    let v = decode_run(None);
+    let f = v
+        .iter()
+        .find(|i| i.code == "video_decode")
+        .expect("not decoded");
+    assert_eq!(f.severity, Severity::Warning, "{v:?}");
+    assert!(f.message.contains("not decoded"), "{v:?}");
+}

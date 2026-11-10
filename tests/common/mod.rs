@@ -1,6 +1,8 @@
 //! Shared test helpers: a minimal mp4 writer. Only the boxes the parser reads are emitted, and no
 //! frame data, so fixtures are a few hundred bytes.
 #![allow(dead_code)]
+#[cfg(feature = "decode")]
+pub mod h264;
 pub mod synth;
 
 /// Writes the statistics file the dataset's version uses, with an entry for every non-string feature in
