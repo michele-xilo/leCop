@@ -131,6 +131,7 @@ fn validate(a: ValidateArgs) -> Result<u8> {
         &Checks {
             limits: config.limits().clone(),
             decode: a.decode,
+            chunk_size: config.chunk_size(),
         },
     )?
     .into_iter()

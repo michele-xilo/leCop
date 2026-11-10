@@ -124,3 +124,19 @@ fn limits_are_read_and_checked() {
         "max_step is for the action"
     );
 }
+
+#[test]
+fn the_training_chunk_size_is_read_and_checked() {
+    assert_eq!(
+        parse("[training]\nchunk_size = 100\n")
+            .unwrap()
+            .chunk_size(),
+        Some(100)
+    );
+    assert_eq!(parse("").unwrap().chunk_size(), None);
+    assert!(
+        parse("[training]\nchunk_size = 0\n").is_err(),
+        "must be positive"
+    );
+    assert!(parse("[training]\nchunks = 5\n").is_err(), "unknown key");
+}

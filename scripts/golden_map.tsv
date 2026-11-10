@@ -16,7 +16,7 @@ lerobot-doctor	long_episode	episode_length_outlier	matched
 lerobot-doctor	missing_episode_indices	episode_index	matched
 lerobot-doctor	no_stats_for_training	-	out_of_scope	training-readiness advice; v2.1 keeps statistics in episodes_stats.jsonl, which lecop checks
 lerobot-doctor	outlier_values	outlier_values	matched
-lerobot-doctor	shorter_than_chunk_size	-	gap	#30 training readiness
+lerobot-doctor	shorter_than_chunk_size	episodes_below_chunk	matched
 lerobot-doctor	stats_json_missing	stats_missing	matched
 lerobot-doctor	stats_json_missing_v2_1	-	out_of_scope	false positive: v2.1 keeps statistics in episodes_stats.jsonl
 lerobot-doctor	stuck_in_some_episodes	-	gap	a dimension unchanged in a subset of the episodes (lecop only flags a dimension that never changes)

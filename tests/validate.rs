@@ -1393,4 +1393,59 @@ fn warns_on_a_file_over_5_gb() {
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["file_oversized"], "{v:?}");
     assert!(v[0].message.contains("meta/big.bin"), "{v:?}");
+
+fn v3_with_action_std(std: serde_json::Value) -> Vec<Issue> {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds_v3(dir.path(), &[good(20)]);
+    let path = dir.path().join("meta/stats.json");
+    let mut stats: serde_json::Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    stats["action"] = serde_json::json!({ "std": std });
+    fs::write(&path, stats.to_string()).unwrap();
+    validate(&Dataset::open(dir.path()).unwrap()).unwrap()
+}
+
+#[test]
+fn warns_on_a_dimension_with_zero_std_in_the_statistics() {
+    let v = v3_with_action_std(serde_json::json!([0.0, 1.0]));
+    assert_eq!(codes(&v), ["stats_zero_std"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Warning);
+    assert!(v[0].message.starts_with("action: dimension 0"), "{v:?}");
+}
+
+#[test]
+fn a_statistics_file_with_positive_std_is_clean() {
+    let v = v3_with_action_std(serde_json::json!([0.5, 1.0]));
+    assert!(v.is_empty(), "{v:?}");
+}
+
+fn run_chunk(chunk: Option<usize>) -> Vec<Issue> {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20), good(30), good(120)], None);
+    validate_with_checks(
+        &Dataset::open(dir.path()).unwrap(),
+        1,
+        &Checks {
+            chunk_size: chunk,
+            ..Checks::default()
+        },
+    )
+    .unwrap()
+}
+
+#[test]
+fn warns_when_episodes_are_shorter_than_the_chunk_size() {
+    let v = run_chunk(Some(100));
+    assert_eq!(codes(&v), ["episodes_below_chunk"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Warning);
+    assert!(
+        v[0].message
+            .starts_with("2 of 3 episodes have fewer than 100 frames"),
+        "{v:?}"
+    );
+}
+
+#[test]
+fn no_chunk_size_means_no_chunk_check() {
+    assert!(run_chunk(None).is_empty());
+    assert!(run_chunk(Some(10)).is_empty());
 }

@@ -3,7 +3,7 @@
 //! downloaded are skipped, so a clean clone passes.
 use lecop::{
     dataset::Dataset,
-    validate::{Issue, Severity, validate},
+    validate::{Checks, Issue, Severity, validate_with_checks},
 };
 use serde::Deserialize;
 use std::{collections::HashMap, fs, path::Path};
@@ -91,7 +91,12 @@ fn lecop_reports_what_the_other_tools_report() {
             continue;
         }
         datasets += 1;
-        let issues = validate(&Dataset::open(&path).unwrap()).unwrap();
+        // 100 is lerobot-doctor's default chunk size
+        let checks = Checks {
+            chunk_size: Some(100),
+            ..Checks::default()
+        };
+        let issues = validate_with_checks(&Dataset::open(&path).unwrap(), 0, &checks).unwrap();
         let mut explained: Vec<&str> = Vec::new();
         for (tool, run) in &golden.tools {
             for f in &run.findings {

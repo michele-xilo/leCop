@@ -53,10 +53,12 @@ pub struct Checks {
     pub limits: Limits,
     /// Decode the video frames (needs the `decode` cargo feature).
     pub decode: bool,
+    /// Frames a training window spans (a policy's chunk size); episodes shorter than this are reported.
+    pub chunk_size: Option<usize>,
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 54] = [
+pub const ALL_CODES: [&str; 56] = [
     "episode_count",
     "action_jump",
     "distribution_shift",
@@ -111,6 +113,8 @@ pub const ALL_CODES: [&str; 54] = [
     "video_black",
     "symlink",
     "file_oversized",
+    "stats_zero_std",
+    "episodes_below_chunk",
 ];
 
 /// One sentence saying what an issue code means.
@@ -146,6 +150,12 @@ pub fn explain(code: &str) -> &'static str {
             "a camera repeats the same picture for a second or more (only with --decode)"
         }
         "video_black" => "a camera shows a black picture for a second or more (only with --decode)",
+        "stats_zero_std" => {
+            "stats.json gives a dimension zero std, so normalising it divides by zero"
+        }
+        "episodes_below_chunk" => {
+            "episodes are shorter than the chunk_size set under [training] in lecop.toml"
+        }
         "limits_width" => "a min or max list in lecop.toml does not have one value per dimension",
         "data_stray_file" => "the data directory holds a file that is not a parquet file",
         "frame_count" => "info.json total_frames disagrees with the sum of the episode lengths",
@@ -1168,7 +1178,7 @@ fn run(ds: &Dataset, checks: &Checks) -> Vec<Issue> {
 
 fn run_tagged(ds: &Dataset, checks: &Checks) -> Vec<Tagged> {
     let action = action_key(ds);
-    let mut tagged = global_issues(ds, action);
+    let mut tagged = global_issues(ds, action, checks.chunk_size);
 
     let reads: HashMap<PathBuf, VideoRead> = unique_video_paths(ds)
         .into_par_iter()
@@ -1303,6 +1313,14 @@ fn task_count(ds: &Dataset) -> Option<usize> {
 /// Feature names in the statistics file of this format version (`meta/stats.json` for v2.0 and v3,
 /// `meta/episodes_stats.jsonl` for v2.1), or why there are none.
 fn stats_keys(ds: &Dataset) -> Result<Vec<String>, String> {
+    let stats = stats_object(ds)?;
+    Ok(stats
+        .as_object()
+        .map_or(vec![], |o| o.keys().cloned().collect()))
+}
+
+/// The object mapping feature names to their statistics, or why there is none.
+fn stats_object(ds: &Dataset) -> Result<serde_json::Value, String> {
     let v2_1 = ds.info.codebase_version.starts_with("v2.1");
     let name = if v2_1 {
         "episodes_stats.jsonl"
@@ -1320,10 +1338,65 @@ fn stats_keys(ds: &Dataset) -> Result<Vec<String>, String> {
     let value: serde_json::Value =
         serde_json::from_str(json).map_err(|e| format!("meta/{name} is not valid JSON: {e}"))?;
     let stats = if v2_1 { &value["stats"] } else { &value };
-    match stats.as_object() {
-        Some(o) => Ok(o.keys().cloned().collect()),
-        None => Err(format!("meta/{name} has no statistics object")),
+    if stats.is_object() {
+        Ok(stats.clone())
+    } else {
+        Err(format!("meta/{name} has no statistics object"))
     }
+}
+
+/// The dimensions whose standard deviation is zero, per action or observation vector. Normalising by a zero std
+/// gives NaN or Inf. v2.1 keeps statistics per episode, where a constant stretch is ordinary, so it is not judged.
+fn zero_std_dims(stats: &serde_json::Value) -> Vec<(String, Vec<usize>)> {
+    let Some(map) = stats.as_object() else {
+        return vec![];
+    };
+    map.iter()
+        .filter(|(k, _)| k.starts_with("action") || k.starts_with("observation."))
+        .filter_map(|(k, v)| {
+            let std = v.get("std")?.as_array()?;
+            let zeros: Vec<usize> = std
+                .iter()
+                .enumerate()
+                .filter(|(_, x)| x.as_f64() == Some(0.0))
+                .map(|(j, _)| j)
+                .collect();
+            (!zeros.is_empty()).then(|| (k.clone(), zeros))
+        })
+        .collect()
+}
+
+fn zero_std_findings(ds: &Dataset) -> Vec<(&'static str, String)> {
+    if ds.info.codebase_version.starts_with("v2.1") {
+        return vec![];
+    }
+    let Ok(stats) = stats_object(ds) else {
+        return vec![];
+    };
+    zero_std_dims(&stats)
+        .into_iter()
+        .map(|(k, zeros)| {
+            let dims: Vec<String> = zeros.iter().map(|j| format!("dimension {j}")).collect();
+            (
+                "stats_zero_std",
+                format!(
+                    "{k}: {} has zero std in stats.json, normalising divides by zero",
+                    dims.join(", ")
+                ),
+            )
+        })
+        .collect()
+}
+
+/// A warning when episodes are too short to hold one training window of `chunk` frames.
+fn chunk_finding(lengths: &[usize], chunk: usize) -> Option<String> {
+    let short = lengths.iter().filter(|&&l| l < chunk).count();
+    (short > 0).then(|| {
+        format!(
+            "{short} of {} episodes have fewer than {chunk} frames, the chunk size in lecop.toml",
+            lengths.len()
+        )
+    })
 }
 
 fn stats_findings(ds: &Dataset) -> Vec<(&'static str, String)> {
@@ -1538,7 +1611,7 @@ fn scan_files(root: &Path, limit: u64) -> Scan {
     out
 }
 
-fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
+fn global_issues(ds: &Dataset, action: Option<&str>, chunk: Option<usize>) -> Vec<Tagged> {
     use Severity::*;
     let mut v = Vec::new();
     if !ds.info.features.contains_key("action") {
@@ -1591,7 +1664,20 @@ fn global_issues(ds: &Dataset, action: Option<&str>) -> Vec<Tagged> {
     if let Some((sev, code, message)) = task_finding(ds.info.total_tasks, task_count(ds)) {
         v.push(tag(None, PHASE_META, sev, None, code, message));
     }
+    for (code, message) in zero_std_findings(ds) {
+        v.push(tag(None, PHASE_META, Warning, None, code, message));
+    }
     let lengths: Vec<usize> = ds.episodes.iter().map(|e| e.length).collect();
+    if let Some(m) = chunk.and_then(|c| chunk_finding(&lengths, c)) {
+        v.push(tag(
+            None,
+            PHASE_META,
+            Warning,
+            None,
+            "episodes_below_chunk",
+            m,
+        ));
+    }
     if !lengths.is_empty() {
         for (i, sev, code, message) in length_findings(&lengths, ds.info.fps) {
             v.push(tag(
