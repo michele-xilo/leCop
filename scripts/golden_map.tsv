@@ -1,0 +1,35 @@
+# tool	finding kind	lecop issue codes (any one)	status	note
+# status: matched = lecop must report one of the codes on the same dataset (and episode, when the golden names one);
+#         gap = lecop does not check it yet (the note links the issue), listed by tests/goldens.rs as an expected miss;
+#         out_of_scope = deliberately not checked or a false positive of the other tool (the note says why).
+# Kinds come from scripts/goldens.py. A kind missing here fails the test, so a new finding cannot slip by unclassified.
+lerobot-doctor	action_frozen	-	gap	#49 doctor warns from 5% identical rows, lecop only past 50%
+lerobot-doctor	action_jump	action_jump	matched
+lerobot-doctor	auxiliary_column	-	out_of_scope	_is_pad, source_fps and next.* columns; lecop analyzes the action and observation.* only
+lerobot-doctor	all_dimensions_constant	-	out_of_scope	only auxiliary columns trigger it
+lerobot-doctor	clipped_dimension	clipped_dimension	matched
+lerobot-doctor	constant_dimension	constant_dimension	matched
+lerobot-doctor	distribution_shift	distribution_shift	matched
+lerobot-doctor	episode_length_mismatch	length_mismatch,episode_rows_missing	matched
+lerobot-doctor	index_not_sequential	index_mismatch,range_gap,range_length	matched
+lerobot-doctor	long_episode	episode_length_outlier	matched
+lerobot-doctor	missing_episode_indices	episode_index	matched
+lerobot-doctor	no_stats_for_training	-	out_of_scope	training-readiness advice; v2.1 keeps statistics in episodes_stats.jsonl, which lecop checks
+lerobot-doctor	outlier_values	outlier_values	matched
+lerobot-doctor	shorter_than_chunk_size	-	gap	#30 training readiness
+lerobot-doctor	stats_json_missing	stats_missing	matched
+lerobot-doctor	stats_json_missing_v2_1	-	out_of_scope	false positive: v2.1 keeps statistics in episodes_stats.jsonl
+lerobot-doctor	stuck_in_some_episodes	-	gap	a dimension unchanged in a subset of the episodes (lecop only flags a dimension that never changes)
+lerobot-doctor	total_frames_mismatch	frame_count	matched
+lerobot-doctor	video_frame_count	video_frame_count	matched
+physlint	duplication.exact_episodes	duplicate_episode	matched
+physlint	episode.valid_boundaries	episode_rows_missing,range_length,range_gap,episode_empty	matched
+physlint	manifest.required_streams	nonstandard_features	matched
+physlint	video.decode	-	gap	#29 opt-in frame decoding
+physlint	video.frozen_frames	-	gap	#29 opt-in frame decoding
+# known_miss	dataset	tool	kind	reason: a mapped finding lecop deliberately does not report on this dataset
+known_miss	c_so100_press_red_button	lerobot-doctor	distribution_shift	doctor treats its 29 data files as episodes; lecop sees no rows in the last quarter of episodes
+known_miss	c_so100_press_red_button	lerobot-doctor	index_not_sequential	same dataset, episodes 14-28 have no rows; lecop reports episode_rows_missing
+known_miss	c_so100_press_red_button	lerobot-doctor	missing_episode_indices	same dataset, lecop reports episode_rows_missing
+known_miss	c_so100_press_red_button	physlint	duplication.exact_episodes	empty episodes 15-28 compare equal to episode 14; lecop reports episode_rows_missing
+known_miss	c_careattrs_mug2v2	lerobot-doctor	clipped_dimension	#50 doctor flags 66% at minimum, lecop requires 99%

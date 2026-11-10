@@ -1,0 +1,134 @@
+{
+ "dataset": "svla_so101_pickplace",
+ "tools": {
+  "lerobot-doctor": {
+   "version": "0.2.0",
+   "findings": [
+    {
+     "kind": "action_frozen",
+     "episode": 0,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 1,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 10,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 11,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 12,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 14,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 15,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 16,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 17,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 18,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 19,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 2,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 23,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 3,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 4,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 5,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 6,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 7,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 8,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 9,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "no_stats_for_training",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "stats_json_missing_v2_1",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "stuck_in_some_episodes",
+     "episode": null,
+     "severity": "warn"
+    }
+   ]
+  },
+  "physlint": {
+   "version": "0.4.0",
+   "findings": []
+  }
+ }
+}

@@ -1,0 +1,290 @@
+{
+ "dataset": "c_so100_press_red_button",
+ "tools": {
+  "lerobot-doctor": {
+   "version": "0.2.0",
+   "findings": [
+    {
+     "kind": "action_frozen",
+     "episode": 22,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 25,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 5,
+     "severity": "warn"
+    },
+    {
+     "kind": "distribution_shift",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "episode_length_mismatch",
+     "episode": 16,
+     "severity": "fail"
+    },
+    {
+     "kind": "episode_length_mismatch",
+     "episode": 18,
+     "severity": "fail"
+    },
+    {
+     "kind": "episode_length_mismatch",
+     "episode": 19,
+     "severity": "fail"
+    },
+    {
+     "kind": "episode_length_mismatch",
+     "episode": 21,
+     "severity": "fail"
+    },
+    {
+     "kind": "episode_length_mismatch",
+     "episode": 24,
+     "severity": "fail"
+    },
+    {
+     "kind": "index_not_sequential",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "missing_episode_indices",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "no_stats_for_training",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "outlier_values",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "stats_json_missing_v2_1",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "stuck_in_some_episodes",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "total_frames_mismatch",
+     "episode": null,
+     "severity": "fail"
+    },
+    {
+     "kind": "video_frame_count",
+     "episode": 1,
+     "severity": "warn"
+    },
+    {
+     "kind": "video_frame_count",
+     "episode": 7,
+     "severity": "warn"
+    }
+   ]
+  },
+  "physlint": {
+   "version": "0.4.0",
+   "findings": [
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 15,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 16,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 17,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 18,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 19,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 20,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 21,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 22,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 23,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 24,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 25,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 26,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 27,
+     "severity": "error"
+    },
+    {
+     "kind": "duplication.exact_episodes",
+     "episode": 28,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 14,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 15,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 16,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 17,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 18,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 19,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 20,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 21,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 22,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 23,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 24,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 25,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 26,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 27,
+     "severity": "error"
+    },
+    {
+     "kind": "episode.valid_boundaries",
+     "episode": 28,
+     "severity": "error"
+    },
+    {
+     "kind": "video.decode",
+     "episode": 0,
+     "severity": "error"
+    },
+    {
+     "kind": "video.decode",
+     "episode": 1,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 1,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 2,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 3,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 4,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 5,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 6,
+     "severity": "error"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "dataset": "v3_aloha_sim_insertion_human",
+ "tools": {
+  "lerobot-doctor": {
+   "version": "0.2.0",
+   "findings": []
+  },
+  "physlint": {
+   "version": "0.4.0",
+   "findings": [
+    {
+     "kind": "video.frozen_frames",
+     "episode": 0,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 1,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 2,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 3,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 4,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 5,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 6,
+     "severity": "error"
+    }
+   ]
+  }
+ }
+}

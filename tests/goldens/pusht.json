@@ -1,0 +1,125 @@
+{
+ "dataset": "pusht",
+ "tools": {
+  "lerobot-doctor": {
+   "version": "0.2.0",
+   "findings": [
+    {
+     "kind": "action_frozen",
+     "episode": 120,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 182,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 50,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_jump",
+     "episode": 159,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_jump",
+     "episode": 54,
+     "severity": "warn"
+    },
+    {
+     "kind": "auxiliary_column",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "long_episode",
+     "episode": 174,
+     "severity": "warn"
+    },
+    {
+     "kind": "no_stats_for_training",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "shorter_than_chunk_size",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "stats_json_missing_v2_1",
+     "episode": null,
+     "severity": "warn"
+    }
+   ]
+  },
+  "physlint": {
+   "version": "0.4.0",
+   "findings": [
+    {
+     "kind": "video.frozen_frames",
+     "episode": 0,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 1,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 10,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 11,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 2,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 3,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 4,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 5,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 6,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 7,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 8,
+     "severity": "error"
+    },
+    {
+     "kind": "video.frozen_frames",
+     "episode": 9,
+     "severity": "error"
+    }
+   ]
+  }
+ }
+}

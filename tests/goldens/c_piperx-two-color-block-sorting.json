@@ -1,0 +1,35 @@
+{
+ "dataset": "c_piperx-two-color-block-sorting",
+ "tools": {
+  "lerobot-doctor": {
+   "version": "0.2.0",
+   "findings": [
+    {
+     "kind": "no_stats_for_training",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "stats_json_missing_v2_1",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "stuck_in_some_episodes",
+     "episode": null,
+     "severity": "warn"
+    }
+   ]
+  },
+  "physlint": {
+   "version": "0.4.0",
+   "findings": [
+    {
+     "kind": "manifest.required_streams",
+     "episode": null,
+     "severity": "error"
+    }
+   ]
+  }
+ }
+}
