@@ -17,7 +17,7 @@ A fast, single-binary health check for
 [LeRobot](https://github.com/huggingface/lerobot)-format datasets, written in Rust.
 
 > **Unofficial.** Not affiliated with Hugging Face or the LeRobot project.
-> **Early stage.** Tested on synthetic fixtures and on a handful of small official Hub datasets (v2.1 and v3.0), all clean. Not yet tried on messy community datasets.
+> **Early stage.** Tested on synthetic fixtures and on 16 real Hub datasets (v2.1 and v3.0, official and community), one of them with real faults. No real v2.0 dataset is tested yet.
 
 ## Install
 
@@ -224,7 +224,7 @@ Gaps are tracked as issues by priority; see the open issues labelled `feature`.
 
 ## Not yet supported
 
-- Decoding frames (frozen or black frames, A/V drift inside a video)
+- Audio/video drift inside a video (frames are only decoded with `--decode`, see above)
 - Remote (Hub) datasets
 
 The roadmap is the [open issues](https://github.com/michele-xilo/lecop/issues), by priority.
