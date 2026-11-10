@@ -106,3 +106,21 @@ fn find_walks_up_to_the_nearest_lecop_toml() {
         d.path().join("lecop.toml").canonicalize().unwrap()
     );
 }
+
+#[test]
+fn limits_are_read_and_checked() {
+    let c = parse("[limits.\"action\"]\nmin = -1.0\nmax = [1.0, 2.0]\nmax_step = 0.2\n").unwrap();
+    assert!(c.limits().contains_key("action"));
+    assert!(
+        parse("[limits.\"action\"]\nmaxx = 1.0\n").is_err(),
+        "unknown key"
+    );
+    assert!(
+        parse("[limits.\"next.reward\"]\nmax = 1.0\n").is_err(),
+        "only action and observation.*"
+    );
+    assert!(
+        parse("[limits.\"observation.state\"]\nmax_step = 1.0\n").is_err(),
+        "max_step is for the action"
+    );
+}

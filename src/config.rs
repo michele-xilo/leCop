@@ -1,5 +1,5 @@
 //! `lecop.toml`: which issue codes to ignore or select, severity overrides, per-dataset ignores.
-use crate::validate::{ALL_CODES, Issue, Severity};
+use crate::validate::{ALL_CODES, Issue, Limits, Severity};
 use anyhow::{Context, Result, bail};
 use serde::Deserialize;
 use std::{
@@ -26,6 +26,9 @@ pub struct Config {
     /// Codes reported as warnings even when they are errors by default.
     #[serde(default)]
     warn: Vec<String>,
+    /// Per-feature value bounds and the largest action step; a breach is an error.
+    #[serde(default)]
+    limits: Limits,
     #[serde(default, rename = "per-dataset")]
     per_dataset: BTreeMap<String, PerDataset>,
     #[serde(skip)]
@@ -55,8 +58,23 @@ impl Config {
         for p in c.per_dataset.values() {
             check_codes(&p.ignore, &what)?;
         }
+        for (name, l) in &c.limits {
+            // Only these features are analyzed, so a limit on any other would be ignored without a word.
+            if name != "action" && !name.starts_with("observation.") {
+                bail!(
+                    "limits.{name} in {what}: only `action` and `observation.*` features can have limits"
+                );
+            }
+            if l.max_step.is_some() && name != "action" {
+                bail!("limits.{name} in {what}: `max_step` is only available for the action");
+            }
+        }
         c.dir = path.parent().map(Path::to_path_buf).unwrap_or_default();
         Ok(c)
+    }
+
+    pub fn limits(&self) -> &Limits {
+        &self.limits
     }
 
     /// The nearest `lecop.toml` in `start` or one of its parents.

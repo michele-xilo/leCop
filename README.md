@@ -73,6 +73,11 @@ ignore = ["idle_episode"]          # drop these codes
 
 [per-dataset."datasets/messy"]     # path relative to this file
 ignore = ["video_frame_count"]
+
+[limits."action"]                  # only `action` and `observation.*` features
+min = -1.0                         # a number, or one value per dimension: [-1.0, -0.5, ...]
+max = [1.0, 1.0, 0.5]
+max_step = 0.2                     # largest change of any action dimension between two frames
 ```
 
 Unknown issue codes are an error. Ignored findings are counted: `Ignored by config: idle_episode (5)`.
@@ -128,6 +133,8 @@ Beyond what LeRobot checks:
 | The mean of the action or a state column in the last quarter of the episodes more than 3 standard deviations (of the first quarter) from the first quarter's (judged from 10 episodes up) | warning | `distribution_shift` |
 | `data_path` or `video_path` is an absolute path (the dataset only works on this machine) | warning | `path_absolute` |
 | A file in `data/` that is not parquet (`.DS_Store`, leftovers) | warning | `data_stray_file` |
+| A value below `min` or above `max` set under `[limits."feature"]` in `lecop.toml` (a list of the wrong width is `limits_width`) | error | `out_of_range`, `limits_width` |
+| The action changes between two frames by more than `max_step` | error | `step_limit` |
 
 Malformed files are reported, not crashed on.
 
@@ -174,8 +181,8 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Required streams present (`observation.state`, ...) | ⚠️ `action`, `observation.state`, `timestamp` | ❌ | ⚠️ needs config |
 | Streams cover whole episodes; observation/action delay | ❌ | ❌ | ✅ delay by config |
 | NaN and Inf in feature columns | ✅ | ✅ | ✅ |
-| Numeric limits per feature | ❌ | ❌ | ⚠️ needs config |
-| Implausible jumps between frames | ✅ | ✅ | ⚠️ needs config |
+| Numeric limits per feature | ✅ by config | ❌ | ⚠️ needs config |
+| Implausible jumps between frames | ✅ also `max_step` by config | ✅ | ⚠️ needs config |
 | Constant or frozen action, idle episodes | ✅ | ✅ | ❌ |
 | Stuck or constant dimensions, zero variance | ✅ | ✅ | ❌ |
 | Values clipped at their min or max | ✅ over 99% of frames | ✅ | ❌ |

@@ -5,7 +5,7 @@ use arrow_schema::{DataType, Field, Schema};
 use common::Mp4;
 use lecop::{
     dataset::Dataset,
-    validate::{Issue, Severity, validate, validate_with},
+    validate::{Issue, Limits, Severity, validate, validate_with, validate_with_limits},
 };
 use parquet::arrow::ArrowWriter;
 use std::{fs, path::Path, sync::Arc};
@@ -1243,4 +1243,48 @@ fn lists_five_stray_files_and_counts_the_rest() {
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["data_stray_file"], "{v:?}");
     assert!(v[0].message.ends_with("and 2 more"), "{v:?}");
+}
+
+fn run_limits(limits: serde_json::Value) -> Vec<Issue> {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    let limits: Limits = serde_json::from_value(serde_json::json!({ "action": limits })).unwrap();
+    validate_with_limits(&Dataset::open(dir.path()).unwrap(), 1, &limits).unwrap()
+}
+
+#[test]
+fn limits_that_hold_report_nothing() {
+    let v = run_limits(serde_json::json!({"min": -1e9, "max": 1e9, "max_step": 100.0}));
+    assert!(v.is_empty(), "{v:?}");
+}
+
+#[test]
+fn flags_a_value_beyond_a_scalar_bound() {
+    let v = run_limits(serde_json::json!({"max": -1e9}));
+    assert_eq!(codes(&v), ["out_of_range"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Error);
+    assert!(v[0].message.starts_with("action: dimension 0"), "{v:?}");
+}
+
+#[test]
+fn per_dimension_bounds_flag_only_the_dimension_that_breaks_them() {
+    let v = run_limits(serde_json::json!({"min": [1e9, -1e9]}));
+    assert_eq!(codes(&v), ["out_of_range"], "{v:?}");
+    assert!(
+        v[0].message.contains("dimension 0") && !v[0].message.contains("dimension 1"),
+        "{v:?}"
+    );
+}
+
+#[test]
+fn flags_a_bound_list_of_the_wrong_width() {
+    let v = run_limits(serde_json::json!({"min": [0.0, 0.0, 0.0]}));
+    assert_eq!(codes(&v), ["limits_width"], "{v:?}");
+}
+
+#[test]
+fn flags_the_episode_whose_frame_to_frame_change_exceeds_max_step() {
+    let v = run_limits(serde_json::json!({"max_step": 0.001}));
+    assert_eq!(codes(&v), ["step_limit"], "{v:?}");
+    assert_eq!(v[0].episode, Some(0));
 }
