@@ -1,0 +1,129 @@
+{
+ "dataset": "c_so101_my_task_50ep_20261107_20261107_191948",
+ "tools": {
+  "lerobot-doctor": {
+   "version": "0.2.0",
+   "findings": [
+    {
+     "kind": "action_frozen",
+     "episode": 0,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 10,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 11,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 12,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 13,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 14,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 15,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 16,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 17,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 18,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 19,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 20,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 21,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 22,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 3,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 4,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 5,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 7,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 8,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 9,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": null,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_jump",
+     "episode": 14,
+     "severity": "warn"
+    },
+    {
+     "kind": "stuck_in_some_episodes",
+     "episode": null,
+     "severity": "warn"
+    }
+   ]
+  },
+  "physlint": {
+   "version": "0.4.0",
+   "findings": []
+  }
+ }
+}

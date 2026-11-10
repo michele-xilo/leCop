@@ -1,0 +1,119 @@
+{
+ "dataset": "c_black-stressball-tutorial_20261107_222510",
+ "tools": {
+  "lerobot-doctor": {
+   "version": "0.2.0",
+   "findings": [
+    {
+     "kind": "action_frozen",
+     "episode": 0,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 1,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 10,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 11,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 12,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 13,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 14,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 15,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 16,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 18,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 19,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 2,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 21,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 23,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 26,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 3,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 5,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 6,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 7,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": 8,
+     "severity": "warn"
+    },
+    {
+     "kind": "action_frozen",
+     "episode": null,
+     "severity": "warn"
+    }
+   ]
+  },
+  "physlint": {
+   "version": "0.4.0",
+   "findings": []
+  }
+ }
+}
