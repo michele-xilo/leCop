@@ -117,7 +117,7 @@ fn validate(a: ValidateArgs) -> Result<u8> {
     };
     config.add_cli(&a.ignore, &a.select)?;
 
-    let reports: Vec<DatasetReport> = validate_paths(&datasets, a.jobs)?
+    let reports: Vec<DatasetReport> = validate_paths(&datasets, a.jobs, config.limits())?
         .into_iter()
         .map(|(path, outcome)| match outcome {
             Ok(issues) => {
