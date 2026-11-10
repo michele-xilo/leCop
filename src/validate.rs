@@ -47,8 +47,16 @@ pub struct FeatureLimits {
 /// Limits by feature name: `action` or an `observation.*` feature.
 pub type Limits = BTreeMap<String, FeatureLimits>;
 
+/// What to check beyond the defaults.
+#[derive(Debug, Clone, Default)]
+pub struct Checks {
+    pub limits: Limits,
+    /// Decode the video frames (needs the `decode` cargo feature).
+    pub decode: bool,
+}
+
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 49] = [
+pub const ALL_CODES: [&str; 52] = [
     "episode_count",
     "action_jump",
     "distribution_shift",
@@ -98,6 +106,9 @@ pub const ALL_CODES: [&str; 49] = [
     "out_of_range",
     "step_limit",
     "limits_width",
+    "video_decode",
+    "video_frozen",
+    "video_black",
 ];
 
 /// One sentence saying what an issue code means.
@@ -124,6 +135,11 @@ pub fn explain(code: &str) -> &'static str {
         }
         "out_of_range" => "a value is outside the min or max set for its feature in lecop.toml",
         "step_limit" => "the action changes between two frames by more than max_step in lecop.toml",
+        "video_decode" => "video frames could not be decoded (only with --decode)",
+        "video_frozen" => {
+            "a camera repeats the same picture for a second or more (only with --decode)"
+        }
+        "video_black" => "a camera shows a black picture for a second or more (only with --decode)",
         "limits_width" => "a min or max list in lecop.toml does not have one value per dimension",
         "data_stray_file" => "the data directory holds a file that is not a parquet file",
         "frame_count" => "info.json total_frames disagrees with the sum of the episode lengths",
@@ -1091,16 +1107,16 @@ pub fn validate(ds: &Dataset) -> Result<Vec<Issue>> {
 
 /// Run all checks on `jobs` threads (0 = one per core). The report is identical for every `jobs`.
 pub fn validate_with(ds: &Dataset, jobs: usize) -> Result<Vec<Issue>> {
-    validate_with_limits(ds, jobs, &Limits::new())
+    validate_with_checks(ds, jobs, &Checks::default())
 }
 
-/// Like [`validate_with`], also checking the user's `limits`.
-pub fn validate_with_limits(ds: &Dataset, jobs: usize, limits: &Limits) -> Result<Vec<Issue>> {
+/// Like [`validate_with`], with the extra `checks`.
+pub fn validate_with_checks(ds: &Dataset, jobs: usize, checks: &Checks) -> Result<Vec<Issue>> {
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(jobs)
         .build()
         .context("building thread pool")?;
-    Ok(pool.install(|| run(ds, limits)))
+    Ok(pool.install(|| run(ds, checks)))
 }
 
 /// Validate several datasets on one shared pool of `jobs` threads (0 = one per core). Results come back in
@@ -1108,7 +1124,7 @@ pub fn validate_with_limits(ds: &Dataset, jobs: usize, limits: &Limits) -> Resul
 pub fn validate_paths(
     paths: &[PathBuf],
     jobs: usize,
-    limits: &Limits,
+    checks: &Checks,
 ) -> Result<Vec<(PathBuf, Result<Vec<Issue>>)>> {
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(jobs)
@@ -1118,7 +1134,7 @@ pub fn validate_paths(
         paths
             .par_iter()
             .map(|p| {
-                let issues = Dataset::open(p.clone()).map(|ds| run(&ds, limits));
+                let issues = Dataset::open(p.clone()).map(|ds| run(&ds, checks));
                 match &issues {
                     Ok(i) => tracing::info!(dataset = %p.display(), findings = i.len(), "validated"),
                     Err(e) => tracing::warn!(dataset = %p.display(), error = %format!("{e:#}"), "cannot open"),
@@ -1129,7 +1145,7 @@ pub fn validate_paths(
     }))
 }
 
-fn run(ds: &Dataset, limits: &Limits) -> Vec<Issue> {
+fn run(ds: &Dataset, checks: &Checks) -> Vec<Issue> {
     let action = action_key(ds);
     let mut tagged = global_issues(ds, action);
 
@@ -1141,6 +1157,9 @@ fn run(ds: &Dataset, limits: &Limits) -> Vec<Issue> {
         })
         .collect();
     tagged.extend(metadata_and_video_issues(ds, &reads));
+    if checks.decode {
+        tagged.extend(decode_issues(ds, &reads));
+    }
 
     // One unit of work per run of episodes sharing a data file: a v2 file is one episode, a v3 file many.
     let mut groups: Vec<(usize, &[Episode])> = Vec::new();
@@ -1165,7 +1184,7 @@ fn run(ds: &Dataset, limits: &Limits) -> Vec<Issue> {
         .collect();
     tagged.extend(task_index_issue(&used, task_ids(ds).as_ref()));
     tagged.extend(numeric_issues(&extras, action));
-    tagged.extend(limit_issues(ds, action, &extras, limits));
+    tagged.extend(limit_issues(ds, action, &extras, &checks.limits));
     tagged.extend(shift_issues(ds, &extras));
     tagged.extend(jump_issues(ds, action, &extras));
     // A schema fault is the same in every file of the dataset: report it once, at the first file.
@@ -1564,6 +1583,72 @@ fn unique_video_paths(ds: &Dataset) -> Vec<PathBuf> {
         .flat_map(|e| &e.videos)
         .filter(|v| seen.insert(&v.path))
         .map(|v| v.path.clone())
+        .collect()
+}
+
+/// Decode every readable video once and report what the frames show. A video that cannot be decoded at all
+/// (an unsupported codec) is reported too, so the output never implies it was checked.
+fn decode_issues(ds: &Dataset, reads: &HashMap<PathBuf, VideoRead>) -> Vec<Tagged> {
+    // A v2 video holds one episode; a v3 file holds many, so its findings belong to the file.
+    let owner: HashMap<&Path, usize> = ds
+        .episodes
+        .iter()
+        .enumerate()
+        .flat_map(|(pos, e)| {
+            e.videos
+                .iter()
+                .filter(|v| v.span.is_none())
+                .map(move |v| (v.path.as_path(), pos))
+        })
+        .collect();
+    let mut paths: Vec<&PathBuf> = reads
+        .iter()
+        .filter(|(_, r)| r.is_ok())
+        .map(|(p, _)| p)
+        .collect();
+    paths.sort();
+    paths
+        .into_par_iter()
+        .flat_map(|path| {
+            let found: Vec<(Severity, &'static str, String)> =
+                match crate::decode::decode_checked(path) {
+                    Ok(d) => crate::decode::video_findings(&d)
+                        .into_iter()
+                        .map(|(code, m)| {
+                            let sev = if code == "video_decode" {
+                                Severity::Error
+                            } else {
+                                Severity::Warning
+                            };
+                            (sev, code, m)
+                        })
+                        .collect(),
+                    Err(e) => vec![(
+                        Severity::Warning,
+                        "video_decode",
+                        format!("not decoded: {e:#}"),
+                    )],
+                };
+            let pos = owner.get(path.as_path()).copied();
+            let name = path
+                .strip_prefix(&ds.root)
+                .unwrap_or(path)
+                .display()
+                .to_string();
+            found
+                .into_iter()
+                .map(|(sev, code, m)| {
+                    tag(
+                        pos,
+                        PHASE_DATA,
+                        sev,
+                        pos.map(|p| ds.episodes[p].index),
+                        code,
+                        format!("{name}: {m}"),
+                    )
+                })
+                .collect::<Vec<_>>()
+        })
         .collect()
 }
 

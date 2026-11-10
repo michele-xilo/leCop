@@ -30,6 +30,7 @@ fn opts(format: Format) -> Options {
         color: false,
         statistics: false,
         quiet: false,
+        decoded: false,
     }
 }
 

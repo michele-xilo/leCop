@@ -17,6 +17,8 @@ pub struct Options {
     pub color: bool,
     pub statistics: bool,
     pub quiet: bool,
+    /// The video frames were decoded (`--decode`), so the output says so.
+    pub decoded: bool,
 }
 
 /// The outcome of validating one dataset.
@@ -129,6 +131,9 @@ fn summary(reports: &[DatasetReport], o: &Options) -> String {
     if !ignored.is_empty() {
         let list: Vec<String> = ignored.iter().map(|(k, n)| format!("{k} ({n})")).collect();
         s += &format!("Ignored by config: {}\n", list.join(", "));
+    }
+    if o.decoded && !o.quiet {
+        s += "Video frames were decoded (--decode).\n";
     }
     s
 }
