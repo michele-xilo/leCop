@@ -225,3 +225,19 @@ pub(super) fn flatten(c: &ArrayRef) -> Option<(Vec<f64>, usize)> {
     };
     Some((as_f64(l.values()), w))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::Arc;
+
+    #[test]
+    fn floats_are_read_from_f32_and_f64_columns_and_nothing_else() {
+        let f32s: ArrayRef = Arc::new(arrow_array::Float32Array::from(vec![1.5f32]));
+        let f64s: ArrayRef = Arc::new(arrow_array::Float64Array::from(vec![2.5f64]));
+        let ints: ArrayRef = Arc::new(arrow_array::Int64Array::from(vec![3i64]));
+        assert_eq!(as_f64(&f32s), [1.5]);
+        assert_eq!(as_f64(&f64s), [2.5]);
+        assert!(as_f64(&ints).is_empty());
+    }
+}

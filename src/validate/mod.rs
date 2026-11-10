@@ -448,3 +448,20 @@ pub(super) fn global_issues(
     }
     v
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn an_unknown_code_has_no_explanation() {
+        assert_eq!(explain("no_such_code"), "");
+    }
+
+    #[test]
+    fn every_code_has_an_explanation() {
+        for c in ALL_CODES {
+            assert!(!explain(c).is_empty(), "{c}");
+        }
+    }
+}
