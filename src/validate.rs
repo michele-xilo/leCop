@@ -2129,6 +2129,12 @@ fn flatten(c: &ArrayRef) -> Option<(Vec<f64>, usize)> {
 #[cfg(test)]
 mod tests {
     #[test]
+    fn scanning_a_directory_that_cannot_be_read_finds_nothing() {
+        let scan = super::scan_files(std::path::Path::new("no/such/dir"), 1);
+        assert!(scan.stray.is_empty() && scan.symlinks.is_empty() && scan.large.is_empty());
+    }
+
+    #[test]
     fn absolute_templates_are_recognised() {
         assert!(super::is_absolute_template(
             "/data/ep_{episode_index}.parquet"
