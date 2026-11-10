@@ -4,22 +4,22 @@ pusht	lerobot/pusht	6e1d9c95aaf8abb19342e723935b6af7c54b5903	0	3	action_jump=2 e
 aloha_sim_transfer_cube_human	lerobot/aloha_sim_transfer_cube_human	8f81f044cbc65d9c1efbe5a302e8f9f4c16a86ed	0	0	-
 aloha_sim_insertion_human	lerobot/aloha_sim_insertion_human	a7de9cf6a59d1ad641d4c8e17e4f586abfe70580	0	0	-
 svla_so101_pickplace	lerobot/svla_so101_pickplace	e18e43de5e31997effab6abbe3810ff0e2e637d5	0	0	-
-xarm_lift_medium	lerobot/xarm_lift_medium	89d5752c021e580d26d90ceec7e8192ef01e7c30	0	0	-
+xarm_lift_medium	lerobot/xarm_lift_medium	89d5752c021e580d26d90ceec7e8192ef01e7c30	0	4	clipped_dimension=4
 v3_pusht	lerobot/pusht	7628202a2180972f291ba1bc6723834921e72c19	0	3	action_jump=2 episode_length_outlier=1
 v3_aloha_sim_transfer_cube_human	lerobot/aloha_sim_transfer_cube_human	6a43d500f101255823a9d2b9dc244eeb01a2cd31	0	0	-
 v3_aloha_sim_insertion_human	lerobot/aloha_sim_insertion_human	cc571a3c661df81b566dbfde3d5c1e85fcdf7884	0	0	-
 c_so101_block_box_50episodes_final_20261107_190045	kei111111/so101_block_box_50episodes_final_20261107_190045	40f7429398dcb3e02471df8c882cb68a75656f45	0	4	distribution_shift=2 episode_length_outlier=2
 c_so101_my_task_50ep_20261107_20261107_191948	ei1234/so101_my_task_50ep_20261107_20261107_191948	73b42cc861cce4a43a2b313c192ccb012d842d06	0	6	action_jump=1 idle_episode=5
-c_black-stressball-tutorial_20261107_222510	SergeAlhalbi/black-stressball-tutorial_20261107_222510	de761c88e6021dd36c281047c914169a150a3f12	0	0	-
+c_black-stressball-tutorial_20261107_222510	SergeAlhalbi/black-stressball-tutorial_20261107_222510	de761c88e6021dd36c281047c914169a150a3f12	0	1	clipped_dimension=1
 c_so101_pill_sorting_medoc	TomasAnderegg/so101_pill_sorting_medoc	5fa2a224f01339fe8fdde8a076eda75e70ad2d06	0	0	-
-c_piperx-two-color-block-sorting	tianxiwei/piperx-two-color-block-sorting	7b210f57c5d843162fe3ac5bfbb40f63a7db88c5	0	2	nonstandard_features=2
-c_careattrs_mug2v2	Aaronng456/careattrs_mug2v2	7ed6203cdb625a01e0a045651da4a48edda95683	0	0	-
-c_d3il_avoiding_vision_224	shivakanthsujit/d3il_avoiding_vision_224	e7c3f92f5e816e006e643f170ffc88dda2f58a8d	0	0	-
+c_piperx-two-color-block-sorting	tianxiwei/piperx-two-color-block-sorting	7b210f57c5d843162fe3ac5bfbb40f63a7db88c5	0	3	clipped_dimension=1 nonstandard_features=2
+c_careattrs_mug2v2	Aaronng456/careattrs_mug2v2	7ed6203cdb625a01e0a045651da4a48edda95683	0	3	clipped_dimension=3
+c_d3il_avoiding_vision_224	shivakanthsujit/d3il_avoiding_vision_224	e7c3f92f5e816e006e643f170ffc88dda2f58a8d	0	2	clipped_dimension=2
 # Messy true positive (v2.1, 1.2 GB): frame_count (info.json 19028 vs episodes 17156), 6 video_frame_count, 15
 # episode_rows_missing (episodes 14-28 have no rows in their data file). `hf download` fails the size check
 # on 7 videos because the Hub serves bytes that differ from the listed size (top/episode_000001.mp4 and
 # episode_000007.mp4 are byte-identical), so fetch-datasets.sh falls back to per-file curl.
-c_so100_press_red_button	jchandru08/so100_press_red_button	b8544ee7cb9075efbf5f4d2c49f7a6aa93fe0e09	22	2	episode_rows_missing=15 frame_count=1 outlier_values=2 video_frame_count=6
+c_so100_press_red_button	jchandru08/so100_press_red_button	b8544ee7cb9075efbf5f4d2c49f7a6aa93fe0e09	22	8	clipped_dimension=6 episode_rows_missing=15 frame_count=1 outlier_values=2 video_frame_count=6
 # No v2.0 dataset is pinned yet: the two screened candidates (IPEC-COMMUNITY/kuka_lerobot, 209,880 episodes, and
 #   saaduddinM/rbo_oxe_base_language_table_lerobot, 222,845 episodes) are several GB with one video per episode.
 # Screen of 598 LeRobot-tagged Hub datasets (2026-11-09): 349 v3.0, 149 v2.1, 16 v2.0; 79 had no readable

@@ -140,3 +140,17 @@ fn the_training_chunk_size_is_read_and_checked() {
     );
     assert!(parse("[training]\nchunks = 5\n").is_err(), "unknown key");
 }
+
+#[test]
+fn the_clipped_fraction_is_read_and_checked() {
+    assert_eq!(
+        parse("[numeric]\nclipped_fraction = 0.2\n")
+            .unwrap()
+            .clipped_fraction(),
+        Some(0.2)
+    );
+    assert_eq!(parse("").unwrap().clipped_fraction(), None);
+    assert!(parse("[numeric]\nclipped_fraction = 0.0\n").is_err());
+    assert!(parse("[numeric]\nclipped_fraction = 1.5\n").is_err());
+    assert!(parse("[numeric]\nclipped = 0.2\n").is_err(), "unknown key");
+}

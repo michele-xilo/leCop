@@ -23,6 +23,13 @@ struct Training {
 
 #[derive(Debug, Default, Deserialize)]
 #[serde(deny_unknown_fields)]
+struct Numeric {
+    /// Fraction of a dimension's values at its extreme from which `clipped_dimension` is reported.
+    clipped_fraction: Option<f64>,
+}
+
+#[derive(Debug, Default, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Config {
     #[serde(default)]
     ignore: Vec<String>,
@@ -38,6 +45,8 @@ pub struct Config {
     limits: Limits,
     #[serde(default)]
     training: Training,
+    #[serde(default)]
+    numeric: Numeric,
     #[serde(default, rename = "per-dataset")]
     per_dataset: BTreeMap<String, PerDataset>,
     #[serde(skip)]
@@ -81,12 +90,22 @@ impl Config {
         if c.training.chunk_size == Some(0) {
             bail!("training.chunk_size in {what} must be at least 1");
         }
+        if c.numeric
+            .clipped_fraction
+            .is_some_and(|f| !(f > 0.0 && f <= 1.0))
+        {
+            bail!("numeric.clipped_fraction in {what} must be above 0 and at most 1");
+        }
         c.dir = path.parent().map(Path::to_path_buf).unwrap_or_default();
         Ok(c)
     }
 
     pub fn chunk_size(&self) -> Option<usize> {
         self.training.chunk_size
+    }
+
+    pub fn clipped_fraction(&self) -> Option<f64> {
+        self.numeric.clipped_fraction
     }
 
     pub fn limits(&self) -> &Limits {
