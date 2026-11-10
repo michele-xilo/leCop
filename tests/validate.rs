@@ -1232,3 +1232,15 @@ fn warns_on_non_parquet_files_in_the_data_directory() {
     assert_eq!(v[0].severity, Severity::Warning);
     assert!(v[0].message.contains(".DS_Store"), "{v:?}");
 }
+
+#[test]
+fn lists_five_stray_files_and_counts_the_rest() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    for i in 0..7 {
+        fs::write(dir.path().join(format!("data/chunk-000/x{i}.tmp")), b"x").unwrap();
+    }
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["data_stray_file"], "{v:?}");
+    assert!(v[0].message.ends_with("and 2 more"), "{v:?}");
+}
