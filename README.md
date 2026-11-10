@@ -126,6 +126,8 @@ Beyond what LeRobot checks:
 | Values more than 10 standard deviations from the mean of their dimension (judged from 100 frames up) | warning | `outlier_values` |
 | A frame-to-frame action change whose mean over the dimensions is more than 8 standard deviations from the usual step (up to 5 episodes listed, the rest counted) | warning | `action_jump` |
 | The mean of the action or a state column in the last quarter of the episodes more than 3 standard deviations (of the first quarter) from the first quarter's (judged from 10 episodes up) | warning | `distribution_shift` |
+| `data_path` or `video_path` is an absolute path (the dataset only works on this machine) | warning | `path_absolute` |
+| A file in `data/` that is not parquet (`.DS_Store`, leftovers) | warning | `data_stray_file` |
 
 Malformed files are reported, not crashed on.
 
@@ -137,16 +139,16 @@ installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **14 ms** | 739 ms | n/a | 53x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 471 ms | n/a | 52x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 458 ms | n/a | 57x |
-| `v3_pusht` (v3.0) | 🏆 **12 ms** | 635 ms | 16,505 ms | 53x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 482 ms | 2,919 ms | 48x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **9 ms** | 452 ms | 3,527 ms | 50x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **29 ms** | 498 ms | 770 ms | 17x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **20 ms** | 511 ms | 7,812 ms | 26x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 400 ms | 2,876 ms | 33x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **15 ms** | 493 ms | 7,936 ms | 33x |
+| `pusht` (v2.1) | 🏆 **14 ms** | 713 ms | n/a | 51x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **8 ms** | 458 ms | n/a | 57x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **7 ms** | 443 ms | n/a | 63x |
+| `v3_pusht` (v3.0) | 🏆 **11 ms** | 613 ms | 16,740 ms | 56x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 496 ms | 2,988 ms | 50x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **10 ms** | 473 ms | 3,580 ms | 47x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **30 ms** | 514 ms | 751 ms | 17x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **20 ms** | 517 ms | 7,907 ms | 26x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 419 ms | 2,938 ms | 32x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **15 ms** | 494 ms | 7,589 ms | 33x |
 
 The tools check different things (see the coverage table below), so this compares speed only.
 
@@ -185,7 +187,8 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Video frame count against the episode (container tables) | ✅ | ✅ | ❌ |
 | Video resolution against `info.json` | ✅ | ✅ | ❌ |
 | Frames decode, frozen frames, black frames | ❌ opt-in decode planned | ⚠️ first frame only | ✅ |
-| Portability: absolute paths, symlinks, unreadable or oversized files | ❌ | ✅ | ❌ |
+| Portability: absolute paths, stray files in `data/` | ✅ | ✅ | ❌ |
+| Portability: symlinks, oversized files | ❌ | ✅ | ❌ |
 | Training readiness: normalisation, policy windows, `delta_timestamps` | ❌ | ✅ | ❌ |
 | Only leCop: v3 video span checks, `range_*`, `index_mismatch` | ✅ | ❌ | ❌ |
 

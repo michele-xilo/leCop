@@ -1206,3 +1206,29 @@ fn no_shift_without_a_drift_and_none_under_ten_episodes() {
     let v = run(drifting(9, 50.0), None);
     assert!(v.iter().all(|i| i.code != "distribution_shift"), "{v:?}");
 }
+
+#[test]
+fn warns_on_an_absolute_data_path_template() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    // The files still resolve, because joining an absolute template replaces the dataset root.
+    let abs = format!(
+        "{}/data/chunk-{{episode_chunk:03d}}/episode_{{episode_index:06d}}.parquet",
+        dir.path().display()
+    );
+    edit_info(dir.path(), |v| v["data_path"] = abs.into());
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["path_absolute"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Warning);
+}
+
+#[test]
+fn warns_on_non_parquet_files_in_the_data_directory() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(20)], None);
+    fs::write(dir.path().join("data/chunk-000/.DS_Store"), b"x").unwrap();
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&v), ["data_stray_file"], "{v:?}");
+    assert_eq!(v[0].severity, Severity::Warning);
+    assert!(v[0].message.contains(".DS_Store"), "{v:?}");
+}
