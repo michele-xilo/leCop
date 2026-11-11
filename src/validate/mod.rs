@@ -192,7 +192,7 @@ pub fn explain(code: &str) -> &'static str {
             "a dimension of the action or an observation has the same value in every frame"
         }
         "clipped_dimension" => {
-            "a dimension sits at its minimum or maximum in over 99% of the frames"
+            "a dimension sits at its minimum or maximum in at least clipped_fraction of the frames (5% by default)"
         }
         "outlier_values" => {
             "a value is more than 10 standard deviations from the mean of its dimension"
@@ -458,6 +458,12 @@ pub(super) fn global_issues(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn an_explanation_does_not_hard_code_the_clipped_threshold() {
+        // The threshold is `clipped_fraction`, default 5% and configurable.
+        assert!(!explain("clipped_dimension").contains("99%"));
+    }
 
     #[test]
     fn an_unknown_code_has_no_explanation() {

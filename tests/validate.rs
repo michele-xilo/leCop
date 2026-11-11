@@ -833,6 +833,25 @@ fn flags_an_empty_episode() {
 }
 
 #[test]
+fn a_single_jump_is_not_pluralised() {
+    let mut eps: Vec<Ep> = (0..8).map(|_| good(20)).collect();
+    // A level change from frame 10 on is one jump (a spike would be two: up, then back).
+    for x in &mut eps[3].action[10 * DIM as usize..] {
+        *x += 1000.0;
+    }
+    let v = run(eps, None);
+    let j = v
+        .iter()
+        .find(|i| i.code == "action_jump")
+        .unwrap_or_else(|| panic!("{v:?}"));
+    assert!(
+        j.message.starts_with("1 frame-to-frame jump in `action`"),
+        "{}",
+        j.message
+    );
+}
+
+#[test]
 fn warns_on_an_episode_far_longer_than_the_others() {
     let mut eps: Vec<Ep> = (0..20).map(|i| good(20 + i % 4)).collect();
     eps.push(good(400));
@@ -844,6 +863,11 @@ fn warns_on_an_episode_far_longer_than_the_others() {
     assert_eq!(out.len(), 1, "{v:?}");
     assert_eq!(out[0].episode, Some(20));
     assert_eq!(out[0].severity, Severity::Warning);
+    assert!(
+        out[0].message.contains("longer than the other episodes"),
+        "{}",
+        out[0].message
+    );
 }
 
 #[test]
@@ -1488,6 +1512,7 @@ fn flags_metadata_length_that_differs_from_the_data_file() {
         m.message.contains("12") && m.message.contains("10"),
         "{v:?}"
     );
+    assert!(m.message.contains("episode_000000.parquet"), "{v:?}");
 }
 
 #[test]
