@@ -19,6 +19,12 @@ A fast, single-binary health check for
 > **Unofficial.** Not affiliated with Hugging Face or the LeRobot project.
 > **Early stage.** Tested on synthetic fixtures and on 16 real Hub datasets (v2.1 and v3.0, official and community), one of them with real faults. No real v2.0 dataset is tested yet.
 
+leCop reads a dataset's metadata and parquet files, and the container metadata of its videos, and reports the faults
+that break or quietly degrade training: totals that disagree with the data, drifting timestamps, missing or truncated
+files, videos with the wrong number of frames, constant or clipped signals, and more. It is one binary with nothing
+else to install. It takes 8 to 33 ms on the datasets in the [speed table](#performance), 17x to 59x faster than
+lerobot-doctor, because it never decodes video unless you ask for it with `--decode`.
+
 ## Install
 
 ```bash
@@ -131,7 +137,80 @@ clipped_fraction = 0.05            # report a dimension with this fraction of it
 
 Unknown issue codes are an error. Ignored findings are counted: `Ignored by config: idle_episode (5)`.
 
-`validate` supports LeRobot **v2.x** (one file per episode) and **v3.x** (episodes packed into shared files).
+## How leCop compares with other tools
+
+What [lerobot-doctor](https://pypi.org/project/lerobot-doctor/) 0.2.0 and
+[physlint](https://pypi.org/project/physlint/) 0.4.0 check, read from their installed rule lists and source,
+against what leCop checks. physlint also validates MCAP and ROS 2 recordings, which is out of scope here.
+✅ checked, ⚠️ partly checked or needs thresholds you set, ❌ not checked.
+
+| Check | leCop | lerobot-doctor | physlint |
+|---|---|---|---|
+| `info.json` readable, version supported, `fps` positive | ✅ | ✅ | ✅ |
+| `info.json` required fields present | ✅ | ✅ | ✅ |
+| `total_episodes`, `total_frames` match the metadata | ✅ | ✅ | ✅ |
+| `total_tasks` matches the task metadata | ✅ | ✅ | ❌ |
+| Data and episode-metadata files exist and are readable | ✅ | ✅ | ✅ |
+| Episode ids unique, contiguous, boundaries and global `index` valid | ✅ | ⚠️ | ✅ |
+| Timestamps monotonic, match `fps`, no dropped-frame gaps | ✅ | ✅ | ✅ gap limit by config |
+| `frame_index` sequential within each episode | ✅ | ✅ | ❌ |
+| Declared dtype and shape match the stored data | ✅ float list widths | ⚠️ | ✅ |
+| Same features in every episode (missing, extra, dtype, shape) | ✅ | ✅ | ⚠️ |
+| Required streams present (`observation.state`, ...) | ⚠️ `action`, `observation.state`, `timestamp` | ❌ | ⚠️ needs config |
+| Streams cover whole episodes; observation/action delay | ❌ | ❌ | ✅ delay by config |
+| NaN and Inf in feature columns | ✅ | ✅ | ✅ |
+| Numeric limits per feature | ✅ by config | ❌ | ⚠️ needs config |
+| Implausible jumps between frames | ✅ also `max_step` by config | ✅ | ⚠️ needs config |
+| Constant or frozen action, idle episodes | ✅ | ✅ | ❌ |
+| Stuck or constant dimensions, zero variance | ✅ | ✅ | ❌ |
+| Values clipped at their min or max | ✅ 5% of frames or more, configurable | ✅ | ❌ |
+| Extreme outliers, distribution shift across episodes | ✅ | ✅ | ❌ |
+| Duplicate episodes | ✅ exact action sequences | ✅ near-duplicates | ✅ exact |
+| Episode length: empty, too short, outliers | ✅ | ✅ | ❌ |
+| Statistics file present and covering every feature | ✅ | ✅ | ❌ |
+| Video file exists, readable mp4, frame rate | ✅ | ✅ | ✅ |
+| Video frame count against the episode (container tables) | ✅ | ✅ | ❌ |
+| Video resolution against `info.json` | ✅ | ✅ | ❌ |
+| Frames decode, frozen frames, black frames | ✅ opt-in `--decode` (H.264 and AV1) | ⚠️ first frame only | ✅ |
+| Portability: absolute paths, symlinks, stray files in `data/`, oversized files | ✅ | ✅ | ❌ |
+| Training readiness: zero-std statistics, episodes shorter than the policy chunk | ✅ | ✅ | ❌ |
+| Only leCop: v3 video span checks, `range_*`, `index_mismatch` | ✅ | ❌ | ❌ |
+
+Gaps are tracked as issues by priority; see the open issues labelled `feature`.
+
+## Performance
+
+How long each tool takes to check the same dataset: median of 3 runs after one warm-up, warm page cache, wall time
+including process start. Apple M2 Pro, Python 3.12, leCop `release` build, lerobot-doctor 0.2.0 and physlint 0.4.0
+installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`.
+
+| Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
+|---|---|---|---|---|
+| `pusht` (v2.1) | 🏆 **14 ms** | 757 ms | n/a | 54x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 474 ms | n/a | 53x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 471 ms | n/a | 59x |
+| `v3_pusht` (v3.0) | 🏆 **11 ms** | 612 ms | 15,735 ms | 56x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 556 ms | 3,409 ms | 56x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **10 ms** | 506 ms | 3,954 ms | 51x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **33 ms** | 566 ms | 859 ms | 17x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **22 ms** | 580 ms | 8,077 ms | 26x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 406 ms | 2,711 ms | 31x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 466 ms | 7,512 ms | 33x |
+
+The tools check different things (see the comparison above), so this compares speed only.
+
+## Checks and features
+
+### Features
+
+- Reads LeRobot **v2.x** (one file per episode) and **v3.x** (episodes packed into shared files) datasets.
+- Checks datasets in parallel; the report is identical for any `-j`.
+- Prints `text`, `full`, `json` or GitHub annotation output, and exits 0, 1 or 2 so CI can act on it, see [Usage](#usage).
+- Ignores, selects or re-grades issue codes, per dataset if needed, and sets numeric limits, in [`lecop.toml`](#config-file).
+- Repairs the totals in `meta/info.json` with `--fix`, and shows them first with `--preview`, see [Repairing](#repairing).
+- Decodes video frames on request (`--decode`, opt-in build), see [Decoding frames](#decoding-frames).
+
+### Checks
 
 LeRobot does not publish a list of dataset checks. The table is derived from its
 [v3 format docs](https://github.com/huggingface/lerobot/blob/main/docs/source/lerobot-dataset-v3.mdx) and from what its
@@ -193,76 +272,14 @@ Beyond what LeRobot checks:
 
 Malformed files are reported, not crashed on.
 
-## Speed
-
-How long each tool takes to check the same dataset: median of 3 runs after one warm-up, warm page cache, wall time
-including process start. Apple M2 Pro, Python 3.12, leCop `release` build, lerobot-doctor 0.2.0 and physlint 0.4.0
-installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`.
-
-| Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
-|---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **14 ms** | 757 ms | n/a | 54x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 474 ms | n/a | 53x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 471 ms | n/a | 59x |
-| `v3_pusht` (v3.0) | 🏆 **11 ms** | 612 ms | 15,735 ms | 56x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 556 ms | 3,409 ms | 56x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **10 ms** | 506 ms | 3,954 ms | 51x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **33 ms** | 566 ms | 859 ms | 17x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **22 ms** | 580 ms | 8,077 ms | 26x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 406 ms | 2,711 ms | 31x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 466 ms | 7,512 ms | 33x |
-
-The tools check different things (see the coverage table below), so this compares speed only.
-
-## Coverage compared with other tools
-
-What [lerobot-doctor](https://pypi.org/project/lerobot-doctor/) 0.2.0 and
-[physlint](https://pypi.org/project/physlint/) 0.4.0 check, read from their installed rule lists and source,
-against what leCop checks. physlint also validates MCAP and ROS 2 recordings, which is out of scope here.
-✅ checked, ⚠️ partly checked or needs thresholds you set, ❌ not checked.
-
-| Check | leCop | lerobot-doctor | physlint |
-|---|---|---|---|
-| `info.json` readable, version supported, `fps` positive | ✅ | ✅ | ✅ |
-| `info.json` required fields present | ✅ | ✅ | ✅ |
-| `total_episodes`, `total_frames` match the metadata | ✅ | ✅ | ✅ |
-| `total_tasks` matches the task metadata | ✅ | ✅ | ❌ |
-| Data and episode-metadata files exist and are readable | ✅ | ✅ | ✅ |
-| Episode ids unique, contiguous, boundaries and global `index` valid | ✅ | ⚠️ | ✅ |
-| Timestamps monotonic, match `fps`, no dropped-frame gaps | ✅ | ✅ | ✅ gap limit by config |
-| `frame_index` sequential within each episode | ✅ | ✅ | ❌ |
-| Declared dtype and shape match the stored data | ✅ float list widths | ⚠️ | ✅ |
-| Same features in every episode (missing, extra, dtype, shape) | ✅ | ✅ | ⚠️ |
-| Required streams present (`observation.state`, ...) | ⚠️ `action`, `observation.state`, `timestamp` | ❌ | ⚠️ needs config |
-| Streams cover whole episodes; observation/action delay | ❌ | ❌ | ✅ delay by config |
-| NaN and Inf in feature columns | ✅ | ✅ | ✅ |
-| Numeric limits per feature | ✅ by config | ❌ | ⚠️ needs config |
-| Implausible jumps between frames | ✅ also `max_step` by config | ✅ | ⚠️ needs config |
-| Constant or frozen action, idle episodes | ✅ | ✅ | ❌ |
-| Stuck or constant dimensions, zero variance | ✅ | ✅ | ❌ |
-| Values clipped at their min or max | ✅ 5% of frames or more, configurable | ✅ | ❌ |
-| Extreme outliers, distribution shift across episodes | ✅ | ✅ | ❌ |
-| Duplicate episodes | ✅ exact action sequences | ✅ near-duplicates | ✅ exact |
-| Episode length: empty, too short, outliers | ✅ | ✅ | ❌ |
-| Statistics file present and covering every feature | ✅ | ✅ | ❌ |
-| Video file exists, readable mp4, frame rate | ✅ | ✅ | ✅ |
-| Video frame count against the episode (container tables) | ✅ | ✅ | ❌ |
-| Video resolution against `info.json` | ✅ | ✅ | ❌ |
-| Frames decode, frozen frames, black frames | ✅ opt-in `--decode` (H.264 and AV1) | ⚠️ first frame only | ✅ |
-| Portability: absolute paths, symlinks, stray files in `data/`, oversized files | ✅ | ✅ | ❌ |
-| Training readiness: zero-std statistics, episodes shorter than the policy chunk | ✅ | ✅ | ❌ |
-| Only leCop: v3 video span checks, `range_*`, `index_mismatch` | ✅ | ❌ | ❌ |
-
-Gaps are tracked as issues by priority; see the open issues labelled `feature`.
-
-## Not yet supported
+### Not yet supported
 
 - Audio/video drift inside a video (frames are only decoded with `--decode`, see above)
 - Remote (Hub) datasets
 
 The roadmap is the [open issues](https://github.com/michele-xilo/lecop/issues), by priority.
 
-## Development
+## Contributing
 
 ```bash
 cargo test
