@@ -449,6 +449,104 @@ fn v3_flags_timestamp_drift_in_second_episode_of_a_file() {
     assert_eq!(v[0].episode, Some(1));
 }
 
+/// A packed v3 dataset whose `stats.json` holds the real statistics of `action`, changed by `edit`.
+fn v3_with_action_stats(edit: impl Fn(&mut serde_json::Value)) -> Vec<Issue> {
+    let eps = vec![good(20), good(15), good(10)];
+    let dir = tempfile::tempdir().unwrap();
+    write_ds_v3(dir.path(), &eps);
+    let rows: Vec<&[f32]> = eps
+        .iter()
+        .flat_map(|e| e.action.chunks(DIM as usize))
+        .collect();
+    let n = rows.len() as f64;
+    let col = |j: usize| rows.iter().map(|r| r[j] as f64).collect::<Vec<_>>();
+    let (mut mn, mut mx, mut mean, mut std) = (vec![], vec![], vec![], vec![]);
+    for j in 0..DIM as usize {
+        let c = col(j);
+        let m = c.iter().sum::<f64>() / n;
+        mn.push(c.iter().cloned().fold(f64::INFINITY, f64::min));
+        mx.push(c.iter().cloned().fold(f64::NEG_INFINITY, f64::max));
+        std.push((c.iter().map(|x| (x - m).powi(2)).sum::<f64>() / n).sqrt());
+        mean.push(m);
+    }
+    let path = dir.path().join("meta/stats.json");
+    let mut stats: serde_json::Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    stats["action"] =
+        serde_json::json!({"min": mn, "max": mx, "mean": mean, "std": std, "count": [rows.len()]});
+    edit(&mut stats["action"]);
+    fs::write(&path, stats.to_string()).unwrap();
+    validate(&Dataset::open(dir.path()).unwrap()).unwrap()
+}
+
+#[test]
+fn v3_statistics_that_match_the_data_report_nothing() {
+    let v = v3_with_action_stats(|_| {});
+    assert!(v.is_empty(), "{v:?}");
+}
+
+#[test]
+fn v3_flags_each_stale_statistic_and_names_feature_dimension_and_values() {
+    for (stat, dim) in [("min", 0), ("max", 1), ("mean", 1), ("std", 0)] {
+        let v = v3_with_action_stats(|a| a[stat][dim] = 123456.0.into());
+        let m = v
+            .iter()
+            .find(|i| i.code == "stats_mismatch")
+            .unwrap_or_else(|| panic!("{stat}: {v:?}"));
+        assert_eq!((m.severity, m.episode), (Severity::Warning, None));
+        assert!(
+            m.message.contains("action")
+                && m.message.contains(&format!("dimension {dim} {stat}"))
+                && m.message.contains("123456"),
+            "{}",
+            m.message
+        );
+    }
+}
+
+#[test]
+fn v3_counts_the_further_differences_in_the_singular_and_the_plural() {
+    let one = v3_with_action_stats(|a| {
+        a["mean"][0] = 123456.0.into();
+        a["std"][0] = 123456.0.into();
+    });
+    let two = v3_with_action_stats(|a| {
+        a["mean"][0] = 123456.0.into();
+        a["std"][0] = 123456.0.into();
+        a["max"][0] = 123456.0.into();
+    });
+    let msg = |v: &[Issue]| {
+        v.iter()
+            .find(|i| i.code == "stats_mismatch")
+            .unwrap()
+            .message
+            .clone()
+    };
+    assert!(
+        msg(&one).contains("(and 1 more difference)"),
+        "{}",
+        msg(&one)
+    );
+    assert!(
+        msg(&two).contains("(and 2 more differences)"),
+        "{}",
+        msg(&two)
+    );
+}
+
+#[test]
+fn v3_flags_a_stale_frame_count_in_the_statistics() {
+    let v = v3_with_action_stats(|a| a["count"] = serde_json::json!([999]));
+    let m = v
+        .iter()
+        .find(|i| i.code == "stats_mismatch")
+        .unwrap_or_else(|| panic!("{v:?}"));
+    assert!(
+        m.message.contains("count") && m.message.contains("999") && m.message.contains("45"),
+        "{}",
+        m.message
+    );
+}
+
 #[test]
 fn v3_flags_range_not_matching_length() {
     let mut e = good(10);
@@ -1402,7 +1500,10 @@ fn v3_with_action_std(std: serde_json::Value) -> Vec<Issue> {
     let mut stats: serde_json::Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
     stats["action"] = serde_json::json!({ "std": std });
     fs::write(&path, stats.to_string()).unwrap();
-    validate(&Dataset::open(dir.path()).unwrap()).unwrap()
+    let mut v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    // These tests store a std that is not the data's; that is `stats_mismatch`, tested on its own.
+    v.retain(|i| i.code != "stats_mismatch");
+    v
 }
 
 #[test]

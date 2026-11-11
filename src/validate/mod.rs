@@ -20,9 +20,9 @@ use self::episodes::{
 };
 use self::jump_shift::{jump_issues, shift_issues};
 use self::limits::limit_issues;
-use self::numeric::{DEFAULT_CLIPPED_FRACTION, numeric_issues};
+use self::numeric::{DEFAULT_CLIPPED_FRACTION, merge_stats, numeric_issues};
 use self::portability::portability_findings;
-use self::stats::{stats_findings, zero_std_findings};
+use self::stats::{stats_findings, stats_mismatch_findings, zero_std_findings};
 use self::tasks::{task_ids, task_index_issue};
 use self::video::{
     VideoRead, decode_issues, metadata_and_video_issues, read_video, unique_video_paths,
@@ -64,7 +64,7 @@ pub struct Checks {
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 56] = [
+pub const ALL_CODES: [&str; 57] = [
     "episode_count",
     "action_jump",
     "distribution_shift",
@@ -121,6 +121,7 @@ pub const ALL_CODES: [&str; 56] = [
     "file_oversized",
     "stats_zero_std",
     "episodes_below_chunk",
+    "stats_mismatch",
 ];
 
 /// One sentence saying what an issue code means.
@@ -158,6 +159,9 @@ pub fn explain(code: &str) -> &'static str {
         "video_black" => "a camera shows a black picture for a second or more (only with --decode)",
         "stats_zero_std" => {
             "stats.json gives a dimension zero std, so normalising it divides by zero"
+        }
+        "stats_mismatch" => {
+            "stats.json has a count, min, max, mean or std that differs from the data, so it is out of date"
         }
         "episodes_below_chunk" => {
             "episodes are shorter than the chunk_size set under [training] in lecop.toml"
@@ -344,6 +348,16 @@ pub(super) fn run_tagged(ds: &Dataset, checks: &Checks) -> Vec<Tagged> {
         action,
         checks.clipped_fraction.unwrap_or(DEFAULT_CLIPPED_FRACTION),
     ));
+    for (code, message) in stats_mismatch_findings(ds, &merge_stats(&extras)) {
+        tagged.push(tag(
+            None,
+            PHASE_DATA,
+            Severity::Warning,
+            None,
+            code,
+            message,
+        ));
+    }
     tagged.extend(limit_issues(ds, action, &extras, &checks.limits));
     tagged.extend(shift_issues(ds, &extras));
     tagged.extend(jump_issues(ds, action, &extras));
