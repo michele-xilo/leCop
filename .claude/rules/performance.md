@@ -1,7 +1,7 @@
 # Performance
 
-Speed is lecop's reason to exist (see `docs/agent/PLAN.md`: the Python validators already exist, we win on speed,
-video checks without decoding, and zero setup). Treat it as a feature with the same rigour as correctness:
+Speed is lecop's reason to exist (the Python validators already exist; we win on speed, video checks without
+decoding, and zero setup). Treat it as a feature with the same rigour as correctness:
 designed in, measured, and protected against regressions.
 
 ## Measure first, always
