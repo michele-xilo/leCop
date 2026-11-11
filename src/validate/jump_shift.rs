@@ -259,7 +259,8 @@ pub(super) fn jump_issues(
                 Some(ds.episodes[pos].index),
                 "action_jump",
                 format!(
-                    "{n} frame-to-frame jumps in `{key}`, each over {JUMP_SIGMAS} standard deviations of the usual step"
+                    "{n} frame-to-frame jump{} in `{key}`, each over {JUMP_SIGMAS} standard deviations of the usual step",
+                    if n == 1 { "" } else { "s" }
                 ),
             )
         })
