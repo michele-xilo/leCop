@@ -85,7 +85,7 @@ pub(super) fn limit_issues(
         for (name, bound) in [("min", &lim.min), ("max", &lim.max)] {
             let Some(bound) = bound else { continue };
             match bound_breaches(key, &st, bound, name) {
-                Err(m) => push(None, Severity::Error, None, "limits_width", m),
+                Err(m) => push(None, Severity::Error, None, "limit_width", m),
                 Ok(b) if b.is_empty() => {}
                 Ok(b) => {
                     let more = b.len().saturating_sub(5);
@@ -99,7 +99,7 @@ pub(super) fn limit_issues(
                         None,
                         Severity::Error,
                         None,
-                        "out_of_range",
+                        "limit_out_of_range",
                         format!("{key}: {}{tail}", shown.join("; ")),
                     );
                 }
@@ -133,7 +133,7 @@ pub(super) fn limit_issues(
                 Some(pos),
                 Severity::Error,
                 Some(ds.episodes[pos].index),
-                "step_limit",
+                "limit_step",
                 format!(
                     "{key}: dimension {j} changes by {v} in one frame, above max_step {max}{tail}"
                 ),

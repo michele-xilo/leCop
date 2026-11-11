@@ -564,7 +564,7 @@ fn reports_a_missing_timestamp_column_instead_of_panicking() {
     )
     .unwrap();
     let c = codes(&run_with_data_file(batch));
-    assert!(c.contains(&"column_missing"), "{c:?}");
+    assert!(c.contains(&"timestamp_missing"), "{c:?}");
 }
 
 #[test]
@@ -1057,7 +1057,7 @@ fn warns_when_a_feature_has_no_statistics() {
     )
     .unwrap();
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
-    assert_eq!(codes(&v), ["stats_features"], "{v:?}");
+    assert_eq!(codes(&v), ["stats_feature_missing"], "{v:?}");
     assert!(v[0].message.contains("timestamp"), "{}", v[0].message);
     assert!(!v[0].message.contains("action"), "{}", v[0].message);
 }
@@ -1069,7 +1069,7 @@ fn v3_reads_stats_json() {
     let p = dir.path().join("meta/stats.json");
     fs::write(&p, r#"{"action": {}}"#).unwrap();
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
-    assert_eq!(codes(&v), ["stats_features"], "{v:?}");
+    assert_eq!(codes(&v), ["stats_feature_missing"], "{v:?}");
     fs::write(&p, "not json").unwrap();
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["stats_missing"], "{v:?}");
@@ -1269,7 +1269,7 @@ fn limits_that_hold_report_nothing() {
 #[test]
 fn flags_a_value_beyond_a_scalar_bound() {
     let v = run_limits(serde_json::json!({"max": -1e9}));
-    assert_eq!(codes(&v), ["out_of_range"], "{v:?}");
+    assert_eq!(codes(&v), ["limit_out_of_range"], "{v:?}");
     assert_eq!(v[0].severity, Severity::Error);
     assert!(v[0].message.starts_with("action: dimension 0"), "{v:?}");
 }
@@ -1277,7 +1277,7 @@ fn flags_a_value_beyond_a_scalar_bound() {
 #[test]
 fn per_dimension_bounds_flag_only_the_dimension_that_breaks_them() {
     let v = run_limits(serde_json::json!({"min": [1e9, -1e9]}));
-    assert_eq!(codes(&v), ["out_of_range"], "{v:?}");
+    assert_eq!(codes(&v), ["limit_out_of_range"], "{v:?}");
     assert!(
         v[0].message.contains("dimension 0") && !v[0].message.contains("dimension 1"),
         "{v:?}"
@@ -1287,13 +1287,13 @@ fn per_dimension_bounds_flag_only_the_dimension_that_breaks_them() {
 #[test]
 fn flags_a_bound_list_of_the_wrong_width() {
     let v = run_limits(serde_json::json!({"min": [0.0, 0.0, 0.0]}));
-    assert_eq!(codes(&v), ["limits_width"], "{v:?}");
+    assert_eq!(codes(&v), ["limit_width"], "{v:?}");
 }
 
 #[test]
 fn flags_the_episode_whose_frame_to_frame_change_exceeds_max_step() {
     let v = run_limits(serde_json::json!({"max_step": 0.001}));
-    assert_eq!(codes(&v), ["step_limit"], "{v:?}");
+    assert_eq!(codes(&v), ["limit_step"], "{v:?}");
     assert_eq!(v[0].episode, Some(0));
 }
 
@@ -1584,7 +1584,7 @@ fn reads_float64_timestamps() {
 }
 
 #[test]
-fn step_limit_counts_the_other_episodes_that_break_it() {
+fn limit_step_counts_the_other_episodes_that_break_it() {
     let dir = tempfile::tempdir().unwrap();
     write_ds(dir.path(), &[good(20), good(20), good(20)], None);
     let limits: Limits =
@@ -1594,7 +1594,7 @@ fn step_limit_counts_the_other_episodes_that_break_it() {
         ..Checks::default()
     };
     let v = validate_with_checks(&Dataset::open(dir.path()).unwrap(), 1, &checks).unwrap();
-    assert_eq!(codes(&v), ["step_limit"], "{v:?}");
+    assert_eq!(codes(&v), ["limit_step"], "{v:?}");
     assert!(v[0].message.contains("and 2 more episodes"), "{v:?}");
 }
 
