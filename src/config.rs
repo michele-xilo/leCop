@@ -55,6 +55,11 @@ pub struct Config {
 
 fn check_codes(codes: &[String], what: &str) -> Result<()> {
     for c in codes {
+        if c == "cannot_open" {
+            bail!(
+                "`cannot_open` cannot be ignored or selected in {what}: a dataset that cannot be opened is not checked at all"
+            );
+        }
         if !ALL_CODES.contains(&c.as_str()) {
             bail!("unknown issue code `{c}` in {what}");
         }

@@ -418,6 +418,24 @@ fn the_fixable_hint_counts_only_datasets_that_open() {
 }
 
 #[test]
+fn cannot_open_cannot_be_ignored_and_says_why() {
+    let d = tempfile::tempdir().unwrap();
+    std::fs::create_dir(d.path().join("meta")).unwrap();
+    std::fs::write(d.path().join("meta/info.json"), "{").unwrap();
+    let path = d.path().to_str().unwrap();
+    let o = lecop(&["validate", path, "--ignore", "cannot_open"]);
+    assert_eq!(o.status.code(), Some(2));
+    assert!(
+        err(&o).contains("cannot_open` cannot be ignored"),
+        "{}",
+        err(&o)
+    );
+    let o = lecop(&["validate", path]);
+    assert_eq!(o.status.code(), Some(2));
+    assert!(out(&o).contains("cannot_open"), "{}", out(&o));
+}
+
+#[test]
 fn diff_is_an_alias_of_preview() {
     let d = dataset();
     break_frame_total(&d);

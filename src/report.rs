@@ -160,7 +160,15 @@ fn text(reports: &[DatasetReport], o: &Options) -> String {
             };
             if let Some(err) = &r.open_error {
                 let sev = paint(o.color, "31", "ERROR");
-                s += &format!("{}: {sev}   cannot open dataset: {err}\n", r.path.display());
+                s += &format!(
+                    "{}: {sev}   ep -      {:<24} {err}\n",
+                    r.path.display(),
+                    "cannot_open"
+                );
+                if o.format == Format::Full {
+                    s += &format!("        --> {}\n", r.path.display());
+                    s += &format!("        help: {}\n", explain("cannot_open"));
+                }
             }
             for x in &r.issues {
                 let ep = x.episode.map_or("-".into(), |e| e.to_string());

@@ -217,7 +217,19 @@ fn exit_code_is_0_clean_or_warnings_only_1_on_errors_2_when_a_dataset_cannot_be_
     );
     let out = render(&[broken], &opts(Format::Text));
     assert!(
-        out.contains("ds/x: ERROR   cannot open dataset: no info.json"),
+        out.contains("ds/x: ERROR   ep -      cannot_open              no info.json"),
+        "{out}"
+    );
+}
+
+#[test]
+fn full_format_locates_and_explains_a_dataset_that_cannot_be_opened() {
+    let mut broken = DatasetReport::new(PathBuf::from("ds/x"), vec![]);
+    broken.open_error = Some("no info.json".into());
+    let out = render(&[broken], &opts(Format::Full));
+    assert!(out.contains("        --> ds/x\n"), "{out}");
+    assert!(
+        out.contains("        help: the dataset's metadata could not be loaded"),
         "{out}"
     );
 }

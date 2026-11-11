@@ -126,6 +126,9 @@ pub const ALL_CODES: [&str; 56] = [
 /// One sentence saying what an issue code means.
 pub fn explain(code: &str) -> &'static str {
     match code {
+        "cannot_open" => {
+            "the dataset's metadata could not be loaded, so none of its other checks ran; this cannot be ignored"
+        }
         "episode_count" => "info.json total_episodes disagrees with the episode metadata",
         "action_jump" => "the action changes by far more than usual between consecutive frames",
         "distribution_shift" => {
@@ -460,6 +463,12 @@ pub(super) fn global_issues(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cannot_open_is_explained_but_not_a_filterable_code() {
+        assert!(!explain("cannot_open").is_empty());
+        assert!(!ALL_CODES.contains(&"cannot_open"));
+    }
 
     #[test]
     fn an_explanation_does_not_hard_code_the_clipped_threshold() {

@@ -54,7 +54,9 @@ Found 22 errors and 6 warnings in 3 datasets.
 ```
 
 A clean run prints `All checks passed!`. Exit code: 0 clean (warnings do not fail), 1 if any error, 2 if a dataset,
-the config or an argument cannot be read.
+the config or an argument cannot be read. A dataset whose metadata cannot be loaded (missing or invalid `meta/info.json`,
+unsupported version, `fps` not positive) is reported as `cannot_open`: none of its other checks run, and `--ignore`,
+`--select` and the config cannot hide it.
 
 | Option | |
 |---|---|
@@ -219,8 +221,8 @@ All checks read metadata and parquet only: no video frame is decoded.
 
 | What LeRobot expects | Status | Issue code |
 |---|---|---|
-| `meta/info.json` exists, parses, has a supported `codebase_version` | Covered (v2.x, v3.x; other versions are rejected; v2.0 is read like v2.1, with `stats.json`) | error on open; a missing required field is named in the message |
-| `fps` is a positive number | Covered | error on open |
+| `meta/info.json` exists, parses, has a supported `codebase_version` | Covered (v2.x, v3.x; other versions are rejected; v2.0 is read like v2.1, with `stats.json`) | `cannot_open`; a missing required field is named in the message |
+| `fps` is a positive number | Covered | `cannot_open` |
 | `total_episodes` matches the episode metadata | Covered | `episode_count` |
 | `total_frames` matches the sum of episode lengths | Covered | `frame_count` |
 | Episode indices run `0..n-1` | Covered | `episode_index` |
