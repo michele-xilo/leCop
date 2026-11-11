@@ -327,12 +327,14 @@ pub(super) fn check_episode(
             message,
         })
     };
-    let file = e
-        .data_file
-        .strip_prefix(&ds.root)
-        .unwrap_or(&e.data_file)
-        .display()
-        .to_string();
+    // Built only for a finding: a String per episode on a healthy dataset showed up in the per-episode loop.
+    let file = || {
+        e.data_file
+            .strip_prefix(&ds.root)
+            .unwrap_or(&e.data_file)
+            .display()
+            .to_string()
+    };
 
     // This episode's rows: its run in a packed file, or the whole file if there is no episode_index column.
     let (s, t) = match &d.ep {
@@ -342,7 +344,7 @@ pub(super) fn check_episode(
                 push(
                     Error,
                     "episode_rows_missing",
-                    format!("{file} has no rows with episode_index {}", e.index),
+                    format!("{} has no rows with episode_index {}", file(), e.index),
                 );
                 return v;
             }
@@ -354,8 +356,9 @@ pub(super) fn check_episode(
             Error,
             "length_mismatch",
             format!(
-                "metadata says {} frames, {file} has {} rows for this episode",
+                "metadata says {} frames, {} has {} rows for this episode",
                 e.length,
+                file(),
                 t - s
             ),
         );
@@ -367,7 +370,8 @@ pub(super) fn check_episode(
             Error,
             "index_mismatch",
             format!(
-                "{file}: the global `index` column should count up from {from} through this episode, but frame {i} reads {found} instead of {}",
+                "{}: the global `index` column should count up from {from} through this episode, but frame {i} reads {found} instead of {}",
+                file(),
                 from + i as i64
             ),
         );
