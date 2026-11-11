@@ -28,6 +28,14 @@ const UNSAFE: [&str; 9] = [
     "column_missing",
 ];
 
+/// Whether `issues` include a finding that a repair could fix. Checked before opening the dataset again, which on
+/// a large v3 dataset costs more than the validation itself.
+pub fn may_apply(issues: &[Issue]) -> bool {
+    issues
+        .iter()
+        .any(|i| matches!(i.code, "frame_count" | "episode_count" | "tasks_count"))
+}
+
 /// The repairs that are safe for `ds`, given the findings of a validation run (before any config filtering) and
 /// the number of tasks the task metadata lists.
 pub fn plan(ds: &Dataset, issues: &[Issue], tasks_found: Option<usize>) -> Vec<Fix> {
@@ -150,6 +158,27 @@ mod tests {
     fn refuses_when_the_key_appears_twice_with_that_number() {
         let t = "{\"total_frames\": 5, \"x\": {\"total_frames\": 5}}";
         assert!(replace_number(t, "total_frames", 5, 1).is_none());
+    }
+
+    fn issue(code: &'static str) -> Issue {
+        Issue {
+            severity: crate::validate::Severity::Error,
+            episode: None,
+            code,
+            message: String::new(),
+        }
+    }
+
+    #[test]
+    fn only_total_findings_call_for_a_second_look_at_the_dataset() {
+        assert!(!may_apply(&[]));
+        assert!(!may_apply(&[
+            issue("idle_episode"),
+            issue("timestamp_drift")
+        ]));
+        for code in ["frame_count", "episode_count", "tasks_count"] {
+            assert!(may_apply(&[issue("idle_episode"), issue(code)]), "{code}");
+        }
     }
 
     #[test]

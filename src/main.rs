@@ -187,15 +187,27 @@ fn validate(a: ValidateArgs) -> Result<u8> {
     Ok(report::exit_code(&reports))
 }
 
+/// The safe repairs for one validated dataset. The dataset is opened again only when a finding could be repaired:
+/// on large v3 datasets that costs more than the validation.
+fn safe_repairs(path: &std::path::Path, outcome: &Result<Vec<Issue>>) -> Vec<fix::Fix> {
+    let Ok(issues) = outcome else {
+        return Vec::new();
+    };
+    if !fix::may_apply(issues) {
+        return Vec::new();
+    }
+    match Dataset::open(path) {
+        Ok(ds) => fix::plan(&ds, issues, task_count(&ds)),
+        Err(_) => Vec::new(),
+    }
+}
+
 /// Plan the safe repairs for every dataset that opened and print them to stderr, so `--format json` stays
 /// parseable. Writes them with `write`. True when something was written.
 fn repair(results: &[(PathBuf, Result<Vec<Issue>>)], write: bool) -> Result<bool> {
     let (mut planned, mut wrote) = (false, false);
     for (path, outcome) in results {
-        let (Ok(issues), Ok(ds)) = (outcome, Dataset::open(path)) else {
-            continue;
-        };
-        let fixes = fix::plan(&ds, issues, task_count(&ds));
+        let fixes = safe_repairs(path, outcome);
         for f in &fixes {
             let verb = if write { "fixed" } else { "would fix" };
             eprintln!(
@@ -227,12 +239,7 @@ fn repair(results: &[(PathBuf, Result<Vec<Issue>>)], write: bool) -> Result<bool
 fn hint_fixable(results: &[(PathBuf, Result<Vec<Issue>>)]) {
     let fixable = results
         .iter()
-        .filter(|(path, outcome)| {
-            let (Ok(issues), Ok(ds)) = (outcome, Dataset::open(path)) else {
-                return false;
-            };
-            !fix::plan(&ds, issues, task_count(&ds)).is_empty()
-        })
+        .filter(|(path, outcome)| !safe_repairs(path, outcome).is_empty())
         .count();
     if fixable > 0 {
         let s = if fixable == 1 { "" } else { "s" };
