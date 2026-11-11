@@ -20,6 +20,8 @@ struct Ep {
     with_video: bool,
     with_data: bool,
     range_to_delta: i64,
+    /// v3: the data file's `index` column starts this far from the episode's `dataset_from_index`.
+    index_shift: i64,
     /// v2: video has `len + delta` frames. v3: `to_timestamp` is `delta` frames past the real end.
     video_delta: i32,
     video_fps: u32,
@@ -74,6 +76,7 @@ fn good(len: usize) -> Ep {
         with_video: true,
         with_data: true,
         range_to_delta: 0,
+        index_shift: 0,
         video_delta: 0,
         video_fps: FPS as u32,
         video_garbage: false,
@@ -340,7 +343,8 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
             rows.0.extend(&e.ts);
             rows.1.extend(0..e.ts.len() as i64);
             rows.2.extend(std::iter::repeat_n(i as i64, e.ts.len()));
-            rows.3.extend(from..from + e.ts.len() as i64);
+            rows.3
+                .extend(from + e.index_shift..from + e.index_shift + e.ts.len() as i64);
             rows.4.extend(&e.action);
             from += e.len as i64;
         }
@@ -447,6 +451,25 @@ fn v3_flags_timestamp_drift_in_second_episode_of_a_file() {
     let v = run_v3(vec![good(10), e, good(10)]);
     assert_eq!(codes(&v), ["timestamp_drift"]);
     assert_eq!(v[0].episode, Some(1));
+}
+
+#[test]
+fn v3_names_the_file_and_the_frame_where_the_global_index_breaks() {
+    let mut e = good(10);
+    e.index_shift = 1000;
+    let v = run_v3(vec![good(10), e, good(10)]);
+    let m = v
+        .iter()
+        .find(|i| i.code == "index_mismatch")
+        .unwrap_or_else(|| panic!("{v:?}"));
+    assert_eq!((m.severity, m.episode), (Severity::Error, Some(1)));
+    assert!(
+        m.message.contains("file-000.parquet")
+            && m.message.contains("from 10")
+            && m.message.contains("frame 0 reads 1010 instead of 10"),
+        "{}",
+        m.message
+    );
 }
 
 #[test]
