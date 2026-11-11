@@ -273,25 +273,25 @@ fn err(o: &Output) -> String {
 }
 
 #[test]
-fn fix_previews_the_repair_and_changes_nothing() {
+fn diff_shows_the_repair_and_changes_nothing() {
     let d = dataset();
     break_frame_total(&d);
     let before = info_text(&d);
-    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix"]);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--diff"]);
     let e = err(&o);
     assert!(e.contains("total_frames 1 -> 120"), "{e}");
-    assert!(e.contains("--write"), "{e}");
+    assert!(e.contains("--fix"), "{e}");
     assert_eq!(info_text(&d), before);
     assert!(!d.path().join("meta/info.json.bak").exists());
     assert_eq!(o.status.code(), Some(1), "the finding is still there");
 }
 
 #[test]
-fn fix_write_repairs_info_json_and_keeps_a_backup() {
+fn fix_repairs_info_json_and_keeps_a_backup() {
     let d = dataset();
     break_frame_total(&d);
     let before = info_text(&d);
-    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix", "--write"]);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix"]);
     assert_eq!(o.status.code(), Some(0), "{} {}", out(&o), err(&o));
     let after = info_text(&d);
     assert_eq!(
@@ -311,7 +311,7 @@ fn fix_repairs_the_episode_total_too() {
     let mut v: serde_json::Value = serde_json::from_slice(&std::fs::read(&p).unwrap()).unwrap();
     v["total_episodes"] = 9.into();
     std::fs::write(&p, v.to_string()).unwrap();
-    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix", "--write"]);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix"]);
     assert_eq!(o.status.code(), Some(0), "{} {}", out(&o), err(&o));
     assert!(info_text(&d).contains("\"total_episodes\":3,"));
 }
@@ -320,15 +320,32 @@ fn fix_repairs_the_episode_total_too() {
 fn the_bare_command_takes_fix_too() {
     let d = dataset();
     break_frame_total(&d);
-    let o = lecop(&[d.path().to_str().unwrap(), "--fix", "--write"]);
+    let o = lecop(&[d.path().to_str().unwrap(), "--fix"]);
     assert_eq!(o.status.code(), Some(0), "{} {}", out(&o), err(&o));
 }
 
 #[test]
-fn write_without_fix_is_rejected() {
+fn fix_with_diff_only_shows_the_repair() {
     let d = dataset();
-    let o = lecop(&["validate", d.path().to_str().unwrap(), "--write"]);
-    assert_eq!(o.status.code(), Some(2));
+    break_frame_total(&d);
+    let before = info_text(&d);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix", "--diff"]);
+    assert!(err(&o).contains("would fix"), "{}", err(&o));
+    assert_eq!(info_text(&d), before);
+}
+
+#[test]
+fn a_plain_run_says_when_a_safe_repair_exists() {
+    let d = dataset();
+    let clean = lecop(&["validate", d.path().to_str().unwrap()]);
+    assert!(!err(&clean).contains("fixable"), "{}", err(&clean));
+    break_frame_total(&d);
+    let o = lecop(&["validate", d.path().to_str().unwrap()]);
+    assert!(
+        err(&o).contains("[*] 1 dataset fixable with --fix"),
+        "{}",
+        err(&o)
+    );
 }
 
 #[test]
@@ -339,7 +356,7 @@ fn fix_refuses_when_the_episode_metadata_disagrees_with_the_data() {
     let text = std::fs::read_to_string(&p).unwrap();
     std::fs::write(&p, text.replacen("\"length\":40", "\"length\":41", 1)).unwrap();
     let before = info_text(&d);
-    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix", "--write"]);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix"]);
     assert_eq!(o.status.code(), Some(1));
     assert!(err(&o).contains("no safe repair"), "{}", err(&o));
     assert_eq!(info_text(&d), before);
@@ -347,12 +364,12 @@ fn fix_refuses_when_the_episode_metadata_disagrees_with_the_data() {
 }
 
 #[test]
-fn fix_write_will_not_overwrite_an_existing_backup() {
+fn fix_will_not_overwrite_an_existing_backup() {
     let d = dataset();
     break_frame_total(&d);
     std::fs::write(d.path().join("meta/info.json.bak"), "mine").unwrap();
     let before = info_text(&d);
-    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix", "--write"]);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix"]);
     assert_eq!(o.status.code(), Some(2));
     assert!(err(&o).contains("info.json.bak"), "{}", err(&o));
     assert_eq!(info_text(&d), before);

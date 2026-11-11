@@ -67,13 +67,13 @@ enum Cmd {
         /// Ignore every config file
         #[arg(long)]
         isolated: bool,
-        /// Preview the safe repairs: info.json totals (`total_frames`, `total_episodes`, `total_tasks`) recomputed
-        /// from the episode and task metadata. Nothing is written without `--write`.
+        /// Apply the safe repairs: info.json totals (`total_frames`, `total_episodes`, `total_tasks`) recomputed from
+        /// the episode and task metadata. The original is kept as `meta/info.json.bak`.
         #[arg(long)]
         fix: bool,
-        /// With `--fix`: apply the repairs, keeping the original as `meta/info.json.bak`
-        #[arg(long, requires = "fix")]
-        write: bool,
+        /// Show the repairs `--fix` would make, and change nothing
+        #[arg(long)]
+        diff: bool,
         /// Issue codes to ignore, comma separated
         #[arg(long, value_delimiter = ',')]
         ignore: Vec<String>,
@@ -92,7 +92,7 @@ struct ValidateArgs {
     quiet: bool,
     decode: bool,
     fix: bool,
-    write: bool,
+    diff: bool,
     config: Option<PathBuf>,
     isolated: bool,
     ignore: Vec<String>,
@@ -142,8 +142,13 @@ fn validate(a: ValidateArgs) -> Result<u8> {
         clipped_fraction: config.clipped_fraction(),
     };
     let mut results = validate_paths(&datasets, a.jobs, &checks)?;
-    if a.fix && repair(&results, a.write)? {
-        results = validate_paths(&datasets, a.jobs, &checks)?;
+    match (a.fix, a.diff) {
+        (false, false) => hint_fixable(&results),
+        (fix, diff) => {
+            if repair(&results, fix && !diff)? {
+                results = validate_paths(&datasets, a.jobs, &checks)?;
+            }
+        }
     }
     let reports: Vec<DatasetReport> = results
         .into_iter()
@@ -212,10 +217,27 @@ fn repair(results: &[(PathBuf, Result<Vec<Issue>>)], write: bool) -> Result<bool
         eprintln!("no safe repair available");
     } else if !write {
         eprintln!(
-            "rerun with --write to apply them; the original info.json is kept as info.json.bak"
+            "rerun with --fix to apply them; the original info.json is kept as info.json.bak"
         );
     }
     Ok(wrote)
+}
+
+/// Tell, on stderr, how many datasets have a safe repair, as ruff does for its fixable findings.
+fn hint_fixable(results: &[(PathBuf, Result<Vec<Issue>>)]) {
+    let fixable = results
+        .iter()
+        .filter(|(path, outcome)| {
+            let (Ok(issues), Ok(ds)) = (outcome, Dataset::open(path)) else {
+                return false;
+            };
+            !fix::plan(&ds, issues, task_count(&ds)).is_empty()
+        })
+        .count();
+    if fixable > 0 {
+        let s = if fixable == 1 { "" } else { "s" };
+        eprintln!("[*] {fixable} dataset{s} fixable with --fix (--diff shows how)");
+    }
 }
 
 fn inspect(path: PathBuf) -> Result<u8> {
@@ -279,7 +301,7 @@ fn main() -> ExitCode {
             quiet,
             decode,
             fix,
-            write,
+            diff,
             config,
             isolated,
             ignore,
@@ -293,7 +315,7 @@ fn main() -> ExitCode {
             quiet,
             decode,
             fix,
-            write,
+            diff,
             config,
             isolated,
             ignore,
