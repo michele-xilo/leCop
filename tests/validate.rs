@@ -20,6 +20,8 @@ struct Ep {
     with_video: bool,
     with_data: bool,
     range_to_delta: i64,
+    /// v3: the data file's `index` column starts this far from the episode's `dataset_from_index`.
+    index_shift: i64,
     /// v2: video has `len + delta` frames. v3: `to_timestamp` is `delta` frames past the real end.
     video_delta: i32,
     video_fps: u32,
@@ -74,6 +76,7 @@ fn good(len: usize) -> Ep {
         with_video: true,
         with_data: true,
         range_to_delta: 0,
+        index_shift: 0,
         video_delta: 0,
         video_fps: FPS as u32,
         video_garbage: false,
@@ -340,7 +343,8 @@ fn write_ds_v3(root: &Path, eps: &[Ep]) {
             rows.0.extend(&e.ts);
             rows.1.extend(0..e.ts.len() as i64);
             rows.2.extend(std::iter::repeat_n(i as i64, e.ts.len()));
-            rows.3.extend(from..from + e.ts.len() as i64);
+            rows.3
+                .extend(from + e.index_shift..from + e.index_shift + e.ts.len() as i64);
             rows.4.extend(&e.action);
             from += e.len as i64;
         }
@@ -447,6 +451,25 @@ fn v3_flags_timestamp_drift_in_second_episode_of_a_file() {
     let v = run_v3(vec![good(10), e, good(10)]);
     assert_eq!(codes(&v), ["timestamp_drift"]);
     assert_eq!(v[0].episode, Some(1));
+}
+
+#[test]
+fn v3_names_the_file_and_the_frame_where_the_global_index_breaks() {
+    let mut e = good(10);
+    e.index_shift = 1000;
+    let v = run_v3(vec![good(10), e, good(10)]);
+    let m = v
+        .iter()
+        .find(|i| i.code == "index_mismatch")
+        .unwrap_or_else(|| panic!("{v:?}"));
+    assert_eq!((m.severity, m.episode), (Severity::Error, Some(1)));
+    assert!(
+        m.message.contains("file-000.parquet")
+            && m.message.contains("from 10")
+            && m.message.contains("frame 0 reads 1010 instead of 10"),
+        "{}",
+        m.message
+    );
 }
 
 #[test]
@@ -564,7 +587,7 @@ fn reports_a_missing_timestamp_column_instead_of_panicking() {
     )
     .unwrap();
     let c = codes(&run_with_data_file(batch));
-    assert!(c.contains(&"column_missing"), "{c:?}");
+    assert!(c.contains(&"timestamp_missing"), "{c:?}");
 }
 
 #[test]
@@ -833,6 +856,25 @@ fn flags_an_empty_episode() {
 }
 
 #[test]
+fn a_single_jump_is_not_pluralised() {
+    let mut eps: Vec<Ep> = (0..8).map(|_| good(20)).collect();
+    // A level change from frame 10 on is one jump (a spike would be two: up, then back).
+    for x in &mut eps[3].action[10 * DIM as usize..] {
+        *x += 1000.0;
+    }
+    let v = run(eps, None);
+    let j = v
+        .iter()
+        .find(|i| i.code == "action_jump")
+        .unwrap_or_else(|| panic!("{v:?}"));
+    assert!(
+        j.message.starts_with("1 frame-to-frame jump in `action`"),
+        "{}",
+        j.message
+    );
+}
+
+#[test]
 fn warns_on_an_episode_far_longer_than_the_others() {
     let mut eps: Vec<Ep> = (0..20).map(|i| good(20 + i % 4)).collect();
     eps.push(good(400));
@@ -844,6 +886,11 @@ fn warns_on_an_episode_far_longer_than_the_others() {
     assert_eq!(out.len(), 1, "{v:?}");
     assert_eq!(out[0].episode, Some(20));
     assert_eq!(out[0].severity, Severity::Warning);
+    assert!(
+        out[0].message.contains("longer than the other episodes"),
+        "{}",
+        out[0].message
+    );
 }
 
 #[test]
@@ -1057,7 +1104,7 @@ fn warns_when_a_feature_has_no_statistics() {
     )
     .unwrap();
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
-    assert_eq!(codes(&v), ["stats_features"], "{v:?}");
+    assert_eq!(codes(&v), ["stats_feature_missing"], "{v:?}");
     assert!(v[0].message.contains("timestamp"), "{}", v[0].message);
     assert!(!v[0].message.contains("action"), "{}", v[0].message);
 }
@@ -1069,7 +1116,7 @@ fn v3_reads_stats_json() {
     let p = dir.path().join("meta/stats.json");
     fs::write(&p, r#"{"action": {}}"#).unwrap();
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
-    assert_eq!(codes(&v), ["stats_features"], "{v:?}");
+    assert_eq!(codes(&v), ["stats_feature_missing"], "{v:?}");
     fs::write(&p, "not json").unwrap();
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["stats_missing"], "{v:?}");
@@ -1269,7 +1316,7 @@ fn limits_that_hold_report_nothing() {
 #[test]
 fn flags_a_value_beyond_a_scalar_bound() {
     let v = run_limits(serde_json::json!({"max": -1e9}));
-    assert_eq!(codes(&v), ["out_of_range"], "{v:?}");
+    assert_eq!(codes(&v), ["limit_out_of_range"], "{v:?}");
     assert_eq!(v[0].severity, Severity::Error);
     assert!(v[0].message.starts_with("action: dimension 0"), "{v:?}");
 }
@@ -1277,7 +1324,7 @@ fn flags_a_value_beyond_a_scalar_bound() {
 #[test]
 fn per_dimension_bounds_flag_only_the_dimension_that_breaks_them() {
     let v = run_limits(serde_json::json!({"min": [1e9, -1e9]}));
-    assert_eq!(codes(&v), ["out_of_range"], "{v:?}");
+    assert_eq!(codes(&v), ["limit_out_of_range"], "{v:?}");
     assert!(
         v[0].message.contains("dimension 0") && !v[0].message.contains("dimension 1"),
         "{v:?}"
@@ -1287,13 +1334,13 @@ fn per_dimension_bounds_flag_only_the_dimension_that_breaks_them() {
 #[test]
 fn flags_a_bound_list_of_the_wrong_width() {
     let v = run_limits(serde_json::json!({"min": [0.0, 0.0, 0.0]}));
-    assert_eq!(codes(&v), ["limits_width"], "{v:?}");
+    assert_eq!(codes(&v), ["limit_width"], "{v:?}");
 }
 
 #[test]
 fn flags_the_episode_whose_frame_to_frame_change_exceeds_max_step() {
     let v = run_limits(serde_json::json!({"max_step": 0.001}));
-    assert_eq!(codes(&v), ["step_limit"], "{v:?}");
+    assert_eq!(codes(&v), ["limit_step"], "{v:?}");
     assert_eq!(v[0].episode, Some(0));
 }
 
@@ -1488,6 +1535,7 @@ fn flags_metadata_length_that_differs_from_the_data_file() {
         m.message.contains("12") && m.message.contains("10"),
         "{v:?}"
     );
+    assert!(m.message.contains("episode_000000.parquet"), "{v:?}");
 }
 
 #[test]
@@ -1584,7 +1632,7 @@ fn reads_float64_timestamps() {
 }
 
 #[test]
-fn step_limit_counts_the_other_episodes_that_break_it() {
+fn limit_step_counts_the_other_episodes_that_break_it() {
     let dir = tempfile::tempdir().unwrap();
     write_ds(dir.path(), &[good(20), good(20), good(20)], None);
     let limits: Limits =
@@ -1594,7 +1642,7 @@ fn step_limit_counts_the_other_episodes_that_break_it() {
         ..Checks::default()
     };
     let v = validate_with_checks(&Dataset::open(dir.path()).unwrap(), 1, &checks).unwrap();
-    assert_eq!(codes(&v), ["step_limit"], "{v:?}");
+    assert_eq!(codes(&v), ["limit_step"], "{v:?}");
     assert!(v[0].message.contains("and 2 more episodes"), "{v:?}");
 }
 

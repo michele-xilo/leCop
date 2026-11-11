@@ -70,7 +70,7 @@ pub const ALL_CODES: [&str; 56] = [
     "distribution_shift",
     "task_index",
     "stats_missing",
-    "stats_features",
+    "stats_feature_missing",
     "tasks_missing",
     "tasks_count",
     "frame_count",
@@ -85,7 +85,7 @@ pub const ALL_CODES: [&str; 56] = [
     "timestamp_drift",
     "timestamp_not_monotonic",
     "frame_index",
-    "column_missing",
+    "timestamp_missing",
     "column_shape",
     "feature_missing",
     "feature_dtype",
@@ -111,9 +111,9 @@ pub const ALL_CODES: [&str; 56] = [
     "idle_episode",
     "path_absolute",
     "data_stray_file",
-    "out_of_range",
-    "step_limit",
-    "limits_width",
+    "limit_out_of_range",
+    "limit_step",
+    "limit_width",
     "video_decode",
     "video_frozen",
     "video_black",
@@ -136,7 +136,7 @@ pub fn explain(code: &str) -> &'static str {
         }
         "task_index" => "a task_index in the data is not in the task metadata",
         "stats_missing" => "the statistics file for this format version is missing or unreadable",
-        "stats_features" => {
+        "stats_feature_missing" => {
             "a non-string feature declared in info.json has no entry in the statistics"
         }
         "tasks_missing" => {
@@ -148,8 +148,10 @@ pub fn explain(code: &str) -> &'static str {
         "path_absolute" => {
             "data_path or video_path in info.json is an absolute path, so the dataset only works on this machine"
         }
-        "out_of_range" => "a value is outside the min or max set for its feature in lecop.toml",
-        "step_limit" => "the action changes between two frames by more than max_step in lecop.toml",
+        "limit_out_of_range" => {
+            "a value is outside the min or max set for its feature in lecop.toml"
+        }
+        "limit_step" => "the action changes between two frames by more than max_step in lecop.toml",
         "symlink" => {
             "the dataset contains a symbolic link, which breaks when it is copied or uploaded"
         }
@@ -165,7 +167,7 @@ pub fn explain(code: &str) -> &'static str {
         "episodes_below_chunk" => {
             "episodes are shorter than the chunk_size set under [training] in lecop.toml"
         }
-        "limits_width" => "a min or max list in lecop.toml does not have one value per dimension",
+        "limit_width" => "a min or max list in lecop.toml does not have one value per dimension",
         "data_stray_file" => "the data directory holds a file that is not a parquet file",
         "frame_count" => "info.json total_frames disagrees with the sum of the episode lengths",
         "episode_index" => "episode indices do not run 0..n-1 in order",
@@ -179,7 +181,7 @@ pub fn explain(code: &str) -> &'static str {
         "timestamp_drift" => "a timestamp differs from frame_index / fps by more than 1e-4 s",
         "timestamp_not_monotonic" => "timestamps do not strictly increase within an episode",
         "frame_index" => "frame_index does not run 0..n-1 within the episode",
-        "column_missing" => "the timestamp column is missing or not a float",
+        "timestamp_missing" => "the timestamp column is missing or not a float",
         "column_shape" => "a feature column does not have a consistent row width",
         "feature_missing" => "a feature declared in info.json has no column in the data files",
         "feature_dtype" => "a data column has a different type than info.json declares",
@@ -195,7 +197,7 @@ pub fn explain(code: &str) -> &'static str {
             "a dimension of the action or an observation has the same value in every frame"
         }
         "clipped_dimension" => {
-            "a dimension sits at its minimum or maximum in over 99% of the frames"
+            "a dimension sits at its minimum or maximum in at least clipped_fraction of the frames (5% by default)"
         }
         "outlier_values" => {
             "a value is more than 10 standard deviations from the mean of its dimension"
@@ -466,6 +468,12 @@ mod tests {
     fn cannot_open_is_explained_but_not_a_filterable_code() {
         assert!(!explain("cannot_open").is_empty());
         assert!(!ALL_CODES.contains(&"cannot_open"));
+    }
+
+    #[test]
+    fn an_explanation_does_not_hard_code_the_clipped_threshold() {
+        // The threshold is `clipped_fraction`, default 5% and configurable.
+        assert!(!explain("clipped_dimension").contains("99%"));
     }
 
     #[test]

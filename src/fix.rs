@@ -25,7 +25,7 @@ const UNSAFE: [&str; 9] = [
     "data_unreadable",
     "length_mismatch",
     "episode_rows_missing",
-    "column_missing",
+    "timestamp_missing",
 ];
 
 /// Whether `issues` include a finding that a repair could fix. Checked before opening the dataset again, which on
