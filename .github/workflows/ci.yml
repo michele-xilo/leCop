@@ -31,6 +31,9 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt, clippy
+      # The decode feature's AV1 assembly is built with nasm on x86_64.
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y nasm
       - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
       - run: cargo fmt --check
       - run: cargo clippy --all-targets --all-features --locked -- -D warnings
@@ -57,6 +60,8 @@ jobs:
         with:
           toolchain: stable
           components: llvm-tools-preview
+      # The decode feature's AV1 assembly is built with nasm on x86_64.
+      - run: sudo apt-get update && sudo apt-get install -y nasm
       - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
       - uses: taiki-e/install-action@cfdb7ed4ccc7c7dce37759eae89dc5674b469b39 # v2
         with:
