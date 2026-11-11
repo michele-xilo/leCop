@@ -342,7 +342,7 @@ mod backend {
         fn open() -> Result<Self> {
             use rav1d::{
                 include::dav1d::dav1d::Dav1dSettings,
-                src::lib::{dav1d_default_settings, dav1d_open},
+                {dav1d_default_settings, dav1d_open},
             };
             use std::{mem::MaybeUninit, ptr::NonNull};
             let mut settings = MaybeUninit::<Dav1dSettings>::uninit();
@@ -368,7 +368,7 @@ mod backend {
         fn send(&mut self, bytes: &[u8], f: &mut Plane) -> bool {
             use rav1d::{
                 include::dav1d::data::Dav1dData,
-                src::lib::{dav1d_data_create, dav1d_data_unref, dav1d_send_data},
+                {dav1d_data_create, dav1d_data_unref, dav1d_send_data},
             };
             use std::{mem::MaybeUninit, ptr::NonNull};
             let mut data = MaybeUninit::<Dav1dData>::zeroed();
@@ -405,7 +405,7 @@ mod backend {
         fn pictures(&mut self, f: &mut Plane) {
             use rav1d::{
                 include::dav1d::picture::Dav1dPicture,
-                src::lib::{dav1d_get_picture, dav1d_picture_unref},
+                {dav1d_get_picture, dav1d_picture_unref},
             };
             use std::{mem::MaybeUninit, ptr::NonNull};
             loop {
@@ -442,7 +442,7 @@ mod backend {
     impl Drop for Av1 {
         fn drop(&mut self) {
             // SAFETY: `self.ctx` came from `dav1d_open` and is closed exactly once, here.
-            unsafe { rav1d::src::lib::dav1d_close(Some(std::ptr::NonNull::from(&mut self.ctx))) };
+            unsafe { rav1d::dav1d_close(Some(std::ptr::NonNull::from(&mut self.ctx))) };
         }
     }
 }

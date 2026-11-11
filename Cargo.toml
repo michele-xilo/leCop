@@ -20,7 +20,7 @@ clap = { version = "4.6.7", features = ["derive"] }
 ignore = "0.4.34"
 openh264 = { version = "0.9.9", optional = true }
 parquet = { version = "60.1.0", features = ["arrow"] }
-rav1d = { version = "1.1.0", optional = true, default-features = false, features = ["bitdepth_8"] }
+rav1d = { package = "hiraku-rav1d", version = "1.1.1", optional = true, default-features = false, features = ["asm", "bitdepth_8", "bitdepth_16"] }
 rayon = "1.12.0"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
