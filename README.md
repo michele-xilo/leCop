@@ -108,8 +108,8 @@ H.264 is decoded with openh264 and AV1 with rav1d (no assembly, so it is the slo
 luma and the difference to the previous frame, so it reports frames the decoder rejects (`video_decode`), a camera that
 repeats the same picture (`video_frozen`) and one that shows black (`video_black`). The output ends with
 `Video frames were decoded (--decode).` when it ran. A video in another codec is reported as `not decoded`, not skipped.
-Measured on an Apple M2 Pro, release build: 8 s for `c_so101_pill_sorting_medoc`, 12 s for `c_careattrs_mug2v2`, 64 s for
-`c_so100_press_red_button` and 146 s for `c_so101_my_task_50ep` (AV1); 1 s for `c_d3il_avoiding_vision_224` (H.264). The
+Measured on an Apple M2 Pro, release build: 7 s for `c_so101_pill_sorting_medoc`, 11 s for `c_careattrs_mug2v2`, 59 s for
+`c_so100_press_red_button` and 20 s for `c_so101_my_task_50ep` (AV1); 0.25 s for `c_d3il_avoiding_vision_224` (H.264). The
 feature adds about 1.9 MB to the binary (10.9 MB against 9.0 MB).
 
 ### Config file
@@ -216,19 +216,20 @@ frame, like leCop.
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop vs physlint |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **340 ms** | 774 ms | n/a | n/a |
-| `svla_so101_pickplace` (v2.1) | 9,208 ms | 🏆 **487 ms** | n/a | n/a |
-| `c_careattrs_mug2v2` (v2.1) | 11,022 ms | 🏆 **462 ms** | n/a | n/a |
-| `v3_pusht` (v3.0) | 2,157 ms | 🏆 **643 ms** | 21,289 ms | 9.9x faster |
-| `v3_aloha_sim_insertion_human` (v3.0) | 52,349 ms | 🏆 **450 ms** | 11,893 ms | 4.4x slower |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 42,198 ms | 🏆 **456 ms** | 12,136 ms | 3.5x slower |
-| `c_so101_pill_sorting_medoc` (v3.0) | 8,835 ms | 🏆 **582 ms** | 6,396 ms | 1.4x slower |
-| `c_so101_my_task_50ep` (v3.0) | 151,495 ms | 🏆 **556 ms** | 22,412 ms | 6.8x slower |
-| `c_so101_block_box_50episodes_final` (v3.0) | 7,997 ms | 🏆 **445 ms** | 6,517 ms | 1.2x slower |
-| `c_black-stressball-tutorial` (v3.0) | 22,103 ms | 🏆 **524 ms** | 18,771 ms | 1.2x slower |
+| `pusht` (v2.1) | 🏆 **359 ms** | 805 ms | n/a | n/a |
+| `svla_so101_pickplace` (v2.1) | 9,742 ms | 🏆 **533 ms** | n/a | n/a |
+| `c_careattrs_mug2v2` (v2.1) | 11,215 ms | 🏆 **443 ms** | n/a | n/a |
+| `v3_pusht` (v3.0) | 🏆 **358 ms** | 619 ms | 20,814 ms | 58x faster |
+| `v3_aloha_sim_insertion_human` (v3.0) | 7,261 ms | 🏆 **493 ms** | 11,377 ms | 1.6x faster |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 5,801 ms | 🏆 **473 ms** | 10,312 ms | 1.8x faster |
+| `c_so101_pill_sorting_medoc` (v3.0) | 6,714 ms | 🏆 **471 ms** | 5,122 ms | 1.3x slower |
+| `c_so101_my_task_50ep` (v3.0) | 19,577 ms | 🏆 **483 ms** | 20,160 ms | same |
+| `c_so101_block_box_50episodes_final` (v3.0) | 1,413 ms | 🏆 **433 ms** | 6,904 ms | 4.9x faster |
+| `c_black-stressball-tutorial` (v3.0) | 3,501 ms | 🏆 **470 ms** | 16,660 ms | 4.8x faster |
 
-Decoding is where leCop is slower than physlint on most datasets (AV1 in particular); it is tracked in
-[#79](https://github.com/michele-xilo/leCop/issues/79).
+leCop splits each video at its keyframes and decodes the pieces in parallel, so one large file uses every core. AV1
+decoding (rav1d, no assembly) is still the limit on `c_so101_pill_sorting_medoc`, where leCop is slower than physlint;
+that is tracked in [#79](https://github.com/michele-xilo/leCop/issues/79).
 
 ## Checks and features
 

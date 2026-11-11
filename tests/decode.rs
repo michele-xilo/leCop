@@ -2,8 +2,8 @@
 //! video when `datasets/` has it.
 #![cfg(feature = "decode")]
 mod common;
-use common::h264::video;
-use lecop::decode::{Decoded, decode_checked, video_findings};
+use common::h264::{video, video_with_idr_every};
+use lecop::decode::{Decoded, decode_checked, decode_segmented, video_findings};
 use std::path::Path;
 
 fn findings(frames: &[(u8, u8)], corrupt_from: Option<usize>) -> (Decoded, Vec<&'static str>) {
@@ -44,6 +44,50 @@ fn garbage_samples_are_undecodable() {
     let (d, codes) = findings(&[(100, 3); 40], Some(10));
     assert!(d.failures > 0, "{d:?}");
     assert!(codes.contains(&"video_decode"), "{codes:?}");
+}
+
+/// A varied picture sequence: changing levels, a still stretch and a black one, so the differences between
+/// neighbouring pictures, including across a segment boundary, take many values.
+fn varied() -> Vec<(u8, u8)> {
+    (0..120)
+        .map(|i| match i {
+            40..=59 => (100, 0),
+            80..=99 => (0, 0),
+            _ => (60 + (i % 7) as u8 * 20, 2 + (i % 3) as u8),
+        })
+        .collect()
+}
+
+#[test]
+fn decoding_in_segments_gives_the_same_frames_as_decoding_in_one() {
+    let dir = tempfile::tempdir().unwrap();
+    let p = dir.path().join("v.mp4");
+    video_with_idr_every(&p, &varied(), None, 10);
+    let sync = lecop::mp4::read_track(&p).unwrap().sync;
+    assert!(
+        sync.len() > 5,
+        "the video should have many sync samples: {sync:?}"
+    );
+    let whole = decode_segmented(&p, usize::MAX).unwrap();
+    assert_eq!(whole.frames.len(), 120, "{whole:?}");
+    for target in [1, 10, 25, 64] {
+        let split = decode_segmented(&p, target).unwrap();
+        assert_eq!(split.frames, whole.frames, "target {target}");
+        assert_eq!(
+            (split.samples, split.failures),
+            (whole.samples, whole.failures)
+        );
+    }
+}
+
+#[test]
+fn a_failure_in_a_later_segment_is_reported_at_its_position_in_the_video() {
+    let dir = tempfile::tempdir().unwrap();
+    let p = dir.path().join("v.mp4");
+    video_with_idr_every(&p, &[(100, 3); 60], Some(45), 10);
+    let split = decode_segmented(&p, 10).unwrap();
+    assert!(split.failures > 0, "{split:?}");
+    assert!(split.first_failure.is_some_and(|f| f >= 45), "{split:?}");
 }
 
 // rav1d without assembly takes minutes per video in a debug build: cargo test --release --features decode -- --ignored

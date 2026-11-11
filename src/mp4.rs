@@ -226,13 +226,19 @@ pub enum Codec {
 pub struct Track {
     pub codec: Codec,
     pub samples: Vec<Vec<u8>>,
+    /// Indices of the samples a decoder can start at, ascending (`stss`; only the first when the box is absent).
+    pub sync: Vec<usize>,
 }
 
 /// Read every sample of the video track. Unlike [`read_video_info`] this touches all the frame data.
 pub fn read_track(path: &Path) -> Result<Track> {
     let mut f = File::open(path).with_context(|| format!("opening {}", path.display()))?;
     let moov = read_moov(&mut f).with_context(|| format!("{}", path.display()))?;
-    let (codec, locations) = parse_track(&moov).with_context(|| format!("{}", path.display()))?;
+    let Layout {
+        codec,
+        locations,
+        sync,
+    } = parse_track(&moov).with_context(|| format!("{}", path.display()))?;
     let len = f.metadata()?.len();
     let mut samples = Vec::with_capacity(locations.len());
     for (offset, size) in locations {
@@ -244,11 +250,22 @@ pub fn read_track(path: &Path) -> Result<Track> {
         f.read_exact(&mut s)?;
         samples.push(s);
     }
-    Ok(Track { codec, samples })
+    Ok(Track {
+        codec,
+        samples,
+        sync,
+    })
 }
 
-/// The codec and the (offset, size) of every sample, from the sample tables.
-fn parse_track(moov: &[u8]) -> Result<(Codec, Vec<(u64, u32)>)> {
+/// What the sample tables say about a track: how it is coded, where each sample is, which ones are sync samples.
+struct Layout {
+    codec: Codec,
+    /// (offset, size) of every sample.
+    locations: Vec<(u64, u32)>,
+    sync: Vec<usize>,
+}
+
+fn parse_track(moov: &[u8]) -> Result<Layout> {
     for (kind, trak) in boxes(moov)? {
         if &kind != b"trak" {
             continue;
@@ -259,9 +276,26 @@ fn parse_track(moov: &[u8]) -> Result<(Codec, Vec<(u64, u32)>)> {
         }
         let stbl = need(need(mdia, b"minf")?, b"stbl")?;
         let codec = parse_codec(need(stbl, b"stsd")?)?;
-        return Ok((codec, sample_locations(stbl)?));
+        let locations = sample_locations(stbl)?;
+        let sync = sync_samples(stbl)?;
+        return Ok(Layout {
+            codec,
+            locations,
+            sync,
+        });
     }
     bail!("no video track in moov")
+}
+
+/// 0-based indices of the sync samples (the table is 1-based). A track without the table is only synced at its
+/// start: nothing says decoding can begin elsewhere, so it is not split.
+fn sync_samples(stbl: &[u8]) -> Result<Vec<usize>> {
+    let Some(stss) = child(stbl, b"stss")? else {
+        return Ok(vec![0]);
+    };
+    (0..be32(stss, 4)? as usize)
+        .map(|i| Ok((be32(stss, 8 + i * 4)? as usize).saturating_sub(1)))
+        .collect()
 }
 
 fn parse_codec(stsd: &[u8]) -> Result<Codec> {
