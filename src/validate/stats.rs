@@ -95,7 +95,7 @@ pub(super) fn stats_findings(ds: &Dataset) -> Vec<(&'static str, String)> {
                 vec![]
             } else {
                 vec![(
-                    "stats_features",
+                    "stats_feature_missing",
                     format!("no statistics for {}", missing.join(", ")),
                 )]
             }

@@ -135,7 +135,8 @@ pub fn length_findings(
                 Severity::Warning,
                 "episode_length_outlier",
                 format!(
-                    "{len} frames; mean {mean:.0}, std {std:.0} over {} episodes",
+                    "{len} frames, much {} than the other episodes (mean {mean:.0}, std {std:.0} over {} episodes)",
+                    if len as f64 > mean { "longer" } else { "shorter" },
                     lengths.len()
                 ),
             ));
@@ -216,7 +217,7 @@ pub(super) fn check_group(
     let d = match parsed {
         Ok(d) if d.ts.len() != d.rows => {
             return at_first(
-                "column_missing",
+                "timestamp_missing",
                 format!(
                     "{}: `timestamp` column missing or not a float",
                     first.data_file.display()
@@ -301,6 +302,14 @@ pub(super) fn check_group(
     )
 }
 
+/// Where a global `index` column stops counting up from `from`: its position in the episode and the value found.
+fn first_index_break(idx: &[i64], from: i64) -> Option<(usize, i64)> {
+    idx.iter()
+        .enumerate()
+        .find(|(i, x)| **x != from + *i as i64)
+        .map(|(i, x)| (i, *x))
+}
+
 pub(super) fn check_episode(
     ds: &Dataset,
     action: Option<&str>,
@@ -318,6 +327,14 @@ pub(super) fn check_episode(
             message,
         })
     };
+    // Built only for a finding: a String per episode on a healthy dataset showed up in the per-episode loop.
+    let file = || {
+        e.data_file
+            .strip_prefix(&ds.root)
+            .unwrap_or(&e.data_file)
+            .display()
+            .to_string()
+    };
 
     // This episode's rows: its run in a packed file, or the whole file if there is no episode_index column.
     let (s, t) = match &d.ep {
@@ -327,7 +344,7 @@ pub(super) fn check_episode(
                 push(
                     Error,
                     "episode_rows_missing",
-                    "no rows with this episode_index in its data file".into(),
+                    format!("{} has no rows with episode_index {}", file(), e.index),
                 );
                 return v;
             }
@@ -338,19 +355,25 @@ pub(super) fn check_episode(
         push(
             Error,
             "length_mismatch",
-            format!("metadata says {} frames, data file has {}", e.length, t - s),
+            format!(
+                "metadata says {} frames, {} has {} rows for this episode",
+                e.length,
+                file(),
+                t - s
+            ),
         );
     }
     if let (Some((from, _)), Some(idx)) = (e.range, &d.idx)
-        && idx[s..t]
-            .iter()
-            .enumerate()
-            .any(|(i, x)| *x != from + i as i64)
+        && let Some((i, found)) = first_index_break(&idx[s..t], from)
     {
         push(
             Error,
             "index_mismatch",
-            format!("global `index` column does not run from {from}"),
+            format!(
+                "{}: the global `index` column should count up from {from} through this episode, but frame {i} reads {found} instead of {}",
+                file(),
+                from + i as i64
+            ),
         );
     }
     let ts = &d.ts[s..t];
@@ -425,6 +448,13 @@ pub(super) fn check_episode(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn finds_where_the_global_index_breaks() {
+        assert_eq!(first_index_break(&[10, 11, 12], 10), None);
+        assert_eq!(first_index_break(&[10, 11, 14, 15], 10), Some((2, 14)));
+        assert_eq!(first_index_break(&[], 10), None);
+    }
 
     #[test]
     fn idle_profile_counts_repeated_rows_and_first_last_change() {
