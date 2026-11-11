@@ -273,6 +273,21 @@ mod tests {
     }
 
     #[test]
+    fn a_count_stored_as_a_plain_number_is_compared_too() {
+        let mut s = stored();
+        s["count"] = serde_json::json!(5);
+        let d = stats_differences(&s, &measured());
+        assert_eq!(d.len(), 1, "{d:?}");
+        assert!(d[0].contains("count is 5"), "{d:?}");
+    }
+
+    #[test]
+    fn a_feature_with_no_measured_rows_has_nothing_to_compare() {
+        assert!(stats_differences(&stored(), &[]).is_empty());
+        assert!(stats_differences(&stored(), &dim_stats(&[], 2)).is_empty());
+    }
+
+    #[test]
     fn a_different_width_is_reported_once() {
         let mut s = stored();
         s["mean"] = serde_json::json!([4.0, 5.0, 6.0]);
