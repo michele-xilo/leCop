@@ -22,8 +22,8 @@ A fast, single-binary health check for
 leCop reads a dataset's metadata and parquet files, and the container metadata of its videos, and reports the faults
 that break or quietly degrade training: totals that disagree with the data, drifting timestamps, missing or truncated
 files, videos with the wrong number of frames, constant or clipped signals, and more. It is one binary with nothing
-else to install. It takes 8 to 30 ms on the datasets in the [speed table](#performance), 17x to 59x faster than
-lerobot-doctor, because it never decodes video unless you ask for it with `--decode`.
+else to install. Without decoding video it takes 8 to 30 ms on the datasets in the [speed tables](#performance), 12x to
+44x faster than lerobot-doctor on the same checks, and it decodes video only if you ask for it with `--decode`.
 
 ## Install
 
@@ -183,24 +183,52 @@ Gaps are tracked as issues by priority; see the open issues labelled `feature`.
 
 ## Performance
 
-How long each tool takes to check the same dataset: median of 3 runs after one warm-up, warm page cache, wall time
-including process start. Apple M2 Pro, Python 3.12, leCop `release` build, lerobot-doctor 0.2.0 and physlint 0.4.0
-installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`.
+Video is where the tools differ most: lerobot-doctor decodes the first frame of each video, physlint decodes every
+frame, and leCop reads container metadata only unless asked. So two tables are reported, each giving every tool the
+same video work. Median wall time of 3 runs after one warm-up, warm page cache, including process start, every run in
+a fresh empty working directory with physlint's result cache off. Apple M2 Pro, Python 3.12, leCop `release` build,
+lerobot-doctor 0.2.0 and physlint 0.4.0 installed from PyPI. physlint reads v3 only. The tools check different things
+(see the comparison above), so this compares speed only. Reproduce with `scripts/compare.py`.
 
-| Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
+### Without video decoding
+
+lerobot-doctor runs every check but `videos`; physlint runs with its `video.decode`, `video.frozen_frames` and
+`video.black_frames` rules off; leCop is the default build.
+
+| Dataset | leCop | lerobot-doctor | physlint | leCop vs the fastest other tool |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **15 ms** | 745 ms | n/a | 50x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 483 ms | n/a | 54x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 464 ms | n/a | 58x |
-| `v3_pusht` (v3.0) | 🏆 **11 ms** | 646 ms | 16,269 ms | 59x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 483 ms | 2,916 ms | 48x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **10 ms** | 465 ms | 3,486 ms | 46x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **30 ms** | 506 ms | 741 ms | 17x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **20 ms** | 511 ms | 7,934 ms | 26x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 419 ms | 2,839 ms | 32x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **15 ms** | 493 ms | 7,900 ms | 33x |
+| `pusht` (v2.1) | 🏆 **17 ms** | 618 ms | n/a | 37x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 306 ms | n/a | 32x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 291 ms | n/a | 35x |
+| `v3_pusht` (v3.0) | 🏆 **12 ms** | 520 ms | 15,962 ms | 44x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **9 ms** | 364 ms | 2,867 ms | 40x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **10 ms** | 336 ms | 3,419 ms | 34x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **30 ms** | 340 ms | 736 ms | 12x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **19 ms** | 390 ms | 8,087 ms | 20x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 295 ms | 2,875 ms | 23x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **15 ms** | 383 ms | 7,835 ms | 25x |
 
-The tools check different things (see the comparison above), so this compares speed only.
+### With video decoding
+
+leCop is built with `--features decode` and run with `--decode`; lerobot-doctor runs all checks, and its `videos` check
+decodes one frame per video, so it does less decoding than the other two; physlint runs all rules and decodes every
+frame, like leCop.
+
+| Dataset | leCop | lerobot-doctor | physlint | leCop vs physlint |
+|---|---|---|---|---|
+| `pusht` (v2.1) | 🏆 **340 ms** | 774 ms | n/a | n/a |
+| `svla_so101_pickplace` (v2.1) | 9,208 ms | 🏆 **487 ms** | n/a | n/a |
+| `c_careattrs_mug2v2` (v2.1) | 11,022 ms | 🏆 **462 ms** | n/a | n/a |
+| `v3_pusht` (v3.0) | 2,157 ms | 🏆 **643 ms** | 21,289 ms | 9.9x faster |
+| `v3_aloha_sim_insertion_human` (v3.0) | 52,349 ms | 🏆 **450 ms** | 11,893 ms | 4.4x slower |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 42,198 ms | 🏆 **456 ms** | 12,136 ms | 3.5x slower |
+| `c_so101_pill_sorting_medoc` (v3.0) | 8,835 ms | 🏆 **582 ms** | 6,396 ms | 1.4x slower |
+| `c_so101_my_task_50ep` (v3.0) | 151,495 ms | 🏆 **556 ms** | 22,412 ms | 6.8x slower |
+| `c_so101_block_box_50episodes_final` (v3.0) | 7,997 ms | 🏆 **445 ms** | 6,517 ms | 1.2x slower |
+| `c_black-stressball-tutorial` (v3.0) | 22,103 ms | 🏆 **524 ms** | 18,771 ms | 1.2x slower |
+
+Decoding is where leCop is slower than physlint on most datasets (AV1 in particular); it is tracked in
+[#79](https://github.com/michele-xilo/leCop/issues/79).
 
 ## Checks and features
 
