@@ -1635,3 +1635,34 @@ fn a_higher_clipped_fraction_lets_it_pass() {
 fn a_lower_clipped_fraction_still_flags_it() {
     assert_eq!(codes(&run_clipped(Some(0.1))), ["clipped_dimension"]);
 }
+
+#[test]
+fn fix_recomputes_the_task_total_from_the_task_metadata() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(10)], None);
+    edit_info(dir.path(), |i| i["total_tasks"] = 5.into());
+    let ds = Dataset::open(dir.path()).unwrap();
+    let issues = validate(&ds).unwrap();
+    assert_eq!(codes(&issues), ["tasks_count"], "{issues:?}");
+    let fixes = lecop::fix::plan(&ds, &issues, lecop::validate::task_count(&ds));
+    assert_eq!(
+        fixes,
+        [lecop::fix::Fix {
+            key: "total_tasks",
+            from: 5,
+            to: 1,
+            code: "tasks_count"
+        }]
+    );
+    lecop::fix::apply(dir.path(), &fixes).unwrap();
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert!(v.is_empty(), "{v:?}");
+}
+
+#[test]
+fn fix_plans_nothing_when_a_total_is_right() {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &[good(10)], None);
+    let ds = Dataset::open(dir.path()).unwrap();
+    assert!(lecop::fix::plan(&ds, &validate(&ds).unwrap(), None).is_empty());
+}

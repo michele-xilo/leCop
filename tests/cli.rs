@@ -263,3 +263,164 @@ fn rust_log_overrides_the_verbosity_flag() {
         .unwrap();
     assert!(o.stderr.is_empty());
 }
+
+fn info_text(d: &tempfile::TempDir) -> String {
+    std::fs::read_to_string(d.path().join("meta/info.json")).unwrap()
+}
+
+fn err(o: &Output) -> String {
+    String::from_utf8_lossy(&o.stderr).into_owned()
+}
+
+#[test]
+fn preview_shows_the_repair_and_changes_nothing() {
+    let d = dataset();
+    break_frame_total(&d);
+    let before = info_text(&d);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--preview"]);
+    let e = err(&o);
+    assert!(e.contains("total_frames 1 -> 120"), "{e}");
+    assert!(e.contains("--fix"), "{e}");
+    assert_eq!(info_text(&d), before);
+    assert!(!d.path().join("meta/info.json.bak").exists());
+    assert_eq!(o.status.code(), Some(1), "the finding is still there");
+}
+
+#[test]
+fn fix_repairs_info_json_and_keeps_a_backup() {
+    let d = dataset();
+    break_frame_total(&d);
+    let before = info_text(&d);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix"]);
+    assert_eq!(o.status.code(), Some(0), "{} {}", out(&o), err(&o));
+    let after = info_text(&d);
+    assert_eq!(
+        after,
+        before.replace("\"total_frames\":1,", "\"total_frames\":120,")
+    );
+    assert_eq!(
+        std::fs::read_to_string(d.path().join("meta/info.json.bak")).unwrap(),
+        before
+    );
+}
+
+#[test]
+fn fix_repairs_the_episode_total_too() {
+    let d = dataset();
+    let p = d.path().join("meta/info.json");
+    let mut v: serde_json::Value = serde_json::from_slice(&std::fs::read(&p).unwrap()).unwrap();
+    v["total_episodes"] = 9.into();
+    std::fs::write(&p, v.to_string()).unwrap();
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix"]);
+    assert_eq!(o.status.code(), Some(0), "{} {}", out(&o), err(&o));
+    assert!(info_text(&d).contains("\"total_episodes\":3,"));
+}
+
+#[test]
+fn the_bare_command_takes_fix_too() {
+    let d = dataset();
+    break_frame_total(&d);
+    let o = lecop(&[d.path().to_str().unwrap(), "--fix"]);
+    assert_eq!(o.status.code(), Some(0), "{} {}", out(&o), err(&o));
+}
+
+#[test]
+fn fix_with_preview_only_shows_the_repair() {
+    let d = dataset();
+    break_frame_total(&d);
+    let before = info_text(&d);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix", "--preview"]);
+    assert!(err(&o).contains("would fix"), "{}", err(&o));
+    assert_eq!(info_text(&d), before);
+}
+
+#[test]
+fn a_plain_run_says_when_a_safe_repair_exists() {
+    let d = dataset();
+    let clean = lecop(&["validate", d.path().to_str().unwrap()]);
+    assert!(!err(&clean).contains("fixable"), "{}", err(&clean));
+    break_frame_total(&d);
+    let o = lecop(&["validate", d.path().to_str().unwrap()]);
+    assert!(
+        err(&o).contains("[*] 1 dataset fixable with --fix"),
+        "{}",
+        err(&o)
+    );
+}
+
+#[test]
+fn fix_refuses_when_the_episode_metadata_disagrees_with_the_data() {
+    let d = dataset();
+    break_frame_total(&d);
+    let p = d.path().join("meta/episodes.jsonl");
+    let text = std::fs::read_to_string(&p).unwrap();
+    std::fs::write(&p, text.replacen("\"length\":40", "\"length\":41", 1)).unwrap();
+    let before = info_text(&d);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix"]);
+    assert_eq!(o.status.code(), Some(1));
+    assert!(err(&o).contains("no safe repair"), "{}", err(&o));
+    assert_eq!(info_text(&d), before);
+    assert!(!d.path().join("meta/info.json.bak").exists());
+}
+
+#[test]
+fn fix_will_not_overwrite_an_existing_backup() {
+    let d = dataset();
+    break_frame_total(&d);
+    std::fs::write(d.path().join("meta/info.json.bak"), "mine").unwrap();
+    let before = info_text(&d);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix"]);
+    assert_eq!(o.status.code(), Some(2));
+    assert!(err(&o).contains("info.json.bak"), "{}", err(&o));
+    assert_eq!(info_text(&d), before);
+}
+
+#[test]
+fn fix_keeps_json_output_parseable() {
+    let d = dataset();
+    break_frame_total(&d);
+    let o = lecop(&[
+        "validate",
+        d.path().to_str().unwrap(),
+        "--fix",
+        "--format",
+        "json",
+    ]);
+    serde_json::from_slice::<serde_json::Value>(&o.stdout).unwrap();
+}
+
+/// `parent_of_two` with `a` made unreadable, so only `b` can be repaired.
+fn parent_with_an_unreadable_dataset() -> tempfile::TempDir {
+    let parent = parent_of_two();
+    std::fs::write(parent.path().join("a/meta/info.json"), "{").unwrap();
+    parent
+}
+
+#[test]
+fn fix_repairs_the_readable_dataset_and_reports_the_unreadable_one() {
+    let parent = parent_with_an_unreadable_dataset();
+    let o = lecop_in(parent.path(), &["--fix"]);
+    assert_eq!(o.status.code(), Some(2), "{} {}", out(&o), err(&o));
+    assert!(err(&o).contains("fixed"), "{}", err(&o));
+    let b = std::fs::read_to_string(parent.path().join("b/meta/info.json")).unwrap();
+    assert!(b.contains("\"total_frames\":120,"), "{b}");
+}
+
+#[test]
+fn the_fixable_hint_counts_only_datasets_that_open() {
+    let parent = parent_with_an_unreadable_dataset();
+    let o = lecop_in(parent.path(), &["."]);
+    assert!(
+        err(&o).contains("[*] 1 dataset fixable with --fix"),
+        "{}",
+        err(&o)
+    );
+}
+
+#[test]
+fn diff_is_an_alias_of_preview() {
+    let d = dataset();
+    break_frame_total(&d);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--diff"]);
+    assert!(err(&o).contains("would fix"), "{}", err(&o));
+}

@@ -4,8 +4,9 @@ use lecop::{
     config::Config,
     dataset::Dataset,
     discover::find_datasets,
+    fix,
     report::{self, DatasetReport, Format, Options},
-    validate::{Checks, validate_paths},
+    validate::{Checks, Issue, task_count, validate_paths},
 };
 use std::{io::IsTerminal, path::PathBuf, process::ExitCode};
 
@@ -66,6 +67,13 @@ enum Cmd {
         /// Ignore every config file
         #[arg(long)]
         isolated: bool,
+        /// Apply the safe repairs: info.json totals (`total_frames`, `total_episodes`, `total_tasks`) recomputed from
+        /// the episode and task metadata. The original is kept as `meta/info.json.bak`.
+        #[arg(long)]
+        fix: bool,
+        /// Show the repairs `--fix` would make, and change nothing
+        #[arg(long, visible_alias = "diff")]
+        preview: bool,
         /// Issue codes to ignore, comma separated
         #[arg(long, value_delimiter = ',')]
         ignore: Vec<String>,
@@ -83,6 +91,8 @@ struct ValidateArgs {
     statistics: bool,
     quiet: bool,
     decode: bool,
+    fix: bool,
+    preview: bool,
     config: Option<PathBuf>,
     isolated: bool,
     ignore: Vec<String>,
@@ -125,34 +135,40 @@ fn validate(a: ValidateArgs) -> Result<u8> {
     };
     config.add_cli(&a.ignore, &a.select)?;
 
-    let reports: Vec<DatasetReport> = validate_paths(
-        &datasets,
-        a.jobs,
-        &Checks {
-            limits: config.limits().clone(),
-            decode: a.decode,
-            chunk_size: config.chunk_size(),
-            clipped_fraction: config.clipped_fraction(),
-        },
-    )?
-    .into_iter()
-    .map(|(path, outcome)| match outcome {
-        Ok(issues) => {
-            let (issues, ignored) = config.apply(&path, issues);
-            DatasetReport {
-                path,
-                issues,
-                ignored,
-                open_error: None,
+    let checks = Checks {
+        limits: config.limits().clone(),
+        decode: a.decode,
+        chunk_size: config.chunk_size(),
+        clipped_fraction: config.clipped_fraction(),
+    };
+    let mut results = validate_paths(&datasets, a.jobs, &checks)?;
+    match (a.fix, a.preview) {
+        (false, false) => hint_fixable(&results),
+        (fix, preview) => {
+            if repair(&results, fix && !preview)? {
+                results = validate_paths(&datasets, a.jobs, &checks)?;
             }
         }
-        Err(e) => {
-            let mut r = DatasetReport::new(path, Vec::new());
-            r.open_error = Some(format!("{e:#}"));
-            r
-        }
-    })
-    .collect();
+    }
+    let reports: Vec<DatasetReport> = results
+        .into_iter()
+        .map(|(path, outcome)| match outcome {
+            Ok(issues) => {
+                let (issues, ignored) = config.apply(&path, issues);
+                DatasetReport {
+                    path,
+                    issues,
+                    ignored,
+                    open_error: None,
+                }
+            }
+            Err(e) => {
+                let mut r = DatasetReport::new(path, Vec::new());
+                r.open_error = Some(format!("{e:#}"));
+                r
+            }
+        })
+        .collect();
 
     let format = match a.format {
         Output::Text => Format::Text,
@@ -169,6 +185,66 @@ fn validate(a: ValidateArgs) -> Result<u8> {
     };
     print!("{}", report::render(&reports, &options));
     Ok(report::exit_code(&reports))
+}
+
+/// The safe repairs for one validated dataset. The dataset is opened again only when a finding could be repaired:
+/// on large v3 datasets that costs more than the validation.
+fn safe_repairs(path: &std::path::Path, outcome: &Result<Vec<Issue>>) -> Vec<fix::Fix> {
+    let Ok(issues) = outcome else {
+        return Vec::new();
+    };
+    if !fix::may_apply(issues) {
+        return Vec::new();
+    }
+    match Dataset::open(path) {
+        Ok(ds) => fix::plan(&ds, issues, task_count(&ds)),
+        Err(_) => Vec::new(),
+    }
+}
+
+/// Plan the safe repairs for every dataset that opened and print them to stderr, so `--format json` stays
+/// parseable. Writes them with `write`. True when something was written.
+fn repair(results: &[(PathBuf, Result<Vec<Issue>>)], write: bool) -> Result<bool> {
+    let (mut planned, mut wrote) = (false, false);
+    for (path, outcome) in results {
+        let fixes = safe_repairs(path, outcome);
+        for f in &fixes {
+            let verb = if write { "fixed" } else { "would fix" };
+            eprintln!(
+                "{verb} {}: {} {} -> {} ({})",
+                path.join("meta/info.json").display(),
+                f.key,
+                f.from,
+                f.to,
+                f.code
+            );
+        }
+        planned |= !fixes.is_empty();
+        if write && !fixes.is_empty() {
+            fix::apply(path, &fixes)?;
+            wrote = true;
+        }
+    }
+    if !planned {
+        eprintln!("no safe repair available");
+    } else if !write {
+        eprintln!(
+            "rerun with --fix to apply them; the original info.json is kept as info.json.bak"
+        );
+    }
+    Ok(wrote)
+}
+
+/// Tell, on stderr, how many datasets have a safe repair, as ruff does for its fixable findings.
+fn hint_fixable(results: &[(PathBuf, Result<Vec<Issue>>)]) {
+    let fixable = results
+        .iter()
+        .filter(|(path, outcome)| !safe_repairs(path, outcome).is_empty())
+        .count();
+    if fixable > 0 {
+        let s = if fixable == 1 { "" } else { "s" };
+        eprintln!("[*] {fixable} dataset{s} fixable with --fix (--preview shows how)");
+    }
 }
 
 fn inspect(path: PathBuf) -> Result<u8> {
@@ -231,6 +307,8 @@ fn main() -> ExitCode {
             statistics,
             quiet,
             decode,
+            fix,
+            preview,
             config,
             isolated,
             ignore,
@@ -243,6 +321,8 @@ fn main() -> ExitCode {
             statistics,
             quiet,
             decode,
+            fix,
+            preview,
             config,
             isolated,
             ignore,

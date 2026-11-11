@@ -7,7 +7,7 @@ use std::collections::BTreeSet;
 
 /// Number of tasks in the task metadata: lines of `tasks.jsonl` (v2) or rows of `tasks.parquet` (v3, read from the
 /// footer). `None` when the file is absent or unreadable.
-pub(super) fn task_count(ds: &Dataset) -> Option<usize> {
+pub fn task_count(ds: &Dataset) -> Option<usize> {
     if ds.info.codebase_version.starts_with("v3") {
         let f = std::fs::File::open(ds.root.join("meta/tasks.parquet")).ok()?;
         let b = ParquetRecordBatchReaderBuilder::try_new(f).ok()?;

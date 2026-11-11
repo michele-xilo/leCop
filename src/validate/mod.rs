@@ -13,7 +13,7 @@ pub use jump_shift::{
 };
 pub use limits::{Bound, FeatureLimits, Limits};
 pub use numeric::{DimStats, dim_stats, numeric_findings};
-pub use tasks::task_finding;
+pub use tasks::{task_count, task_finding};
 
 use self::episodes::{
     ActionHash, GroupExtra, action_key, check_group, chunk_finding, duplicate_episodes,
@@ -23,7 +23,7 @@ use self::limits::limit_issues;
 use self::numeric::{DEFAULT_CLIPPED_FRACTION, numeric_issues};
 use self::portability::portability_findings;
 use self::stats::{stats_findings, zero_std_findings};
-use self::tasks::{task_count, task_ids, task_index_issue};
+use self::tasks::{task_ids, task_index_issue};
 use self::video::{
     VideoRead, decode_issues, metadata_and_video_issues, read_video, unique_video_paths,
 };
