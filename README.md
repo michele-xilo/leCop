@@ -22,7 +22,7 @@ A fast, single-binary health check for
 leCop reads a dataset's metadata and parquet files, and the container metadata of its videos, and reports the faults
 that break or quietly degrade training: totals that disagree with the data, drifting timestamps, missing or truncated
 files, videos with the wrong number of frames, constant or clipped signals, and more. It is one binary with nothing
-else to install. It takes 8 to 33 ms on the datasets in the [speed table](#performance), 17x to 59x faster than
+else to install. It takes 8 to 30 ms on the datasets in the [speed table](#performance), 17x to 59x faster than
 lerobot-doctor, because it never decodes video unless you ask for it with `--decode`.
 
 ## Install
@@ -170,6 +170,7 @@ against what leCop checks. physlint also validates MCAP and ROS 2 recordings, wh
 | Duplicate episodes | ✅ exact action sequences | ✅ near-duplicates | ✅ exact |
 | Episode length: empty, too short, outliers | ✅ | ✅ | ❌ |
 | Statistics file present and covering every feature | ✅ | ✅ | ❌ |
+| Statistics match the data (count, min, max, mean, std) | ✅ `stats.json`, v3.x and v2.0 | ❌ compares feature names only | ❌ |
 | Video file exists, readable mp4, frame rate | ✅ | ✅ | ✅ |
 | Video frame count against the episode (container tables) | ✅ | ✅ | ❌ |
 | Video resolution against `info.json` | ✅ | ✅ | ❌ |
@@ -188,16 +189,16 @@ installed from PyPI. physlint reads v3 only. Reproduce with `scripts/compare.py`
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop speedup |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **14 ms** | 757 ms | n/a | 54x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 474 ms | n/a | 53x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 471 ms | n/a | 59x |
-| `v3_pusht` (v3.0) | 🏆 **11 ms** | 612 ms | 15,735 ms | 56x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 556 ms | 3,409 ms | 56x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **10 ms** | 506 ms | 3,954 ms | 51x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **33 ms** | 566 ms | 859 ms | 17x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **22 ms** | 580 ms | 8,077 ms | 26x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 406 ms | 2,711 ms | 31x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 466 ms | 7,512 ms | 33x |
+| `pusht` (v2.1) | 🏆 **15 ms** | 745 ms | n/a | 50x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 483 ms | n/a | 54x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 464 ms | n/a | 58x |
+| `v3_pusht` (v3.0) | 🏆 **11 ms** | 646 ms | 16,269 ms | 59x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **10 ms** | 483 ms | 2,916 ms | 48x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **10 ms** | 465 ms | 3,486 ms | 46x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **30 ms** | 506 ms | 741 ms | 17x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **20 ms** | 511 ms | 7,934 ms | 26x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 419 ms | 2,839 ms | 32x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **15 ms** | 493 ms | 7,900 ms | 33x |
 
 The tools check different things (see the comparison above), so this compares speed only.
 
@@ -243,7 +244,7 @@ All checks read metadata and parquet only: no video frame is decoded.
 | `total_tasks` matches the task metadata (`tasks.jsonl` lines, `tasks.parquet` rows) | Covered; the file missing is an error, a different count a warning | `tasks_missing`, `tasks_count` |
 | Every `task_index` in the data is in the task metadata | Covered | `task_index` |
 | The statistics file (`stats.json`, or `episodes_stats.jsonl` for v2.1) exists and has an entry for every non-string feature | Covered (warnings; v2.1 reads the first episode's entry only) | `stats_missing`, `stats_feature_missing` |
-| The statistics match the data | Not yet | |
+| The statistics match the data | Covered for `stats.json` (v3.x, v2.0): count, min, max, mean and std of the `action` and `observation.*` float features, with tolerances far above float32 rounding (warning). v2.1 per-episode statistics: not yet | `stats_mismatch` |
 
 Beyond what LeRobot checks:
 

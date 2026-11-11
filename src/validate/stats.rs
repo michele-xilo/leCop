@@ -1,3 +1,4 @@
+use super::numeric::DimStats;
 use crate::dataset::Dataset;
 use anyhow::Result;
 
@@ -102,9 +103,209 @@ pub(super) fn stats_findings(ds: &Dataset) -> Vec<(&'static str, String)> {
     }
 }
 
+/// Tolerance of the mean and std, as a fraction of the std: far above float32 rounding (8e-5 at most on the real
+/// datasets) and far below a stale file, where whole episodes are added or removed.
+const MOMENT_TOL: f64 = 1e-3;
+/// Tolerance of min and max, as a fraction of the range or the value. Real files match exactly.
+const EXTREME_TOL: f64 = 1e-6;
+
+/// A number with at most 6 decimals and no trailing zeros, so a message stays readable.
+fn short(x: f64) -> String {
+    let s = format!("{x:.6}");
+    s.trim_end_matches('0').trim_end_matches('.').to_string()
+}
+
+/// How the stored statistics of one feature differ from the values measured in the data, one sentence each. A
+/// statistic that is not stored is not compared.
+pub(super) fn stats_differences(stored: &serde_json::Value, measured: &[DimStats]) -> Vec<String> {
+    let mut out = Vec::new();
+    let n = measured.first().map_or(0, |d| d.n);
+    if n == 0 {
+        return out;
+    }
+    let count = stored.get("count").and_then(|c| match c {
+        serde_json::Value::Array(a) => a.first()?.as_f64(),
+        other => other.as_f64(),
+    });
+    if let Some(c) = count.filter(|c| *c != n as f64) {
+        out.push(format!(
+            "count is {c} in stats.json but the data has {n} frames"
+        ));
+    }
+    let moments: Vec<(f64, f64)> = measured
+        .iter()
+        .map(|d| {
+            let mean = d.sum / n as f64;
+            (mean, (d.sumsq / n as f64 - mean * mean).max(0.0).sqrt())
+        })
+        .collect();
+    for stat in ["min", "max", "mean", "std"] {
+        let Some(values) = stored.get(stat).and_then(|v| v.as_array()) else {
+            continue;
+        };
+        if values.len() != measured.len() {
+            out.push(format!(
+                "{stat} has {} values in stats.json but the feature has {} dimensions",
+                values.len(),
+                measured.len()
+            ));
+            continue;
+        }
+        for (j, (v, d)) in values.iter().zip(measured).enumerate() {
+            let Some(stored) = v.as_f64() else { continue };
+            let (mean, std) = moments[j];
+            let (found, tol) = match stat {
+                "min" => (
+                    d.min,
+                    EXTREME_TOL * (d.max - d.min).max(d.min.abs()).max(1e-12),
+                ),
+                "max" => (
+                    d.max,
+                    EXTREME_TOL * (d.max - d.min).max(d.max.abs()).max(1e-12),
+                ),
+                "mean" => (mean, MOMENT_TOL * std.max(1e-6 * mean.abs().max(1.0))),
+                _ => (std, MOMENT_TOL * std + 1e-6 * mean.abs().max(1.0)),
+            };
+            if (stored - found).abs() > tol {
+                out.push(format!(
+                    "dimension {j} {stat} is {} in stats.json but {} in the data",
+                    short(stored),
+                    short(found)
+                ));
+            }
+        }
+    }
+    out
+}
+
+/// `stats_mismatch` findings: global `stats.json` (v3.x and v2.0) against the data of the analysed float features.
+/// Skipped when the data read does not add up to the episode metadata, where other findings already explain it.
+pub(super) fn stats_mismatch_findings(
+    ds: &Dataset,
+    measured: &std::collections::BTreeMap<&str, Vec<DimStats>>,
+) -> Vec<(&'static str, String)> {
+    if ds.info.codebase_version.starts_with("v2.1") {
+        return vec![];
+    }
+    let Ok(stats) = stats_object(ds) else {
+        return vec![];
+    };
+    let expected: u64 = ds.episodes.iter().map(|e| e.length as u64).sum();
+    measured
+        .iter()
+        .filter(|(_, st)| st.first().is_some_and(|d| d.n == expected))
+        .filter_map(|(key, st)| {
+            let diffs = stats_differences(stats.get(*key)?, st);
+            let (first, rest) = diffs.split_first()?;
+            let more = match rest.len() {
+                0 => String::new(),
+                1 => " (and 1 more difference)".to_string(),
+                n => format!(" (and {n} more differences)"),
+            };
+            Some((
+                "stats_mismatch",
+                format!("{key}: {first}{more}; stats.json is out of date with the data"),
+            ))
+        })
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::validate::dim_stats;
+
+    /// The statistics of 4 rows of width 2, as LeRobot stores them.
+    fn stored() -> serde_json::Value {
+        serde_json::json!({
+            "min": [1.0, 2.0], "max": [7.0, 8.0], "mean": [4.0, 5.0],
+            "std": [2.23606797749979, 2.23606797749979], "count": [4]
+        })
+    }
+
+    fn measured() -> Vec<DimStats> {
+        dim_stats(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0], 2)
+    }
+
+    #[test]
+    fn matching_statistics_differ_nowhere() {
+        assert_eq!(
+            stats_differences(&stored(), &measured()),
+            Vec::<String>::new()
+        );
+    }
+
+    #[test]
+    fn an_entry_without_statistics_has_nothing_to_compare() {
+        assert!(stats_differences(&serde_json::json!({}), &measured()).is_empty());
+    }
+
+    #[test]
+    fn each_stale_statistic_is_named_with_both_values() {
+        for (stat, dim, value) in [
+            ("min", 0, 0.0),
+            ("max", 1, 9.0),
+            ("mean", 1, 6.0),
+            ("std", 0, 3.0),
+        ] {
+            let mut s = stored();
+            s[stat][dim] = value.into();
+            let d = stats_differences(&s, &measured());
+            assert_eq!(d.len(), 1, "{stat}: {d:?}");
+            assert!(
+                d[0].contains(&format!("dimension {dim} {stat}"))
+                    && d[0].contains(&format!("{value}")),
+                "{stat}: {d:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn a_stale_count_is_named_with_both_values() {
+        let mut s = stored();
+        s["count"] = serde_json::json!([5]);
+        let d = stats_differences(&s, &measured());
+        assert_eq!(d.len(), 1, "{d:?}");
+        assert!(
+            d[0].contains("count") && d[0].contains('5') && d[0].contains('4'),
+            "{d:?}"
+        );
+    }
+
+    #[test]
+    fn a_count_stored_as_a_plain_number_is_compared_too() {
+        let mut s = stored();
+        s["count"] = serde_json::json!(5);
+        let d = stats_differences(&s, &measured());
+        assert_eq!(d.len(), 1, "{d:?}");
+        assert!(d[0].contains("count is 5"), "{d:?}");
+    }
+
+    #[test]
+    fn a_feature_with_no_measured_rows_has_nothing_to_compare() {
+        assert!(stats_differences(&stored(), &[]).is_empty());
+        assert!(stats_differences(&stored(), &dim_stats(&[], 2)).is_empty());
+    }
+
+    #[test]
+    fn a_different_width_is_reported_once() {
+        let mut s = stored();
+        s["mean"] = serde_json::json!([4.0, 5.0, 6.0]);
+        let d = stats_differences(&s, &measured());
+        assert_eq!(d.len(), 1, "{d:?}");
+        assert!(
+            d[0].contains("mean") && d[0].contains('3') && d[0].contains('2'),
+            "{d:?}"
+        );
+    }
+
+    #[test]
+    fn float32_rounding_is_not_a_difference() {
+        let mut s = stored();
+        s["mean"] = serde_json::json!([4.0000002, 5.0000002]);
+        s["std"] = serde_json::json!([2.2360682, 2.2360682]);
+        assert!(stats_differences(&s, &measured()).is_empty());
+    }
 
     #[test]
     fn zero_std_ignores_statistics_that_are_not_an_object() {
