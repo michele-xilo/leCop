@@ -6,7 +6,7 @@ lecop is an unofficial, fast, single-binary health checker for robot-learning da
 [LeRobot](https://github.com/huggingface/lerobot) format (v2.x and v3.x), written in Rust. It is a library
 crate (`src/lib.rs`: `dataset` resolves a dataset's episodes to files, `validate` runs the checks) plus a thin
 CLI (`src/main.rs`: `inspect`, `validate`). Its reason to exist is speed and zero setup, not check count: see
-`performance.md`. The roadmap is the open issues by priority (`issues.md`); the old plan is `docs/agent/PLAN.md`.
+`performance.md`. The roadmap is the open issues by priority (`issues.md`).
 
 ## Build, lint, format, test: do this often
 
@@ -81,8 +81,6 @@ something (no network, dataset not downloaded), say so rather than claim it work
 - Work that is not being done now becomes a GitHub issue with a priority, see `issues.md`.
 - Verified-versus-assumed matters: when a finding rests on an assumption about the LeRobot format, say so on
   the issue, and comment again once real data confirms or refutes it.
-- `docs/agent/` holds legacy notes from before this rule; do not add to it. Move anything still useful to
-  an issue and delete the file, with the user's OK.
 - Everything else in `docs/` and the top-level `README.md` is for people who use the project: how to run it,
   what it checks, what it does not support.
 
