@@ -72,8 +72,8 @@ enum Cmd {
         #[arg(long)]
         fix: bool,
         /// Show the repairs `--fix` would make, and change nothing
-        #[arg(long)]
-        diff: bool,
+        #[arg(long, visible_alias = "diff")]
+        preview: bool,
         /// Issue codes to ignore, comma separated
         #[arg(long, value_delimiter = ',')]
         ignore: Vec<String>,
@@ -92,7 +92,7 @@ struct ValidateArgs {
     quiet: bool,
     decode: bool,
     fix: bool,
-    diff: bool,
+    preview: bool,
     config: Option<PathBuf>,
     isolated: bool,
     ignore: Vec<String>,
@@ -142,10 +142,10 @@ fn validate(a: ValidateArgs) -> Result<u8> {
         clipped_fraction: config.clipped_fraction(),
     };
     let mut results = validate_paths(&datasets, a.jobs, &checks)?;
-    match (a.fix, a.diff) {
+    match (a.fix, a.preview) {
         (false, false) => hint_fixable(&results),
-        (fix, diff) => {
-            if repair(&results, fix && !diff)? {
+        (fix, preview) => {
+            if repair(&results, fix && !preview)? {
                 results = validate_paths(&datasets, a.jobs, &checks)?;
             }
         }
@@ -236,7 +236,7 @@ fn hint_fixable(results: &[(PathBuf, Result<Vec<Issue>>)]) {
         .count();
     if fixable > 0 {
         let s = if fixable == 1 { "" } else { "s" };
-        eprintln!("[*] {fixable} dataset{s} fixable with --fix (--diff shows how)");
+        eprintln!("[*] {fixable} dataset{s} fixable with --fix (--preview shows how)");
     }
 }
 
@@ -301,7 +301,7 @@ fn main() -> ExitCode {
             quiet,
             decode,
             fix,
-            diff,
+            preview,
             config,
             isolated,
             ignore,
@@ -315,7 +315,7 @@ fn main() -> ExitCode {
             quiet,
             decode,
             fix,
-            diff,
+            preview,
             config,
             isolated,
             ignore,

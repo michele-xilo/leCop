@@ -273,11 +273,11 @@ fn err(o: &Output) -> String {
 }
 
 #[test]
-fn diff_shows_the_repair_and_changes_nothing() {
+fn preview_shows_the_repair_and_changes_nothing() {
     let d = dataset();
     break_frame_total(&d);
     let before = info_text(&d);
-    let o = lecop(&["validate", d.path().to_str().unwrap(), "--diff"]);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--preview"]);
     let e = err(&o);
     assert!(e.contains("total_frames 1 -> 120"), "{e}");
     assert!(e.contains("--fix"), "{e}");
@@ -325,11 +325,11 @@ fn the_bare_command_takes_fix_too() {
 }
 
 #[test]
-fn fix_with_diff_only_shows_the_repair() {
+fn fix_with_preview_only_shows_the_repair() {
     let d = dataset();
     break_frame_total(&d);
     let before = info_text(&d);
-    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix", "--diff"]);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--fix", "--preview"]);
     assert!(err(&o).contains("would fix"), "{}", err(&o));
     assert_eq!(info_text(&d), before);
 }
@@ -387,4 +387,12 @@ fn fix_keeps_json_output_parseable() {
         "json",
     ]);
     serde_json::from_slice::<serde_json::Value>(&o.stdout).unwrap();
+}
+
+#[test]
+fn diff_is_an_alias_of_preview() {
+    let d = dataset();
+    break_frame_total(&d);
+    let o = lecop(&["validate", d.path().to_str().unwrap(), "--diff"]);
+    assert!(err(&o).contains("would fix"), "{}", err(&o));
 }

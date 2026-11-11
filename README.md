@@ -58,7 +58,7 @@ the config or an argument cannot be read.
 | `--no-color` | colour is also off when piped or when `NO_COLOR` is set |
 | `--ignore a,b`, `--select a,b` | drop, or keep only, these issue codes |
 | `--decode` | decode the video frames and report undecodable, frozen and black cameras; needs a build with `--features decode`, see below |
-| `--fix`, `--diff` | apply the safe repairs, or show them without changing anything, see below |
+| `--fix`, `--preview` | apply the safe repairs, or show them without changing anything (`--diff` is an alias), see below |
 | `--config FILE`, `--isolated` | use this config, or none |
 | `-v`, `-vv` | log progress, then per-file timings, to stderr (never stdout); `RUST_LOG` overrides |
 | `-j N` | worker threads (default: one per core); output is identical for every `-j` |
@@ -66,11 +66,11 @@ the config or an argument cannot be read.
 ### Repairing
 
 `validate` alone never writes. `--fix` (also `lecop . --fix`) applies the only repairs leCop makes: the totals in
-`meta/info.json` recomputed from metadata it does not touch, then validates again. `--diff` shows what `--fix` would
+`meta/info.json` recomputed from metadata it does not touch, then validates again. `--preview` shows what `--fix` would
 change and writes nothing. When a safe repair exists, a plain run ends with `[*] 1 dataset fixable with --fix` on stderr.
 
 ```bash
-lecop validate --diff datasets/my_dataset   # prints what would change, on stderr
+lecop validate --preview datasets/my_dataset   # prints what would change, on stderr
 lecop validate --fix datasets/my_dataset    # applies it
 ```
 
