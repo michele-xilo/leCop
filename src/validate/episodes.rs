@@ -217,7 +217,7 @@ pub(super) fn check_group(
     let d = match parsed {
         Ok(d) if d.ts.len() != d.rows => {
             return at_first(
-                "column_missing",
+                "timestamp_missing",
                 format!(
                     "{}: `timestamp` column missing or not a float",
                     first.data_file.display()

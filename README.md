@@ -87,7 +87,7 @@ lecop validate --fix datasets/my_dataset    # applies it
 | `tasks_count` | `total_tasks` becomes the number of tasks in the task metadata |
 
 Nothing is repaired when the episode metadata and the data files disagree (`length_mismatch`, `episode_rows_missing`,
-`data_missing`, `data_unreadable`, `column_missing`, `episode_index`, `range_length`, `range_gap`, `index_mismatch`): a
+`data_missing`, `data_unreadable`, `timestamp_missing`, `episode_index`, `range_length`, `range_gap`, `index_mismatch`): a
 total taken from that metadata could be as wrong as the one it replaces. Only the number changes, key order and
 formatting stay. The original is kept as `meta/info.json.bak`, and `--fix` stops if that file already exists. Data
 and video files are never edited.
@@ -229,7 +229,7 @@ All checks read metadata and parquet only: no video frame is decoded.
 | Each episode has the rows its metadata says | Covered | `length_mismatch`, `episode_rows_missing` |
 | `timestamp` equals `frame_index / fps` within 1e-4 s, and increases | Covered | `timestamp_drift`, `timestamp_not_monotonic` |
 | `frame_index` runs `0..n-1` within each episode | Covered | `frame_index` |
-| The `timestamp` column exists and is a float | Covered | `column_missing` |
+| The `timestamp` column exists and is a float | Covered | `timestamp_missing` |
 | Every declared feature has a data column of the declared dtype and width; no undeclared columns | Covered (list width for float features only; multi-dimensional shapes are not checked) | `feature_missing`, `feature_dtype`, `feature_shape`, `column_shape`, `feature_extra` (warning) |
 | Every video file exists and is a readable mp4 | Covered | `video_missing`, `video_unreadable` |
 | Video frame rate matches `fps` | Covered (warning) | `video_fps` |
@@ -240,7 +240,7 @@ All checks read metadata and parquet only: no video frame is decoded.
 | Camera features are video-backed, not images | Not yet | |
 | `total_tasks` matches the task metadata (`tasks.jsonl` lines, `tasks.parquet` rows) | Covered; the file missing is an error, a different count a warning | `tasks_missing`, `tasks_count` |
 | Every `task_index` in the data is in the task metadata | Covered | `task_index` |
-| The statistics file (`stats.json`, or `episodes_stats.jsonl` for v2.1) exists and has an entry for every non-string feature | Covered (warnings; v2.1 reads the first episode's entry only) | `stats_missing`, `stats_features` |
+| The statistics file (`stats.json`, or `episodes_stats.jsonl` for v2.1) exists and has an entry for every non-string feature | Covered (warnings; v2.1 reads the first episode's entry only) | `stats_missing`, `stats_feature_missing` |
 | The statistics match the data | Not yet | |
 
 Beyond what LeRobot checks:
@@ -265,8 +265,8 @@ Beyond what LeRobot checks:
 | A file over 5 GB, the size the Hub recommends staying under | warning | `file_oversized` |
 | With `--decode`: video frames the decoder rejects | error | `video_decode` |
 | With `--decode`: 30 or more frames in a row identical to the one before, or black | warning | `video_frozen`, `video_black` |
-| A value below `min` or above `max` set under `[limits."feature"]` in `lecop.toml` (a list of the wrong width is `limits_width`) | error | `out_of_range`, `limits_width` |
-| The action changes between two frames by more than `max_step` | error | `step_limit` |
+| A value below `min` or above `max` set under `[limits."feature"]` in `lecop.toml` (a list of the wrong width is `limit_width`) | error | `limit_out_of_range`, `limit_width` |
+| The action changes between two frames by more than `max_step` | error | `limit_step` |
 | A dimension of `action` or `observation.*` with zero std in `stats.json` (normalising divides by zero; not checked on v2.1) | warning | `stats_zero_std` |
 | With `chunk_size` set under `[training]`: episodes shorter than the chunk size | warning | `episodes_below_chunk` |
 
