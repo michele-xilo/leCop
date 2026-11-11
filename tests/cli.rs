@@ -389,6 +389,34 @@ fn fix_keeps_json_output_parseable() {
     serde_json::from_slice::<serde_json::Value>(&o.stdout).unwrap();
 }
 
+/// `parent_of_two` with `a` made unreadable, so only `b` can be repaired.
+fn parent_with_an_unreadable_dataset() -> tempfile::TempDir {
+    let parent = parent_of_two();
+    std::fs::write(parent.path().join("a/meta/info.json"), "{").unwrap();
+    parent
+}
+
+#[test]
+fn fix_repairs_the_readable_dataset_and_reports_the_unreadable_one() {
+    let parent = parent_with_an_unreadable_dataset();
+    let o = lecop_in(parent.path(), &["--fix"]);
+    assert_eq!(o.status.code(), Some(2), "{} {}", out(&o), err(&o));
+    assert!(err(&o).contains("fixed"), "{}", err(&o));
+    let b = std::fs::read_to_string(parent.path().join("b/meta/info.json")).unwrap();
+    assert!(b.contains("\"total_frames\":120,"), "{b}");
+}
+
+#[test]
+fn the_fixable_hint_counts_only_datasets_that_open() {
+    let parent = parent_with_an_unreadable_dataset();
+    let o = lecop_in(parent.path(), &["."]);
+    assert!(
+        err(&o).contains("[*] 1 dataset fixable with --fix"),
+        "{}",
+        err(&o)
+    );
+}
+
 #[test]
 fn diff_is_an_alias_of_preview() {
     let d = dataset();

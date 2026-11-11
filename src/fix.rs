@@ -153,6 +153,27 @@ mod tests {
     }
 
     #[test]
+    fn apply_fails_and_writes_nothing_when_the_number_is_not_there() {
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::create_dir(dir.path().join("meta")).unwrap();
+        let info = dir.path().join("meta/info.json");
+        std::fs::write(&info, "{\"total_frames\": 6}").unwrap();
+        let fix = Fix {
+            key: "total_frames",
+            from: 5,
+            to: 1,
+            code: "total_frames",
+        };
+        let e = apply(dir.path(), &[fix]).unwrap_err();
+        assert!(format!("{e:#}").contains("not a single number"), "{e:#}");
+        assert_eq!(
+            std::fs::read_to_string(&info).unwrap(),
+            "{\"total_frames\": 6}"
+        );
+        assert!(!dir.path().join("meta/info.json.bak").exists());
+    }
+
+    #[test]
     fn ignores_the_key_inside_a_longer_name_or_as_a_value() {
         let t = "{\"total_frames_x\": 5, \"k\": \"total_frames\", \"total_frames\": 5}";
         assert_eq!(
