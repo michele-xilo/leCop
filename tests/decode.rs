@@ -90,7 +90,35 @@ fn a_failure_in_a_later_segment_is_reported_at_its_position_in_the_video() {
     assert!(split.first_failure.is_some_and(|f| f >= 45), "{split:?}");
 }
 
-// rav1d without assembly takes minutes per video in a debug build: cargo test --release --features decode -- --ignored
+/// 60 frames of 128x128 test pattern (SVT-AV1, a keyframe every 15), made with ffmpeg; the one AV1 stream the tests
+/// can decode without `datasets/`.
+const AV1: &str = "tests/fixtures/av1_60_frames.mp4";
+
+#[test]
+fn an_av1_video_decodes_every_frame() {
+    let d = decode_checked(Path::new(AV1)).unwrap();
+    assert_eq!(
+        (d.failures, d.samples, d.frames.len()),
+        (0, 60, 60),
+        "{d:?}"
+    );
+    assert!(video_findings(&d).is_empty(), "{:?}", video_findings(&d));
+}
+
+#[test]
+fn av1_decoding_in_segments_gives_the_same_frames_as_decoding_in_one() {
+    let p = Path::new(AV1);
+    let sync = lecop::mp4::read_track(p).unwrap().sync;
+    assert_eq!(sync, [0, 15, 30, 45]);
+    let whole = decode_segmented(p, usize::MAX).unwrap();
+    for target in [1, 15, 20] {
+        let split = decode_segmented(p, target).unwrap();
+        assert_eq!(split.frames, whole.frames, "target {target}");
+        assert_eq!(split.failures, 0);
+    }
+}
+
+// A real-world file; slow in a debug build: cargo test --release --features decode -- --ignored
 #[test]
 #[ignore = "slow in debug builds"]
 fn a_real_av1_video_decodes_every_frame() {

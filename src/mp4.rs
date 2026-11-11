@@ -473,4 +473,18 @@ mod tests {
         let stbl = [bx(b"stsz", &stsz), bx(b"stsc", &stsc), bx(b"stco", &stco)].concat();
         assert!(sample_locations(&stbl).is_err());
     }
+
+    #[test]
+    fn sync_samples_are_zero_based_and_default_to_the_start() {
+        let mut stss = vec![0u8; 4];
+        stss.extend(be(2));
+        stss.extend(be(1));
+        stss.extend(be(31));
+        assert_eq!(
+            sync_samples(&bx(b"stss", &stss)).unwrap(),
+            [0, 30],
+            "the table counts samples from 1"
+        );
+        assert_eq!(sync_samples(&bx(b"stsz", &[])).unwrap(), [0]);
+    }
 }
