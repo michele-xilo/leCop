@@ -58,9 +58,32 @@ the config or an argument cannot be read.
 | `--no-color` | colour is also off when piped or when `NO_COLOR` is set |
 | `--ignore a,b`, `--select a,b` | drop, or keep only, these issue codes |
 | `--decode` | decode the video frames and report undecodable, frozen and black cameras; needs a build with `--features decode`, see below |
+| `--fix`, `--write` | preview the safe repairs, or apply them with `--write`, see below |
 | `--config FILE`, `--isolated` | use this config, or none |
 | `-v`, `-vv` | log progress, then per-file timings, to stderr (never stdout); `RUST_LOG` overrides |
 | `-j N` | worker threads (default: one per core); output is identical for every `-j` |
+
+### Repairing
+
+`validate` never writes. `--fix` (also `lecop . --fix`) previews the only repairs leCop makes: the totals in
+`meta/info.json` recomputed from metadata it does not touch.
+
+```bash
+lecop validate --fix datasets/my_dataset           # prints what would change, on stderr
+lecop validate --fix --write datasets/my_dataset   # applies it, then validates again
+```
+
+| Finding | Repair |
+|---|---|
+| `frame_count` | `total_frames` becomes the sum of the episode lengths |
+| `episode_count` | `total_episodes` becomes the number of episodes in the metadata |
+| `tasks_count` | `total_tasks` becomes the number of tasks in the task metadata |
+
+Nothing is repaired when the episode metadata and the data files disagree (`length_mismatch`, `episode_rows_missing`,
+`data_missing`, `data_unreadable`, `column_missing`, `episode_index`, `range_length`, `range_gap`, `index_mismatch`): a
+total taken from that metadata could be as wrong as the one it replaces. Only the number changes, key order and
+formatting stay. The original is kept as `meta/info.json.bak`, and `--write` stops if that file already exists. Data
+and video files are never edited.
 
 ### Decoding frames
 
