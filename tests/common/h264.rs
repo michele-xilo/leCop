@@ -44,6 +44,25 @@ pub fn mp4(samples: &[Vec<u8>], sps: &[u8], pps: &[u8]) -> Vec<u8> {
     stsd.extend(bx(b"avc1", &entry));
 
     let n = samples.len() as u32;
+    // Sync samples are those holding an IDR picture (NAL type 5).
+    let idr = |s: &Vec<u8>| {
+        let (mut at, mut found) = (0, false);
+        while at + 4 < s.len() {
+            let len = u32::from_be_bytes([s[at], s[at + 1], s[at + 2], s[at + 3]]) as usize;
+            found |= s[at + 4] & 0x1f == 5;
+            at += 4 + len;
+        }
+        found
+    };
+    let sync: Vec<u32> = (0..samples.len())
+        .filter(|&i| idr(&samples[i]))
+        .map(|i| i as u32 + 1)
+        .collect();
+    let mut stss = vec![0u8; 4];
+    stss.extend(be(sync.len() as u32));
+    for i in sync {
+        stss.extend(be(i));
+    }
     let mut stts = vec![0u8; 4];
     stts.extend(be(1));
     stts.extend(be(n));
@@ -65,6 +84,7 @@ pub fn mp4(samples: &[Vec<u8>], sps: &[u8], pps: &[u8]) -> Vec<u8> {
         &[
             bx(b"stsd", &stsd),
             bx(b"stts", &stts),
+            bx(b"stss", &stss),
             bx(b"stsc", &stsc),
             bx(b"stsz", &stsz),
             bx(b"stco", &stco),
@@ -110,9 +130,21 @@ pub fn nals(stream: &[u8]) -> Vec<&[u8]> {
 
 /// Encode `luma` frames (flat 64x64 pictures, one level each, plus per-frame noise) and write them as an mp4.
 pub fn video(path: &Path, frames: &[(u8, u8)], corrupt_from: Option<usize>) {
+    video_with_idr_every(path, frames, corrupt_from, 0);
+}
+
+/// Like [`video`] with an IDR picture every `period` frames (0: the encoder's default).
+pub fn video_with_idr_every(
+    path: &Path,
+    frames: &[(u8, u8)],
+    corrupt_from: Option<usize>,
+    period: u32,
+) {
     let mut enc = Encoder::with_api_config(
         openh264::OpenH264API::from_source(),
-        EncoderConfig::new().skip_frames(false),
+        EncoderConfig::new()
+            .skip_frames(false)
+            .intra_frame_period(openh264::encoder::IntraFramePeriod::from_num_frames(period)),
     )
     .unwrap();
     let (mut sps, mut pps) = (vec![], vec![]);

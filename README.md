@@ -104,13 +104,17 @@ cargo install --path . --features decode
 lecop validate --decode datasets/my_dataset
 ```
 
-H.264 is decoded with openh264 and AV1 with rav1d (no assembly, so it is the slow one). Per frame leCop keeps the mean
+Building with `decode` from source on x86_64 needs [nasm](https://www.nasm.us) installed (`apt install nasm`,
+`brew install nasm`); it assembles the decoders' SIMD code at build time and is not needed to run the binary. ARM builds
+use the C compiler only.
+
+H.264 is decoded with openh264 and AV1 with rav1d (the `hiraku-rav1d` fork, which builds rav1d's assembly). Per frame leCop keeps the mean
 luma and the difference to the previous frame, so it reports frames the decoder rejects (`video_decode`), a camera that
 repeats the same picture (`video_frozen`) and one that shows black (`video_black`). The output ends with
 `Video frames were decoded (--decode).` when it ran. A video in another codec is reported as `not decoded`, not skipped.
-Measured on an Apple M2 Pro, release build: 8 s for `c_so101_pill_sorting_medoc`, 12 s for `c_careattrs_mug2v2`, 64 s for
-`c_so100_press_red_button` and 146 s for `c_so101_my_task_50ep` (AV1); 1 s for `c_d3il_avoiding_vision_224` (H.264). The
-feature adds about 1.9 MB to the binary (10.9 MB against 9.0 MB).
+Measured on an Apple M2 Pro, release build: 1.5 s for `c_so101_pill_sorting_medoc`, 2.5 s for `c_careattrs_mug2v2`, 17 s for
+`c_so100_press_red_button` and 2.7 s for `c_so101_my_task_50ep` (AV1); 0.26 s for `c_d3il_avoiding_vision_224` (H.264). The
+feature adds about 2.1 MB to the binary (11.2 MB against 9.1 MB).
 
 ### Config file
 
@@ -184,8 +188,8 @@ Gaps are tracked as issues by priority; see the open issues labelled `feature`.
 ## Performance
 
 Video is where the tools differ most: lerobot-doctor decodes the first frame of each video, physlint decodes every
-frame, and leCop reads container metadata only unless asked. So two tables are reported, each giving every tool the
-same video work. Median wall time of 3 runs after one warm-up, warm page cache, including process start, every run in
+frame, and leCop reads container metadata only unless asked. So two tables are reported, each giving the tools compared
+the same video work: none decodes in the first, leCop and physlint decode everything in the second. Median wall time of 3 runs after one warm-up, warm page cache, including process start, every run in
 a fresh empty working directory with physlint's result cache off. Apple M2 Pro, Python 3.12, leCop `release` build,
 lerobot-doctor 0.2.0 and physlint 0.4.0 installed from PyPI. physlint reads v3 only. The tools check different things
 (see the comparison above), so this compares speed only. Reproduce with `scripts/compare.py`.
@@ -210,25 +214,22 @@ lerobot-doctor runs every check but `videos`; physlint runs with its `video.deco
 
 ### With video decoding
 
-leCop is built with `--features decode` and run with `--decode`; lerobot-doctor runs all checks, and its `videos` check
-decodes one frame per video, so it does less decoding than the other two; physlint runs all rules and decodes every
-frame, like leCop.
+leCop is built with `--features decode` and run with `--decode`; physlint runs all its rules. Both decode every frame.
+Only physlint is compared here, and only on the v3 datasets it reads: lerobot-doctor decodes one frame per video, which
+is not the same work.
 
-| Dataset | leCop | lerobot-doctor | physlint | leCop vs physlint |
-|---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **340 ms** | 774 ms | n/a | n/a |
-| `svla_so101_pickplace` (v2.1) | 9,208 ms | 🏆 **487 ms** | n/a | n/a |
-| `c_careattrs_mug2v2` (v2.1) | 11,022 ms | 🏆 **462 ms** | n/a | n/a |
-| `v3_pusht` (v3.0) | 2,157 ms | 🏆 **643 ms** | 21,289 ms | 9.9x faster |
-| `v3_aloha_sim_insertion_human` (v3.0) | 52,349 ms | 🏆 **450 ms** | 11,893 ms | 4.4x slower |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 42,198 ms | 🏆 **456 ms** | 12,136 ms | 3.5x slower |
-| `c_so101_pill_sorting_medoc` (v3.0) | 8,835 ms | 🏆 **582 ms** | 6,396 ms | 1.4x slower |
-| `c_so101_my_task_50ep` (v3.0) | 151,495 ms | 🏆 **556 ms** | 22,412 ms | 6.8x slower |
-| `c_so101_block_box_50episodes_final` (v3.0) | 7,997 ms | 🏆 **445 ms** | 6,517 ms | 1.2x slower |
-| `c_black-stressball-tutorial` (v3.0) | 22,103 ms | 🏆 **524 ms** | 18,771 ms | 1.2x slower |
+| Dataset | leCop | physlint | leCop speedup |
+|---|---|---|---|
+| `v3_pusht` (v3.0) | 🏆 **185 ms** | 21,095 ms | 114x faster |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **2,585 ms** | 11,517 ms | 4.5x faster |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **2,049 ms** | 10,226 ms | 5x faster |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **1,503 ms** | 5,190 ms | 3.5x faster |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **2,664 ms** | 19,661 ms | 7.4x faster |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **1,291 ms** | 5,877 ms | 4.6x faster |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **3,164 ms** | 17,162 ms | 5.4x faster |
 
-Decoding is where leCop is slower than physlint on most datasets (AV1 in particular); it is tracked in
-[#79](https://github.com/michele-xilo/leCop/issues/79).
+leCop splits each video at its keyframes and decodes the pieces in parallel, so one large file uses every core, and AV1
+is decoded with assembly (see [Decoding frames](#decoding-frames)).
 
 ## Checks and features
 

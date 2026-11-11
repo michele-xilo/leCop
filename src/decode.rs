@@ -130,6 +130,34 @@ pub fn video_findings(d: &Decoded) -> Vec<(&'static str, String)> {
     out
 }
 
+/// Target length of a segment decoded on its own thread, in samples. Long enough that a task costs far more than
+/// scheduling it (a frame takes about 2 ms), short enough that one file keeps every core busy.
+#[cfg(feature = "decode")]
+const SEGMENT: usize = 250;
+
+/// Split `0..total` at sync samples into ranges of at least `target` samples, except the last. A decoder can start
+/// at any sync sample, so the ranges decode independently of each other.
+#[cfg(any(feature = "decode", test))]
+fn segments(sync: &[usize], total: usize, target: usize) -> Vec<std::ops::Range<usize>> {
+    let mut out = Vec::new();
+    let mut start = 0;
+    for &s in sync {
+        if s > start && s - start >= target && s < total {
+            out.push(start..s);
+            start = s;
+        }
+    }
+    out.push(start..total);
+    out
+}
+
+/// Decode the video at `path`, a task per segment of at least `target` samples; the result does not depend on
+/// `target`. Public so that tests and benchmarks can choose the segment length.
+#[cfg(feature = "decode")]
+pub fn decode_segmented(path: &std::path::Path, target: usize) -> anyhow::Result<Decoded> {
+    backend::decode_with(path, target)
+}
+
 /// Decode the video at `path`; an error says why it was not decoded.
 #[cfg(feature = "decode")]
 pub fn decode_checked(path: &std::path::Path) -> anyhow::Result<Decoded> {
@@ -143,25 +171,67 @@ pub fn decode_checked(_: &std::path::Path) -> anyhow::Result<Decoded> {
 
 #[cfg(feature = "decode")]
 mod backend {
-    use super::{Decoded, frame_stat, sample_luma};
-    use crate::mp4::{Codec, read_track};
+    use super::{Decoded, SEGMENT, frame_stat, sample_luma, segments};
+    use crate::mp4::{Codec, Track, read_track};
     use anyhow::{Context, Result};
-    use std::path::Path;
+    use rayon::prelude::*;
+    use std::{ops::Range, path::Path};
 
     /// Called with each decoded luma plane: (plane, bytes per row, width, height).
     type Push<'a> = dyn FnMut(&mut Decoded, &[u8], usize, usize, usize) + 'a;
 
-    /// Decode every frame of the video at `path`.
+    /// One segment's result, with the sampled first and last pictures so that segments can be joined.
+    struct Part {
+        d: Decoded,
+        first: Option<Vec<u8>>,
+        last: Option<Vec<u8>>,
+    }
+
+    /// Decode every frame of the video at `path`, a segment per task.
     pub fn decode_video(path: &Path) -> Result<Decoded> {
+        decode_with(path, SEGMENT)
+    }
+
+    pub(super) fn decode_with(path: &Path, target: usize) -> Result<Decoded> {
         let track = read_track(path)?;
+        let parts = segments(&track.sync, track.samples.len(), target)
+            .into_par_iter()
+            .map(|r| decode_range(&track, r))
+            .collect::<Result<Vec<_>>>()?;
+        let mut out = Decoded::default();
+        let mut prev: Option<Vec<u8>> = None;
+        for mut p in parts {
+            // A segment starts with no previous picture: the difference to the last one before it is added here.
+            if let (Some(first), Some(prev)) = (&p.first, &prev)
+                && let Some(f) = p.d.frames.first_mut()
+            {
+                f.diff = frame_stat(first, Some(prev)).diff;
+            }
+            if p.last.is_some() {
+                prev = p.last;
+            }
+            out.samples += p.d.samples;
+            out.failures += p.d.failures;
+            out.first_failure = out.first_failure.or(p.d.first_failure);
+            out.frames.append(&mut p.d.frames);
+        }
+        Ok(out)
+    }
+
+    fn decode_range(track: &Track, range: Range<usize>) -> Result<Part> {
+        let base = range.start;
+        let samples = &track.samples[range];
         let mut d = Decoded {
-            samples: track.samples.len(),
+            samples: samples.len(),
             ..Decoded::default()
         };
-        let mut prev: Option<Vec<u8>> = None;
+        let (mut first, mut prev): (Option<Vec<u8>>, Option<Vec<u8>>) = (None, None);
         let mut push = |d: &mut Decoded, plane: &[u8], stride: usize, w: usize, h: usize| {
             let cur = sample_luma(plane, stride, w, h);
             d.frames.push(frame_stat(&cur, prev.as_deref()));
+            if first.is_none() {
+                first = Some(cur.clone());
+            }
             prev = Some(cur);
         };
         match &track.codec {
@@ -169,14 +239,19 @@ mod backend {
                 sps,
                 pps,
                 length_size,
-            } => h264(&track.samples, sps, pps, *length_size, &mut d, &mut push)?,
-            Codec::Av1 { config } => av1(&track.samples, config, &mut d, &mut push)?,
+            } => h264(samples, base, sps, pps, *length_size, &mut d, &mut push)?,
+            Codec::Av1 { config } => av1(samples, base, config, &mut d, &mut push)?,
         }
-        Ok(d)
+        Ok(Part {
+            d,
+            first,
+            last: prev,
+        })
     }
 
     fn h264(
         samples: &[Vec<u8>],
+        base: usize,
         sps: &[Vec<u8>],
         pps: &[Vec<u8>],
         length_size: usize,
@@ -224,7 +299,7 @@ mod backend {
                 Some(Ok(None)) => {}
                 _ => {
                     d.failures += 1;
-                    d.first_failure.get_or_insert(i);
+                    d.first_failure.get_or_insert(base + i);
                 }
             }
         }
@@ -237,13 +312,19 @@ mod backend {
         Ok(())
     }
 
-    fn av1(samples: &[Vec<u8>], config: &[u8], d: &mut Decoded, push: &mut Push) -> Result<()> {
+    fn av1(
+        samples: &[Vec<u8>],
+        base: usize,
+        config: &[u8],
+        d: &mut Decoded,
+        push: &mut Push,
+    ) -> Result<()> {
         let mut dec = Av1::open()?;
         dec.send(config, &mut |_, _, _, _| {});
         for (i, sample) in samples.iter().enumerate() {
             if !dec.send(sample, &mut |p, s, w, h| push(d, p, s, w, h)) {
                 d.failures += 1;
-                d.first_failure.get_or_insert(i);
+                d.first_failure.get_or_insert(base + i);
             }
         }
         dec.drain(&mut |p, s, w, h| push(d, p, s, w, h));
@@ -261,7 +342,7 @@ mod backend {
         fn open() -> Result<Self> {
             use rav1d::{
                 include::dav1d::dav1d::Dav1dSettings,
-                src::lib::{dav1d_default_settings, dav1d_open},
+                {dav1d_default_settings, dav1d_open},
             };
             use std::{mem::MaybeUninit, ptr::NonNull};
             let mut settings = MaybeUninit::<Dav1dSettings>::uninit();
@@ -287,7 +368,7 @@ mod backend {
         fn send(&mut self, bytes: &[u8], f: &mut Plane) -> bool {
             use rav1d::{
                 include::dav1d::data::Dav1dData,
-                src::lib::{dav1d_data_create, dav1d_data_unref, dav1d_send_data},
+                {dav1d_data_create, dav1d_data_unref, dav1d_send_data},
             };
             use std::{mem::MaybeUninit, ptr::NonNull};
             let mut data = MaybeUninit::<Dav1dData>::zeroed();
@@ -324,7 +405,7 @@ mod backend {
         fn pictures(&mut self, f: &mut Plane) {
             use rav1d::{
                 include::dav1d::picture::Dav1dPicture,
-                src::lib::{dav1d_get_picture, dav1d_picture_unref},
+                {dav1d_get_picture, dav1d_picture_unref},
             };
             use std::{mem::MaybeUninit, ptr::NonNull};
             loop {
@@ -361,7 +442,47 @@ mod backend {
     impl Drop for Av1 {
         fn drop(&mut self) {
             // SAFETY: `self.ctx` came from `dav1d_open` and is closed exactly once, here.
-            unsafe { rav1d::src::lib::dav1d_close(Some(std::ptr::NonNull::from(&mut self.ctx))) };
+            unsafe { rav1d::dav1d_close(Some(std::ptr::NonNull::from(&mut self.ctx))) };
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::segments;
+
+    fn spans(sync: &[usize], total: usize, target: usize) -> Vec<(usize, usize)> {
+        segments(sync, total, target)
+            .into_iter()
+            .map(|r| (r.start, r.end))
+            .collect()
+    }
+
+    #[test]
+    fn segments_cut_at_sync_samples_once_long_enough() {
+        // Sync every 2 samples, segments of at least 5: cuts land on 6, 12.
+        let sync: Vec<usize> = (0..14).step_by(2).collect();
+        assert_eq!(spans(&sync, 14, 5), [(0, 6), (6, 12), (12, 14)]);
+    }
+
+    #[test]
+    fn segments_cover_every_sample_exactly_once() {
+        let sync: Vec<usize> = (0..100).step_by(3).collect();
+        for target in [1, 4, 10, 1000] {
+            let s = segments(&sync, 100, target);
+            assert_eq!(s.first().unwrap().start, 0);
+            assert_eq!(s.last().unwrap().end, 100);
+            assert!(s.windows(2).all(|w| w[0].end == w[1].start), "{s:?}");
+        }
+    }
+
+    #[test]
+    fn a_track_synced_only_at_its_start_is_one_segment() {
+        assert_eq!(spans(&[0], 500, 10), [(0, 500)]);
+    }
+
+    #[test]
+    fn an_empty_track_is_one_empty_segment() {
+        assert_eq!(spans(&[0], 0, 10), [(0, 0)]);
     }
 }

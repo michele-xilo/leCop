@@ -5,8 +5,9 @@ The tools do different amounts of work on video, so two tables are printed (MODE
 
   no video decoding   lerobot-doctor without its `videos` check, physlint with its three `video.*` rules off,
                       lecop as built (container metadata only).
-  video decoding      lerobot-doctor with all checks (it decodes a first frame), physlint with all rules (it
-                      decodes every frame), lecop built with `--features decode` and run with `--decode`.
+  video decoding      physlint with all rules (it decodes every frame) and lecop built with `--features decode`
+                      and run with `--decode`, on the v3 datasets physlint reads. lerobot-doctor is left out: it
+                      decodes one frame per video, which is not the same work.
 
 Every run starts in a fresh empty working directory and physlint's result cache is off, so no tool is served a
 previous result. Each tool runs RUNS times per dataset; the first run is a warm-up (page cache), the median of
@@ -65,7 +66,7 @@ def tools(ds, decode, config_dir):
         lecop = [LECOP, "validate", "-q", ds]
     out = [("leCop", lecop)] if lecop else []
     doctor = os.environ.get("LERO_DOCTOR") or shutil.which("lerobot-doctor")
-    if doctor:
+    if doctor and not decode:
         cmd = [doctor, "check", ds] + ([] if decode else ["--checks", DOCTOR_CHECKS_WITHOUT_VIDEO])
         out.append(("lerobot-doctor", cmd))
     physlint = os.environ.get("PHYSLINT") or shutil.which("physlint")
@@ -90,12 +91,12 @@ def ms(x):
     return f"{x:,.0f} ms"
 
 
-def row(ds, ms_by_tool, vs):
+def row(ds, ms_by_tool, cols, vs):
     """Markdown row: the fastest tool gets the trophy; the last column is leCop against the fastest tool in `vs`."""
     name = f"`{os.path.basename(ds)}` ({version(ds)})"
     fastest = min(ms_by_tool, key=ms_by_tool.get)
     cells = []
-    for tool in ("leCop", "lerobot-doctor", "physlint"):
+    for tool in cols:
         if tool not in ms_by_tool:
             cells.append("n/a")
         elif tool == fastest:
@@ -103,20 +104,25 @@ def row(ds, ms_by_tool, vs):
         else:
             cells.append(ms(ms_by_tool[tool]))
     others = [v for k, v in ms_by_tool.items() if k in vs]
-    ratio = f"{min(others) / ms_by_tool['leCop']:.2g}x" if others and "leCop" in ms_by_tool else "n/a"
+    ratio = "n/a"
+    if others and "leCop" in ms_by_tool:
+        r = min(others) / ms_by_tool["leCop"]
+        ratio = f"{r:.0f}x" if r >= 10 else f"{r:.2g}x"
     return f"| {name} | " + " | ".join(cells) + f" | {ratio} |"
 
 
 def table(datasets, decode, config_dir):
     title = "video decoding" if decode else "no video decoding"
     print(f"\n{title}: median wall time over {RUNS} runs after one warm-up, fresh directory per run\n")
-    # lerobot-doctor decodes one frame per video, physlint every frame like leCop: only physlint is the same work.
-    vs = ("lerobot-doctor", "physlint") if not decode else ("physlint",)
-    print(f"| Dataset | leCop | lerobot-doctor | physlint | leCop vs {' or '.join(vs)} |")
-    print("|---|---|---|---|---|")
+    cols = ("leCop", "physlint") if decode else ("leCop", "lerobot-doctor", "physlint")
+    vs = cols[1:]
+    print(f"| Dataset | {' | '.join(cols)} | leCop vs {' or '.join(vs)} |")
+    print("|---" * (len(cols) + 2) + "|")
     for ds in datasets:
+        if decode and not version(ds).startswith("v3"):  # physlint reads v3 only
+            continue
         times = {name: median_ms(cmd) for name, cmd in tools(ds, decode, config_dir)}
-        print(row(ds, times, vs), flush=True)
+        print(row(ds, times, cols, vs), flush=True)
 
 
 def main():
