@@ -1,6 +1,6 @@
 [package]
 name = "lecop"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 description = "Fast health checks for LeRobot-format robot datasets (unofficial)"
 license = "MIT OR Apache-2.0"
