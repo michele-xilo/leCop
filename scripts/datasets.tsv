@@ -16,10 +16,11 @@ c_piperx-two-color-block-sorting	tianxiwei/piperx-two-color-block-sorting	7b210f
 c_careattrs_mug2v2	Aaronng456/careattrs_mug2v2	7ed6203cdb625a01e0a045651da4a48edda95683	0	3	clipped_dimension=3
 c_d3il_avoiding_vision_224	shivakanthsujit/d3il_avoiding_vision_224	e7c3f92f5e816e006e643f170ffc88dda2f58a8d	0	2	clipped_dimension=2
 # Messy true positive (v2.1, 1.2 GB): frame_count (info.json 19028 vs episodes 17156), 6 video_frame_count, 15
-# episode_rows_missing (episodes 14-28 have no rows in their data file). `hf download` fails the size check
+# episode_rows_missing (episodes 14-28 have no rows in their data file), 2 stats_mismatch (episode 17's entry in
+# episodes_stats.jsonl has the right count but the statistics of other data: action mean -6.0 against -12.9). `hf download` fails the size check
 # on 7 videos because the Hub serves bytes that differ from the listed size (top/episode_000001.mp4 and
 # episode_000007.mp4 are byte-identical), so fetch-datasets.sh falls back to per-file curl.
-c_so100_press_red_button	jchandru08/so100_press_red_button	b8544ee7cb9075efbf5f4d2c49f7a6aa93fe0e09	22	8	clipped_dimension=6 episode_rows_missing=15 frame_count=1 outlier_values=2 video_frame_count=6
+c_so100_press_red_button	jchandru08/so100_press_red_button	b8544ee7cb9075efbf5f4d2c49f7a6aa93fe0e09	22	10	clipped_dimension=6 episode_rows_missing=15 frame_count=1 outlier_values=2 stats_mismatch=2 video_frame_count=6
 # No v2.0 dataset is pinned yet: the two screened candidates (IPEC-COMMUNITY/kuka_lerobot, 209,880 episodes, and
 #   saaduddinM/rbo_oxe_base_language_table_lerobot, 222,845 episodes) are several GB with one video per episode.
 # Screen of 598 LeRobot-tagged Hub datasets (2026-11-09): 349 v3.0, 149 v2.1, 16 v2.0; 79 had no readable

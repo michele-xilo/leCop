@@ -22,8 +22,8 @@ A fast, single-binary health check for
 leCop reads a dataset's metadata and parquet files, and the container metadata of its videos, and reports the faults
 that break or quietly degrade training: totals that disagree with the data, drifting timestamps, missing or truncated
 files, videos with the wrong number of frames, constant or clipped signals, and more. It is one binary with nothing
-else to install. Without decoding video it takes 8 to 30 ms on the datasets in the [speed tables](#performance), 12x to
-44x faster than lerobot-doctor on the same checks, and it decodes video only if you ask for it with `--decode`.
+else to install. Without decoding video it takes 8 to 28 ms on the datasets in the [speed tables](#performance), 15x to
+54x faster than lerobot-doctor on the same checks, and it decodes video only if you ask for it with `--decode`.
 
 ## Install
 
@@ -201,16 +201,16 @@ lerobot-doctor runs every check but `videos`; physlint runs with its `video.deco
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop vs the fastest other tool |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **17 ms** | 618 ms | n/a | 37x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **9 ms** | 306 ms | n/a | 32x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 291 ms | n/a | 35x |
-| `v3_pusht` (v3.0) | 🏆 **12 ms** | 520 ms | 15,962 ms | 44x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **9 ms** | 364 ms | 2,867 ms | 40x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **10 ms** | 336 ms | 3,419 ms | 34x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **30 ms** | 340 ms | 736 ms | 12x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **19 ms** | 390 ms | 8,087 ms | 20x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 295 ms | 2,875 ms | 23x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **15 ms** | 383 ms | 7,835 ms | 25x |
+| `pusht` (v2.1) | 🏆 **19 ms** | 686 ms | n/a | 36x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **11 ms** | 444 ms | n/a | 40x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 368 ms | n/a | 47x |
+| `v3_pusht` (v3.0) | 🏆 **11 ms** | 596 ms | 15,408 ms | 54x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **9 ms** | 435 ms | 2,742 ms | 50x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **9 ms** | 412 ms | 3,213 ms | 44x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **28 ms** | 417 ms | 685 ms | 15x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **18 ms** | 460 ms | 7,700 ms | 25x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 377 ms | 2,774 ms | 31x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 454 ms | 8,582 ms | 32x |
 
 ### With video decoding
 
@@ -273,7 +273,7 @@ All checks read metadata and parquet only: no video frame is decoded.
 | `total_tasks` matches the task metadata (`tasks.jsonl` lines, `tasks.parquet` rows) | Covered; the file missing is an error, a different count a warning | `tasks_missing`, `tasks_count` |
 | Every `task_index` in the data is in the task metadata | Covered | `task_index` |
 | The statistics file (`stats.json`, or `episodes_stats.jsonl` for v2.1) exists and has an entry for every non-string feature | Covered (warnings; v2.1 reads the first episode's entry only) | `stats_missing`, `stats_feature_missing` |
-| The statistics match the data | Covered for `stats.json` (v3.x, v2.0): count, min, max, mean and std of the `action` and `observation.*` float features, with tolerances far above float32 rounding (warning). v2.1 per-episode statistics: not yet | `stats_mismatch` |
+| The statistics match the data | Covered: count, min, max, mean and std of the `action` and `observation.*` float features, in `stats.json` (v3.x, v2.0) and per episode in `episodes_stats.jsonl` (v2.1), with tolerances above float32 rounding (warning) | `stats_mismatch` |
 
 Beyond what LeRobot checks:
 
