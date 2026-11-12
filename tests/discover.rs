@@ -27,7 +27,7 @@ fn a_directory_of_datasets_yields_each_sorted_by_path() {
                 .unwrap()
                 .to_str()
                 .unwrap()
-                .to_string()
+                .replace('\\', "/")
         })
         .collect();
     assert_eq!(names, ["a", "b", "nested/c"]);
