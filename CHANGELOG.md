@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+`--decode` works in every build, including the PyPI wheels and release binaries: the decoders are now a default
+feature (+2.1 MB). Frames are still only decoded when `--decode` is passed. `--no-default-features` leaves them out.
+
 ## 0.1.0
 
 First release. Health checks for LeRobot v2.x and v3.x datasets: metadata and totals, timestamps, files, video

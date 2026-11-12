@@ -11,7 +11,9 @@ categories = ["command-line-utilities", "science::robotics"]
 exclude = [".claude", ".github", ".physlint", "assets/demo.gif", "assets/demo.tape"]
 
 [features]
-# Decoding video frames is opt-in: the default build reads container metadata only.
+# The decoders are compiled in, but frames are only decoded when `--decode` is passed. Build with
+# `--no-default-features` to leave them out (no nasm needed on x86_64).
+default = ["decode"]
 decode = ["dep:openh264", "dep:rav1d"]
 
 [dependencies]

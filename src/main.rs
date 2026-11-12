@@ -109,7 +109,9 @@ fn color_enabled(no_color: bool, format: Format) -> bool {
 
 fn validate(a: ValidateArgs) -> Result<u8> {
     if a.decode && !cfg!(feature = "decode") {
-        bail!("--decode needs a build with `--features decode`");
+        bail!(
+            "--decode needs a build with the decoders; this one was built with `--no-default-features`"
+        );
     }
     let mut datasets = Vec::new();
     for p in &a.paths {
