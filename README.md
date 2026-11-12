@@ -26,15 +26,20 @@ uvx lecop path/to/dataset      # run once, nothing installed
 or install it:
 
 ```bash
-uv tool install lecop          # or: pip install lecop / pipx install lecop / cargo install lecop
+uv tool install lecop          # or: pip install lecop / pipx install lecop
+cargo binstall lecop           # the same prebuilt binary, from Rust
 lecop path/to/dataset
 ```
 
 No config, no dataset download, and the wheel is a single Rust binary: no Python dependencies. Exit code 0 means
 clean, 1 means errors, so it also works as a CI step.
 
-`cargo install lecop` compiles the video decoders, which needs [nasm](https://www.nasm.us) on x86_64 Linux and Intel
-Macs (`apt install nasm`, `brew install nasm`). The wheels and release binaries need nothing.
+Which install to pick: the PyPI wheels, `cargo binstall` and the
+[release binaries](https://github.com/michele-xilo/lecop/releases) are built in CI with the AV1 assembly, so
+`--decode` is fast and nothing else needs installing. `cargo install lecop` compiles on your machine without the
+assembly so that it works anywhere, and decodes AV1 about 3 times slower; for the fast build, install
+[nasm](https://www.nasm.us) (x86_64 only: `apt install nasm`, `brew install nasm`) and run
+`cargo install lecop --features asm`. Only `--decode` is affected; everything else runs at the same speed.
 
 ### From Python
 

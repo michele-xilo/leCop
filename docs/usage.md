@@ -68,12 +68,14 @@ build includes the decoders; pass `--decode` to use them:
 lecop validate --decode datasets/my_dataset
 ```
 
-Building from source on x86_64 needs [nasm](https://www.nasm.us) installed (`apt install nasm`, `brew install nasm`); it
-assembles the decoders' SIMD code at build time and is not needed to run the binary, so the PyPI wheels and release
-binaries need nothing. ARM builds use the C compiler only. `cargo install lecop --no-default-features` builds without
-the decoders (9.1 MB instead of 11.2 MB, no nasm); `--decode` then says it needs a build with `--features decode`.
+The PyPI wheels, the release binaries and `cargo binstall lecop` are built with the `asm` feature: rav1d's hand-written
+assembly, which decodes AV1 about 3 times faster (19 s against 60 s on `c_so100_press_red_button`, Apple M-series).
+`cargo install lecop` builds without it so that it needs no extra tools. To get the fast build from source, install
+[nasm](https://www.nasm.us) (x86_64 only; `apt install nasm`, `brew install nasm`; ARM builds use the C compiler) and run
+`cargo install lecop --features asm`. `cargo install lecop --no-default-features` builds without the decoders (9.1 MB
+instead of 11.2 MB); `--decode` then says it needs a build with `--features decode`.
 
-H.264 is decoded with openh264 and AV1 with rav1d (the `hiraku-rav1d` fork, which builds rav1d's assembly). Per frame leCop keeps the mean
+H.264 is decoded with openh264 and AV1 with rav1d (the `hiraku-rav1d` fork). Per frame leCop keeps the mean
 luma and the difference to the previous frame, so it reports frames the decoder rejects (`video_decode`), a camera that
 repeats the same picture (`video_frozen`) and one that shows black (`video_black`). The output ends with
 `Video frames were decoded (--decode).` when it ran. A video in another codec is reported as `not decoded`, not skipped.

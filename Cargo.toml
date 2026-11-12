@@ -12,9 +12,13 @@ exclude = [".claude", ".github", ".physlint", "assets/demo.gif", "assets/demo.ta
 
 [features]
 # The decoders are compiled in, but frames are only decoded when `--decode` is passed. Build with
-# `--no-default-features` to leave them out (no nasm needed on x86_64).
+# `--no-default-features` to leave them out.
 default = ["decode"]
 decode = ["dep:openh264", "dep:rav1d"]
+# rav1d's hand-written assembly: AV1 decodes about 3x faster (Apple M-series, `c_so100_press_red_button`: 19 s against
+# 60 s), but x86_64 builds need nasm installed. Off by default so `cargo install lecop` works anywhere; the PyPI
+# wheels and release binaries are built with it.
+asm = ["decode", "rav1d?/asm"]
 
 [dependencies]
 anyhow = "1.0.104"
@@ -25,7 +29,7 @@ clap = { version = "4.6.7", features = ["derive"] }
 ignore = "0.4.34"
 openh264 = { version = "0.9.9", optional = true }
 parquet = { version = "60.1.0", features = ["arrow"] }
-rav1d = { package = "hiraku-rav1d", version = "1.1.1", optional = true, default-features = false, features = ["asm", "bitdepth_8", "bitdepth_16"] }
+rav1d = { package = "hiraku-rav1d", version = "1.1.1", optional = true, default-features = false, features = ["bitdepth_8", "bitdepth_16"] }
 rayon = "1.12.0"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = { version = "1.0.154", features = ["raw_value"] }
@@ -55,3 +59,13 @@ harness = false
 [[bench]]
 name = "validate"
 harness = false
+
+# `cargo binstall lecop` downloads the release binary (built with `asm`) instead of compiling.
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-{ target }.tar.xz"
+bin-dir = "{ name }-{ target }/{ bin }{ binary-ext }"
+pkg-fmt = "txz"
+
+[package.metadata.binstall.overrides.x86_64-pc-windows-msvc]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-{ target }.zip"
+pkg-fmt = "zip"
