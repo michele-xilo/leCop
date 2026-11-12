@@ -35,6 +35,9 @@ lecop path/to/dataset
 No config, no dataset download, and the wheel is a single Rust binary: no Python dependencies. Exit code 0 means
 clean, 1 means errors, so it also works as a CI step.
 
+`cargo install lecop` compiles the video decoders, which needs [nasm](https://www.nasm.us) on x86_64 Linux and Intel
+Macs (`apt install nasm`, `brew install nasm`). The wheels and release binaries need nothing.
+
 ### From Python
 
 leCop is a command-line tool, not an importable module. Call it and read the JSON:
