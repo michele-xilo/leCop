@@ -21,8 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { name: linux-x86_64, runner: ubuntu-22.04, target: x86_64, manylinux: auto }
-          - { name: linux-aarch64, runner: ubuntu-22.04, target: aarch64, manylinux: auto }
+          - { name: linux-x86_64, runner: ubuntu-22.04, target: x86_64, manylinux: 2_28 }
+          - { name: linux-aarch64, runner: ubuntu-22.04, target: aarch64, manylinux: 2_28 }
           - { name: windows-x64, runner: windows-latest, target: x64 }
           - { name: macos-x86_64, runner: macos-15-intel, target: x86_64 }
           - { name: macos-aarch64, runner: macos-latest, target: aarch64 }

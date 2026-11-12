@@ -71,7 +71,7 @@ lecop validate --decode datasets/my_dataset
 Building from source on x86_64 needs [nasm](https://www.nasm.us) installed (`apt install nasm`, `brew install nasm`); it
 assembles the decoders' SIMD code at build time and is not needed to run the binary, so the PyPI wheels and release
 binaries need nothing. ARM builds use the C compiler only. `cargo install lecop --no-default-features` builds without
-the decoders (9.1 MB instead of 11.2 MB, no nasm); `--decode` then says it needs a build with decoding.
+the decoders (9.1 MB instead of 11.2 MB, no nasm); `--decode` then says it needs a build with `--features decode`.
 
 H.264 is decoded with openh264 and AV1 with rav1d (the `hiraku-rav1d` fork, which builds rav1d's assembly). Per frame leCop keeps the mean
 luma and the difference to the previous frame, so it reports frames the decoder rejects (`video_decode`), a camera that
