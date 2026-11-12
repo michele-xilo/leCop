@@ -38,7 +38,7 @@ jobs:
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
           target: ${{ matrix.target }}
-          args: --release --locked --out dist
+          args: --release --locked --features asm --out dist
           manylinux: ${{ matrix.manylinux || 'auto' }}
           before-script-linux: |
             if command -v yum >/dev/null; then yum install -y nasm; elif command -v apt-get >/dev/null; then apt-get update && apt-get install -y nasm; fi
