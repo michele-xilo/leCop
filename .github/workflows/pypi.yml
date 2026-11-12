@@ -21,18 +21,27 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { name: linux-x86_64, runner: ubuntu-22.04, target: x86_64, manylinux: auto }
-          - { name: linux-aarch64, runner: ubuntu-22.04, target: aarch64, manylinux: auto }
+          - { name: linux-x86_64, runner: ubuntu-22.04, target: x86_64, manylinux: 2_28 }
+          - { name: linux-aarch64, runner: ubuntu-24.04-arm, target: aarch64, manylinux: 2_28 }
           - { name: windows-x64, runner: windows-latest, target: x64 }
           - { name: macos-x86_64, runner: macos-15-intel, target: x86_64 }
           - { name: macos-aarch64, runner: macos-latest, target: aarch64 }
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      # The decoders' AV1 assembly is built with nasm on x86_64.
+      - if: runner.os == 'Windows'
+        run: |
+          choco install nasm -y --no-progress
+          echo "C:\Program Files\NASM" >> $env:GITHUB_PATH
+      - if: runner.os == 'macOS'
+        run: brew install nasm
       - uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1
         with:
           target: ${{ matrix.target }}
           args: --release --locked --out dist
           manylinux: ${{ matrix.manylinux || 'auto' }}
+          before-script-linux: |
+            if command -v yum >/dev/null; then yum install -y nasm; elif command -v apt-get >/dev/null; then apt-get update && apt-get install -y nasm; fi
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: wheels-${{ matrix.name }}

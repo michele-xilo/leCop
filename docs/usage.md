@@ -30,7 +30,7 @@ unsupported version, `fps` not positive) is reported as `cannot_open`: none of i
 | `-q`, `--quiet` | summary only, nothing on success |
 | `--no-color` | colour is also off when piped or when `NO_COLOR` is set |
 | `--ignore a,b`, `--select a,b` | drop, or keep only, these issue codes |
-| `--decode` | decode the video frames and report undecodable, frozen and black cameras; needs a build with `--features decode`, see below |
+| `--decode` | decode the video frames and report undecodable, frozen and black cameras; needs a build that includes the decoders (the default), see below |
 | `--fix`, `--preview` | apply the safe repairs, or show them without changing anything (`--diff` is an alias), see below |
 | `--config FILE`, `--isolated` | use this config, or none |
 | `-v`, `-vv` | log progress, then per-file timings, to stderr (never stdout); `RUST_LOG` overrides |
@@ -61,17 +61,17 @@ and video files are never edited.
 
 ## Decoding frames
 
-The default build never decodes video: it reads container metadata only, which is why it takes milliseconds. To also
-decode the frames, build with the `decode` feature and pass `--decode`:
+By default leCop never decodes video: it reads container metadata only, which is why it takes milliseconds. Every
+build includes the decoders; pass `--decode` to use them:
 
 ```bash
-cargo install --path . --features decode
 lecop validate --decode datasets/my_dataset
 ```
 
-Building with `decode` from source on x86_64 needs [nasm](https://www.nasm.us) installed (`apt install nasm`,
-`brew install nasm`); it assembles the decoders' SIMD code at build time and is not needed to run the binary. ARM builds
-use the C compiler only.
+Building from source on x86_64 needs [nasm](https://www.nasm.us) installed (`apt install nasm`, `brew install nasm`); it
+assembles the decoders' SIMD code at build time and is not needed to run the binary, so the PyPI wheels and release
+binaries need nothing. ARM builds use the C compiler only. `cargo install lecop --no-default-features` builds without
+the decoders (9.1 MB instead of 11.2 MB, no nasm); `--decode` then says it needs a build with `--features decode`.
 
 H.264 is decoded with openh264 and AV1 with rav1d (the `hiraku-rav1d` fork, which builds rav1d's assembly). Per frame leCop keeps the mean
 luma and the difference to the previous frame, so it reports frames the decoder rejects (`video_decode`), a camera that

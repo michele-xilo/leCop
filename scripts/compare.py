@@ -5,8 +5,8 @@ The tools do different amounts of work on video, so two tables are printed (MODE
 
   no video decoding   lerobot-doctor without its `videos` check, physlint with its three `video.*` rules off,
                       lecop as built (container metadata only).
-  video decoding      physlint with all rules (it decodes every frame) and lecop built with `--features decode`
-                      and run with `--decode`, on the v3 datasets physlint reads. lerobot-doctor is left out: it
+  video decoding      physlint with all rules (it decodes every frame) and lecop run with `--decode`
+                      (the default build has the decoders), on the v3 datasets physlint reads. lerobot-doctor is left out: it
                       decodes one frame per video, which is not the same work.
 
 Every run starts in a fresh empty working directory and physlint's result cache is off, so no tool is served a
@@ -18,8 +18,7 @@ Install the others into throwaway venvs (not the repo), for example:
     uv venv doctor-env   && uv pip install --python doctor-env/bin/python lerobot-doctor==0.2.0
     uv venv physlint-env && uv pip install --python physlint-env/bin/python "physlint[video]==0.4.0"
 and point at them with LERO_DOCTOR=/path/to/lerobot-doctor and PHYSLINT=/path/to/physlint. The decoding table
-also needs LECOP_DECODE=/path/to/lecop built with `cargo build --release --features decode` (use another
-CARGO_TARGET_DIR so it does not replace target/release/lecop).
+also needs LECOP_DECODE=/path/to/lecop (the default release build decodes, so it can be the same binary as LECOP).
 Usage: scripts/compare.py datasets/pusht datasets/v3_pusht ...   (RUNS=5, MODE=novideo|video|both)
 """
 
