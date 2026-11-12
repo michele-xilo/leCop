@@ -1,9 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.1.2
 
 rav1d's assembly moves behind an `asm` feature, off by default, so `cargo install lecop` no longer needs nasm on x86_64.
-The PyPI wheels, release binaries and `cargo binstall lecop` are built with it.
+The PyPI wheels, release binaries and `cargo binstall lecop` are built with it. 0.1.1 reached PyPI but its GitHub
+Release build failed on Windows, so the 0.1.2 release is the first with 0.1.1's decoder change in the binaries.
 
 ## 0.1.1
 
