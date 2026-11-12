@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.1
 
 `--decode` works in every build, including the PyPI wheels and release binaries: the decoders are now a default
 feature (+2.1 MB). Frames are still only decoded when `--decode` is passed. `--no-default-features` leaves them out.
