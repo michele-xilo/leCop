@@ -22,7 +22,9 @@ use self::jump_shift::{jump_issues, shift_issues};
 use self::limits::limit_issues;
 use self::numeric::{DEFAULT_CLIPPED_FRACTION, merge_stats, numeric_issues};
 use self::portability::portability_findings;
-use self::stats::{stats_findings, stats_mismatch_findings, zero_std_findings};
+use self::stats::{
+    episode_stats_findings, stats_findings, stats_mismatch_findings, zero_std_findings,
+};
 use self::tasks::{task_ids, task_index_issue};
 use self::video::{
     VideoRead, decode_issues, metadata_and_video_issues, read_video, unique_video_paths,
@@ -166,7 +168,7 @@ pub fn explain(code: &str) -> &'static str {
             "stats.json gives a dimension zero std, so normalising it divides by zero"
         }
         "stats_mismatch" => {
-            "stats.json has a count, min, max, mean or std that differs from the data, so it is out of date"
+            "stats.json (v3.x, v2.0) or an episode's entry in episodes_stats.jsonl (v2.1) has a count, min, max, mean or std that differs from the data, so it is out of date"
         }
         "episodes_below_chunk" => {
             "episodes are shorter than the chunk_size set under [training] in lecop.toml"
@@ -334,8 +336,8 @@ pub(super) fn run_tagged(ds: &Dataset, checks: &Checks) -> Vec<Tagged> {
         start += g.len();
     }
     let data: Vec<(Vec<Tagged>, GroupExtra)> = groups
-        .into_par_iter()
-        .map(|(start, eps)| check_group(ds, action, start, eps))
+        .par_iter()
+        .map(|&(start, eps)| check_group(ds, action, start, eps))
         .collect();
     let (data, extras): (Vec<_>, Vec<_>) = data.into_iter().unzip();
     let hashes: Vec<ActionHash> = extras
@@ -363,6 +365,7 @@ pub(super) fn run_tagged(ds: &Dataset, checks: &Checks) -> Vec<Tagged> {
             message,
         ));
     }
+    tagged.extend(episode_stats_findings(ds, &groups, &extras));
     tagged.extend(limit_issues(ds, action, &extras, &checks.limits));
     tagged.extend(shift_issues(ds, &extras));
     tagged.extend(jump_issues(ds, action, &extras));

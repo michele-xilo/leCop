@@ -453,6 +453,21 @@ fn v3_flags_timestamp_drift_in_second_episode_of_a_file() {
     assert_eq!(v[0].episode, Some(1));
 }
 
+/// The statistics LeRobot stores for `rows` of the `action` feature: per-dimension min, max, mean and std, and the count.
+fn action_stats(rows: &[&[f32]]) -> serde_json::Value {
+    let n = rows.len() as f64;
+    let (mut mn, mut mx, mut mean, mut std) = (vec![], vec![], vec![], vec![]);
+    for j in 0..DIM as usize {
+        let c: Vec<f64> = rows.iter().map(|r| r[j] as f64).collect();
+        let m = c.iter().sum::<f64>() / n;
+        mn.push(c.iter().cloned().fold(f64::INFINITY, f64::min));
+        mx.push(c.iter().cloned().fold(f64::NEG_INFINITY, f64::max));
+        std.push((c.iter().map(|x| (x - m).powi(2)).sum::<f64>() / n).sqrt());
+        mean.push(m);
+    }
+    serde_json::json!({"min": mn, "max": mx, "mean": mean, "std": std, "count": [rows.len()]})
+}
+
 /// A packed v3 dataset whose `stats.json` holds the real statistics of `action`, changed by `edit`.
 fn v3_with_action_stats(edit: impl Fn(&mut serde_json::Value)) -> Vec<Issue> {
     let eps = vec![good(20), good(15), good(10)];
@@ -462,21 +477,9 @@ fn v3_with_action_stats(edit: impl Fn(&mut serde_json::Value)) -> Vec<Issue> {
         .iter()
         .flat_map(|e| e.action.chunks(DIM as usize))
         .collect();
-    let n = rows.len() as f64;
-    let col = |j: usize| rows.iter().map(|r| r[j] as f64).collect::<Vec<_>>();
-    let (mut mn, mut mx, mut mean, mut std) = (vec![], vec![], vec![], vec![]);
-    for j in 0..DIM as usize {
-        let c = col(j);
-        let m = c.iter().sum::<f64>() / n;
-        mn.push(c.iter().cloned().fold(f64::INFINITY, f64::min));
-        mx.push(c.iter().cloned().fold(f64::NEG_INFINITY, f64::max));
-        std.push((c.iter().map(|x| (x - m).powi(2)).sum::<f64>() / n).sqrt());
-        mean.push(m);
-    }
     let path = dir.path().join("meta/stats.json");
     let mut stats: serde_json::Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
-    stats["action"] =
-        serde_json::json!({"min": mn, "max": mx, "mean": mean, "std": std, "count": [rows.len()]});
+    stats["action"] = action_stats(&rows);
     edit(&mut stats["action"]);
     fs::write(&path, stats.to_string()).unwrap();
     validate(&Dataset::open(dir.path()).unwrap()).unwrap()
@@ -549,6 +552,97 @@ fn v3_flags_a_stale_frame_count_in_the_statistics() {
         "{}",
         m.message
     );
+}
+
+/// One `episodes_stats.jsonl` line: the statistics `write_ds` wrote for every feature, with the real ones for
+/// `action` of `ep`, changed by `edit`.
+fn v21_stats_line(
+    root: &Path,
+    index: usize,
+    ep: &Ep,
+    edit: impl Fn(&mut serde_json::Value),
+) -> String {
+    let text = fs::read_to_string(stats_path(root)).unwrap();
+    let mut line: serde_json::Value = serde_json::from_str(text.lines().next().unwrap()).unwrap();
+    let rows: Vec<&[f32]> = ep.action.chunks(DIM as usize).collect();
+    line["episode_index"] = index.into();
+    line["stats"]["action"] = action_stats(&rows);
+    edit(&mut line["stats"]["action"]);
+    line.to_string()
+}
+
+/// A v2.1 dataset of three episodes whose `episodes_stats.jsonl` holds each episode's real `action` statistics;
+/// `edit(episode, stats)` changes one entry.
+fn v21_with_action_stats(edit: impl Fn(usize, &mut serde_json::Value)) -> Vec<Issue> {
+    let eps = vec![good(20), good(15), good(10)];
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &eps, None);
+    let lines: Vec<String> = eps
+        .iter()
+        .enumerate()
+        .map(|(i, e)| v21_stats_line(dir.path(), i, e, |a| edit(i, a)))
+        .collect();
+    fs::write(stats_path(dir.path()), lines.join("\n") + "\n").unwrap();
+    validate(&Dataset::open(dir.path()).unwrap()).unwrap()
+}
+
+#[test]
+fn v21_statistics_that_match_each_episode_report_nothing() {
+    let v = v21_with_action_stats(|_, _| {});
+    assert!(v.is_empty(), "{v:?}");
+}
+
+#[test]
+fn v21_flags_the_episode_whose_statistics_are_stale_and_names_the_values() {
+    for (stat, dim) in [("min", 0), ("max", 1), ("mean", 1), ("std", 0)] {
+        let v = v21_with_action_stats(|ep, a| {
+            if ep == 1 {
+                a[stat][dim] = 123456.0.into();
+            }
+        });
+        let found: Vec<&Issue> = v.iter().filter(|i| i.code == "stats_mismatch").collect();
+        assert_eq!(found.len(), 1, "{stat}: {v:?}");
+        let m = found[0];
+        assert_eq!((m.severity, m.episode), (Severity::Warning, Some(1)));
+        assert!(
+            m.message.contains("action")
+                && m.message.contains(&format!("dimension {dim} {stat}"))
+                && m.message.contains("123456")
+                && m.message.contains("episodes_stats.jsonl"),
+            "{}",
+            m.message
+        );
+    }
+}
+
+#[test]
+fn v21_flags_a_stale_frame_count_of_one_episode() {
+    let v = v21_with_action_stats(|ep, a| {
+        if ep == 2 {
+            a["count"] = serde_json::json!([999]);
+        }
+    });
+    let m = v
+        .iter()
+        .find(|i| i.code == "stats_mismatch")
+        .unwrap_or_else(|| panic!("{v:?}"));
+    assert_eq!(m.episode, Some(2));
+    assert!(
+        m.message.contains("count") && m.message.contains("999") && m.message.contains("10"),
+        "{}",
+        m.message
+    );
+}
+
+#[test]
+fn v21_does_not_compare_an_episode_that_has_no_statistics_entry() {
+    let eps = vec![good(20), good(15)];
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &eps, None);
+    let line = v21_stats_line(dir.path(), 0, &eps[0], |_| {});
+    fs::write(stats_path(dir.path()), format!("{line}\n")).unwrap();
+    let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert!(v.is_empty(), "{v:?}");
 }
 
 #[test]
