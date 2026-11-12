@@ -22,12 +22,32 @@
 ## Quick start
 
 ```bash
-cargo install lecop      # or: uvx lecop path/to/dataset
+uvx lecop path/to/dataset      # run once, nothing installed
+```
+
+or install it:
+
+```bash
+uv tool install lecop          # or: pip install lecop / pipx install lecop / cargo install lecop
 lecop path/to/dataset
 ```
 
-That is all: no Python, no config, no dataset download. Exit code 0 means clean, 1 means errors, so it also works as a
-CI step.
+No config, no dataset download, and the wheel is a single Rust binary: no Python dependencies. Exit code 0 means
+clean, 1 means errors, so it also works as a CI step.
+
+### From Python
+
+leCop is a command-line tool, not an importable module. Call it and read the JSON:
+
+```python
+import json, subprocess
+
+run = subprocess.run(["lecop", "validate", "--format", "json", "path/to/dataset"], capture_output=True, text=True)
+report = json.loads(run.stdout)
+print(report["errors"], report["warnings"])
+for issue in report["issues"]:
+    print(issue)
+```
 
 ## What it catches
 
