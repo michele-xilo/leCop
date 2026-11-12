@@ -1697,7 +1697,10 @@ fn warns_on_a_file_over_5_gb() {
         .unwrap();
     let v = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
     assert_eq!(codes(&v), ["file_oversized"], "{v:?}");
-    assert!(v[0].message.contains("meta/big.bin"), "{v:?}");
+    assert!(
+        v[0].message.replace('\\', "/").contains("meta/big.bin"),
+        "{v:?}"
+    );
 }
 
 fn v3_with_action_std(std: serde_json::Value) -> Vec<Issue> {
