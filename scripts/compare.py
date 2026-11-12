@@ -11,7 +11,7 @@ The tools do different amounts of work on video, so two tables are printed (MODE
 
 Every run starts in a fresh empty working directory and physlint's result cache is off, so no tool is served a
 previous result. Each tool runs RUNS times per dataset; the first run is a warm-up (page cache), the median of
-the rest is reported. Wall time includes process start. The tools check different things (see the README), so
+the rest is reported. Wall time includes process start. The tools check different things (see docs/comparison.md), so
 this compares speed only.
 
 Install the others into throwaway venvs (not the repo), for example:
