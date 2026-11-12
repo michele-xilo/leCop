@@ -442,3 +442,15 @@ fn diff_is_an_alias_of_preview() {
     let o = lecop(&["validate", d.path().to_str().unwrap(), "--diff"]);
     assert!(err(&o).contains("would fix"), "{}", err(&o));
 }
+
+#[test]
+fn version_flags_print_the_package_version() {
+    for flag in ["--version", "-V"] {
+        let o = lecop(&[flag]);
+        assert_eq!(o.status.code(), Some(0), "{flag}: {}", err(&o));
+        assert_eq!(
+            out(&o).trim(),
+            format!("lecop {}", env!("CARGO_PKG_VERSION"))
+        );
+    }
+}

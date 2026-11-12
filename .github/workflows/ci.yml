@@ -40,6 +40,19 @@ jobs:
       - run: cargo build --release --locked
       - run: cargo test --all-features --locked
 
+  # The default build (no decode feature) is what the Windows release ships.
+  windows:
+    name: Build, test (windows-latest)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+      - run: cargo build --release --locked
+      - run: cargo test --locked --no-fail-fast
+
   secrets:
     name: Secret scan
     runs-on: ubuntu-latest

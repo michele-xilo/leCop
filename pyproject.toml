@@ -1,0 +1,22 @@
+[build-system]
+requires = ["maturin>=1.7,<2"]
+build-backend = "maturin"
+
+[project]
+name = "lecop"
+dynamic = ["version", "description", "license", "readme", "authors"]
+requires-python = ">=3.8"
+keywords = ["lerobot", "robotics", "dataset", "validator", "parquet"]
+classifiers = [
+    "Programming Language :: Rust",
+    "Topic :: Scientific/Engineering",
+    "Environment :: Console",
+]
+
+[project.urls]
+Repository = "https://github.com/michele-xilo/lecop"
+Issues = "https://github.com/michele-xilo/lecop/issues"
+
+# The wheel carries the lecop binary itself, not a Python extension.
+[tool.maturin]
+bindings = "bin"

@@ -11,7 +11,7 @@ use lecop::{
 use std::{io::IsTerminal, path::PathBuf, process::ExitCode};
 
 #[derive(Parser)]
-#[command(about = "Fast health checks for robot-learning datasets")]
+#[command(about = "Fast health checks for robot-learning datasets", version)]
 struct Cli {
     /// Log to stderr: -v for progress, -vv for per-file timings. RUST_LOG overrides.
     #[arg(short, long, action = clap::ArgAction::Count, global = true)]
@@ -281,10 +281,18 @@ fn init_logging(verbose: u8) {
         .init();
 }
 
-/// `lecop .` means `lecop validate .`: when no argument names a subcommand or asks for help,
+/// `lecop .` means `lecop validate .`: when no argument names a subcommand or asks for help or the version,
 /// `validate` is inserted so its flags and paths parse as usual.
 fn with_default_command(mut args: Vec<std::ffi::OsString>) -> Vec<std::ffi::OsString> {
-    const KNOWN: [&str; 5] = ["inspect", "validate", "help", "-h", "--help"];
+    const KNOWN: [&str; 7] = [
+        "inspect",
+        "validate",
+        "help",
+        "-h",
+        "--help",
+        "-V",
+        "--version",
+    ];
     let named = args
         .iter()
         .skip(1)
