@@ -158,9 +158,9 @@ fn lecop_reports_what_the_other_tools_report() {
 }
 
 #[test]
-fn every_mapped_code_is_a_real_code_listed_in_the_readme() {
+fn every_mapped_code_is_a_real_code_listed_in_the_checks_doc() {
     let (map, _, _) = read_map();
-    let readme = fs::read_to_string("README.md").unwrap();
+    let checks = fs::read_to_string("docs/checks.md").unwrap();
     for m in map.values().filter(|m| m.status == "matched") {
         for c in &m.codes {
             assert!(
@@ -168,8 +168,8 @@ fn every_mapped_code_is_a_real_code_listed_in_the_readme() {
                 "{c} is not an issue code"
             );
             assert!(
-                readme.contains(&format!("`{c}`")),
-                "README does not list `{c}`"
+                checks.contains(&format!("`{c}`")),
+                "docs/checks.md does not list `{c}`"
             );
         }
     }
