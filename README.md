@@ -19,27 +19,51 @@
 
 ## Quick start
 
+Install it with the tool you already use:
+
+<details open>
+<summary><b>uv</b></summary>
+
 ```bash
-uvx lecop path/to/dataset      # run once, nothing installed
+uv tool install lecop
 ```
 
-or install it:
+Or run it once without installing: `uvx lecop path/to/dataset`.
+
+</details>
+
+<details>
+<summary><b>pip</b></summary>
 
 ```bash
-uv tool install lecop          # or: pip install lecop / pipx install lecop
-cargo binstall lecop           # the same prebuilt binary, from Rust
+pip install lecop      # or: pipx install lecop
+```
+
+</details>
+
+<details>
+<summary><b>cargo</b></summary>
+
+```bash
+cargo binstall lecop   # prebuilt binary, nothing to compile
+```
+
+Or `cargo install lecop` to compile it yourself. That build needs no extra tools, but decodes AV1 (`--decode`) about
+3 times slower; for the fast build install [nasm](https://www.nasm.us) (x86_64 only: `apt install nasm`,
+`brew install nasm`) and run `cargo install lecop --features asm`.
+
+</details>
+
+Then run it on a dataset:
+
+```bash
 lecop path/to/dataset
 ```
 
 No config, no dataset download, and the wheel is a single Rust binary: no Python dependencies. Exit code 0 means
-clean, 1 means errors, so it also works as a CI step.
-
-Which install to pick: the PyPI wheels, `cargo binstall` and the
-[release binaries](https://github.com/michele-xilo/lecop/releases) are built in CI with the AV1 assembly, so
-`--decode` is fast and nothing else needs installing. `cargo install lecop` compiles on your machine without the
-assembly so that it works anywhere, and decodes AV1 about 3 times slower; for the fast build, install
-[nasm](https://www.nasm.us) (x86_64 only: `apt install nasm`, `brew install nasm`) and run
-`cargo install lecop --features asm`. Only `--decode` is affected; everything else runs at the same speed.
+clean, 1 means errors, so it also works as a CI step. The PyPI wheels, `cargo binstall` and the
+[release binaries](https://github.com/michele-xilo/lecop/releases) are built with the AV1 assembly; everything except
+`--decode` runs at the same speed in every build.
 
 ### From Python
 
