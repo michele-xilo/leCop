@@ -16,6 +16,9 @@ pub(super) const TIMESTAMP_TOL_S: f64 = 1e-4;
 // ponytail: fixed 50% threshold, from one so101 dataset where normal episodes idled < 50%; make it a flag if people disagree.
 pub(super) const IDLE_FRACTION: f64 = 0.5;
 
+/// Seconds the action may stay identical mid-episode before it is reported.
+pub(super) const DEFAULT_FROZEN_SECONDS: f64 = 3.0;
+
 /// How much of an action trajectory is dead time: transitions where the action vector did not change.
 #[derive(Debug, Default, PartialEq, Eq)]
 pub struct Idle {
@@ -24,6 +27,10 @@ pub struct Idle {
     /// First and last frame whose action differs from the previous frame.
     pub first_move: Option<usize>,
     pub last_move: Option<usize>,
+    /// The longest stretch of repeated rows between the first and the last change: how many transitions it spans,
+    /// and the frame where it starts. Rest at the start and the end of the episode is not counted.
+    pub longest_hold: usize,
+    pub hold_from: usize,
 }
 
 /// `actions` is `rows * width` values, row-major. Exact equality is intended: real teleop noise is never
@@ -34,6 +41,7 @@ pub fn idle_profile(actions: &[f64], width: usize) -> Idle {
         return r;
     }
     let mut prev: Option<&[f64]> = None;
+    let mut run_from: Option<usize> = None;
     for (i, row) in actions.chunks_exact(width).enumerate() {
         if let Some(p) = prev {
             r.transitions += 1;
@@ -42,6 +50,11 @@ pub fn idle_profile(actions: &[f64], width: usize) -> Idle {
             } else {
                 r.first_move.get_or_insert(i);
                 r.last_move = Some(i);
+                if let Some(c) = run_from.filter(|&c| i - c - 1 > r.longest_hold) {
+                    r.longest_hold = i - c - 1;
+                    r.hold_from = c;
+                }
+                run_from = Some(i);
             }
         }
         prev = Some(row);
@@ -182,6 +195,7 @@ pub(super) fn check_group(
     action: Option<&str>,
     start: usize,
     eps: &[Episode],
+    frozen_seconds: f64,
 ) -> (Vec<Tagged>, GroupExtra) {
     use Severity::Error;
     let first = &eps[0];
@@ -239,7 +253,7 @@ pub(super) fn check_group(
         )
     });
     let per_episode = eps.iter().enumerate().flat_map(|(i, e)| {
-        check_episode(ds, action, e, &d, &runs)
+        check_episode(ds, action, e, &d, &runs, frozen_seconds)
             .into_iter()
             .map(move |x| (Some(start + i), PHASE_DATA, x))
     });
@@ -316,6 +330,7 @@ pub(super) fn check_episode(
     e: &Episode,
     d: &FileData,
     runs: &HashMap<i64, Run>,
+    frozen_seconds: f64,
 ) -> Vec<Issue> {
     use Severity::*;
     let mut v = Vec::new();
@@ -440,6 +455,18 @@ pub(super) fn check_episode(
                     ),
                 );
             }
+            let held = idle.longest_hold as f64 / ds.info.fps;
+            if held >= frozen_seconds {
+                push(
+                    Warning,
+                    "action_frozen",
+                    format!(
+                        "action is identical for {held:.1} s ({} frames) from frame {}",
+                        idle.longest_hold + 1,
+                        idle.hold_from
+                    ),
+                );
+            }
         }
     }
     v
@@ -467,9 +494,39 @@ mod tests {
                 transitions: 5,
                 idle: 3,
                 first_move: Some(3),
-                last_move: Some(5)
+                last_move: Some(5),
+                longest_hold: 1,
+                hold_from: 3,
             }
         );
+    }
+
+    /// Rows with one value each, width 1.
+    fn hold(rows: &[f64]) -> (usize, usize) {
+        let p = idle_profile(rows, 1);
+        (p.longest_hold, p.hold_from)
+    }
+
+    #[test]
+    fn a_hold_is_the_longest_repeat_between_the_first_and_last_change() {
+        // 1 2 2 2 2 2 3 3 4: the 2s repeat 4 times from frame 1, the 3s once.
+        assert_eq!(hold(&[1.0, 2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 4.0]), (4, 1));
+    }
+
+    #[test]
+    fn rest_at_the_start_and_the_end_is_not_a_hold() {
+        assert_eq!(hold(&[1.0, 1.0, 1.0, 1.0, 2.0, 3.0, 3.0, 3.0, 3.0]), (0, 0));
+    }
+
+    #[test]
+    fn a_later_hold_replaces_a_shorter_earlier_one() {
+        assert_eq!(hold(&[1.0, 2.0, 2.0, 3.0, 4.0, 4.0, 4.0, 5.0]), (2, 4));
+    }
+
+    #[test]
+    fn a_constant_or_single_change_action_has_no_hold() {
+        assert_eq!(hold(&[1.0, 1.0, 1.0]), (0, 0));
+        assert_eq!(hold(&[1.0, 1.0, 2.0, 2.0]), (0, 0));
     }
 
     #[test]

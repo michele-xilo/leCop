@@ -26,6 +26,8 @@ struct Training {
 struct Numeric {
     /// Fraction of a dimension's values at its extreme from which `clipped_dimension` is reported.
     clipped_fraction: Option<f64>,
+    /// Seconds of identical action in the middle of an episode from which `action_frozen` is reported.
+    frozen_seconds: Option<f64>,
 }
 
 #[derive(Debug, Default, Deserialize)]
@@ -101,6 +103,12 @@ impl Config {
         {
             bail!("numeric.clipped_fraction in {what} must be above 0 and at most 1");
         }
+        if c.numeric
+            .frozen_seconds
+            .is_some_and(|s| !(s > 0.0 && s.is_finite()))
+        {
+            bail!("numeric.frozen_seconds in {what} must be above 0");
+        }
         c.dir = path.parent().map(Path::to_path_buf).unwrap_or_default();
         Ok(c)
     }
@@ -111,6 +119,10 @@ impl Config {
 
     pub fn clipped_fraction(&self) -> Option<f64> {
         self.numeric.clipped_fraction
+    }
+
+    pub fn frozen_seconds(&self) -> Option<f64> {
+        self.numeric.frozen_seconds
     }
 
     pub fn limits(&self) -> &Limits {

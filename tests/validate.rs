@@ -936,6 +936,72 @@ fn does_not_warn_on_a_short_pause() {
     assert!(v.is_empty(), "{v:?}");
 }
 
+/// `len` frames of a steadily moving action, except that it stays at its value of frame `from` for `rows` frames and
+/// then carries on from there, so the hold is not a jump.
+fn moving_with_hold(len: usize, from: usize, rows: usize) -> Ep {
+    let mut e = good(len);
+    e.action = (0..len)
+        .flat_map(|i| {
+            let steps = match i {
+                i if i < from => i,
+                i if i < from + rows => from,
+                i => i - (rows - 1),
+            };
+            let v = steps as f32 * 0.1;
+            [v, v]
+        })
+        .collect();
+    e
+}
+
+fn run_with_frozen_seconds(eps: Vec<Ep>, seconds: Option<f64>) -> Vec<Issue> {
+    let dir = tempfile::tempdir().unwrap();
+    write_ds(dir.path(), &eps, None);
+    let checks = Checks {
+        frozen_seconds: seconds,
+        ..Checks::default()
+    };
+    validate_with_checks(&Dataset::open(dir.path()).unwrap(), 1, &checks).unwrap()
+}
+
+#[test]
+fn warns_when_the_action_is_held_for_three_seconds_in_the_middle_and_says_where() {
+    // 35 identical rows at 10 fps: 34 repeats, 3.4 s, from frame 20.
+    let v = run(vec![moving_with_hold(100, 20, 35)], None);
+    assert_eq!(codes(&v), ["action_frozen"], "{v:?}");
+    assert_eq!((v[0].severity, v[0].episode), (Severity::Warning, Some(0)));
+    assert!(
+        v[0].message.contains("3.4 s") && v[0].message.contains("frame 20"),
+        "{}",
+        v[0].message
+    );
+}
+
+#[test]
+fn does_not_warn_on_a_hold_shorter_than_three_seconds() {
+    let v = run(vec![moving_with_hold(100, 20, 26)], None); // 25 repeats: 2.5 s
+    assert!(v.is_empty(), "{v:?}");
+}
+
+#[test]
+fn does_not_warn_on_rest_at_the_start_of_the_episode() {
+    // Held for 3.9 s from the first frame, but only 39 of 99 transitions repeat, so not idle either.
+    let v = run(vec![moving_with_hold(100, 0, 40)], None);
+    assert!(!codes(&v).contains(&"action_frozen"), "{v:?}");
+}
+
+#[test]
+fn the_hold_length_that_is_reported_follows_frozen_seconds() {
+    let hold = || vec![moving_with_hold(100, 20, 26)]; // 2.5 s
+    assert_eq!(
+        codes(&run_with_frozen_seconds(hold(), Some(2.0))),
+        ["action_frozen"]
+    );
+    assert!(run_with_frozen_seconds(hold(), Some(3.0)).is_empty());
+    let long = || vec![moving_with_hold(100, 20, 35)]; // 3.4 s
+    assert!(run_with_frozen_seconds(long(), Some(5.0)).is_empty());
+}
+
 #[test]
 fn does_not_mistake_a_sibling_feature_for_the_action() {
     let dir = tempfile::tempdir().unwrap();

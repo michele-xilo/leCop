@@ -154,3 +154,16 @@ fn the_clipped_fraction_is_read_and_checked() {
     assert!(parse("[numeric]\nclipped_fraction = 1.5\n").is_err());
     assert!(parse("[numeric]\nclipped = 0.2\n").is_err(), "unknown key");
 }
+
+#[test]
+fn the_frozen_seconds_are_read_and_checked() {
+    assert_eq!(
+        parse("[numeric]\nfrozen_seconds = 1.5\n")
+            .unwrap()
+            .frozen_seconds(),
+        Some(1.5)
+    );
+    assert_eq!(parse("").unwrap().frozen_seconds(), None);
+    assert!(parse("[numeric]\nfrozen_seconds = 0.0\n").is_err());
+    assert!(parse("[numeric]\nfrozen_seconds = -2.0\n").is_err());
+}

@@ -140,6 +140,7 @@ fn validate(a: ValidateArgs) -> Result<u8> {
         decode: a.decode,
         chunk_size: config.chunk_size(),
         clipped_fraction: config.clipped_fraction(),
+        frozen_seconds: config.frozen_seconds(),
     };
     let mut results = validate_paths(&datasets, a.jobs, &checks)?;
     match (a.fix, a.preview) {
