@@ -139,6 +139,7 @@ chunk_size = 100                   # frames a policy window spans; episodes shor
 
 [numeric]
 clipped_fraction = 0.05            # report a dimension with this fraction of its values (or more) on its min or max
+frozen_seconds = 3.0               # report an action that stays identical this long (or longer) mid-episode
 ```
 
 Unknown issue codes are an error. Ignored findings are counted: `Ignored by config: idle_episode (5)`.
@@ -282,6 +283,7 @@ Beyond what LeRobot checks:
 | NaN or Inf in float features | error | `non_finite` |
 | `action` never changes | warning | `action_constant` |
 | More than half the frames repeat the previous action (says where the robot first and last moves) | warning | `idle_episode` |
+| Action identical for 3 s or more between its first and last change (`frozen_seconds` under `[numeric]`; a robot that rests that long also counts, rest at the start and end of the episode does not) | warning | `action_frozen` |
 | Empty episode | error | `episode_empty` |
 | Episode shorter than a second | warning | `episode_short` |
 | Episode length more than 3 standard deviations from the mean (judged from 10 episodes up) | warning | `episode_length_outlier` |

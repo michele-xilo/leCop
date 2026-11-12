@@ -15,6 +15,7 @@ pub use limits::{Bound, FeatureLimits, Limits};
 pub use numeric::{DimStats, dim_stats, numeric_findings};
 pub use tasks::{task_count, task_finding};
 
+use self::episodes::DEFAULT_FROZEN_SECONDS;
 use self::episodes::{
     ActionHash, GroupExtra, action_key, check_group, chunk_finding, duplicate_episodes,
 };
@@ -63,10 +64,12 @@ pub struct Checks {
     pub chunk_size: Option<usize>,
     /// Fraction of a dimension's values at its minimum or maximum from which it is reported as clipped; 0.05 if unset.
     pub clipped_fraction: Option<f64>,
+    /// Seconds the action must stay identical between its first and last change to be reported as held; 3 if unset.
+    pub frozen_seconds: Option<f64>,
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 57] = [
+pub const ALL_CODES: [&str; 58] = [
     "episode_count",
     "action_jump",
     "distribution_shift",
@@ -111,6 +114,7 @@ pub const ALL_CODES: [&str; 57] = [
     "non_finite",
     "action_constant",
     "idle_episode",
+    "action_frozen",
     "path_absolute",
     "data_stray_file",
     "limit_out_of_range",
@@ -219,6 +223,9 @@ pub fn explain(code: &str) -> &'static str {
         "non_finite" => "a float feature contains NaN or Inf",
         "action_constant" => "the action is identical on every frame",
         "idle_episode" => "more than half of the frames repeat the previous action",
+        "action_frozen" => {
+            "the action is identical for several seconds in the middle of an episode (frozen_seconds under [numeric], 3 by default)"
+        }
         _ => "",
     }
 }
@@ -328,6 +335,7 @@ pub(super) fn run_tagged(ds: &Dataset, checks: &Checks) -> Vec<Tagged> {
         tagged.extend(decode_issues(ds, &reads));
     }
 
+    let frozen_seconds = checks.frozen_seconds.unwrap_or(DEFAULT_FROZEN_SECONDS);
     // One unit of work per run of episodes sharing a data file: a v2 file is one episode, a v3 file many.
     let mut groups: Vec<(usize, &[Episode])> = Vec::new();
     let mut start = 0;
@@ -337,7 +345,7 @@ pub(super) fn run_tagged(ds: &Dataset, checks: &Checks) -> Vec<Tagged> {
     }
     let data: Vec<(Vec<Tagged>, GroupExtra)> = groups
         .par_iter()
-        .map(|&(start, eps)| check_group(ds, action, start, eps))
+        .map(|&(start, eps)| check_group(ds, action, start, eps, frozen_seconds))
         .collect();
     let (data, extras): (Vec<_>, Vec<_>) = data.into_iter().unzip();
     let hashes: Vec<ActionHash> = extras
