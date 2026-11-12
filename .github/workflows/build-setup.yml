@@ -1,0 +1,6 @@
+- name: Install nasm (Windows)
+  if: runner.os == 'Windows'
+  shell: pwsh
+  run: |
+    choco install nasm -y --no-progress
+    echo "C:\Program Files\NASM" >> $env:GITHUB_PATH
