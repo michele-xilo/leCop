@@ -4,8 +4,6 @@
 
 <h1 align="center">leCop</h1>
 
-<p align="center"><em>The police of your robot dataset.</em></p>
-
 <p align="center">
   <a href="https://github.com/michele-xilo/lecop/actions/workflows/ci.yml"><img src="https://github.com/michele-xilo/lecop/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://app.codecov.io/gh/michele-xilo/leCop"><img src="https://codecov.io/gh/michele-xilo/leCop/graph/badge.svg" alt="codecov"></a>
