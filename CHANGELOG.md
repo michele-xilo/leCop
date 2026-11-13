@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+The PyPI wheel installs a `lecop` Python module: `lecop.validate(path)` runs the bundled binary and returns the
+`--format json` report as a dict. The `lecop` command is unchanged, still the native binary.
+
 ## 0.1.2
 
 rav1d's assembly moves behind an `asm` feature, off by default, so `cargo install lecop` no longer needs nasm on x86_64.

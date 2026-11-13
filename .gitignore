@@ -1,2 +1,5 @@
 /target
 /datasets
+__pycache__/
+.pytest_cache/
+.venv/
