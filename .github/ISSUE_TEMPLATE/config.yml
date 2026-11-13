@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
+  - name: Ask a question or share an idea
+    url: https://github.com/michele-xilo/leCop/discussions
+    about: Usage questions and open-ended ideas belong in Discussions; bugs and concrete requests are issues.
   - name: Report a security vulnerability
     url: https://github.com/michele-xilo/leCop/security/advisories/new
     about: Report it privately, not in a public issue.
