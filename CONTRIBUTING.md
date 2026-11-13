@@ -28,20 +28,29 @@ can. If you find a new piece of work, open an issue first with a `Priority: Pn, 
 
 ## Making a change
 
-1. Branch from `main`.
+1. Branch from `main`, named after the issue (`feat/12-short-name`).
 2. For a bug: write a failing test first, confirm it fails for the right reason, then fix it.
 3. Add tests with the change. Synthetic datasets built in a temp dir are preferred over real ones.
 4. Update `README.md` and `docs/` if you add a command, option, check, issue code or supported version.
-5. Open a PR describing what failed or changed and why, with the evidence. Decisions, plans and measurements
-   that explain the change go in a comment on the issue, not in a file in the repo.
+5. If you add or change a check, re-run `scripts/compare.py` with a release build and update the speed tables
+   in [docs/comparison.md](docs/comparison.md): more checks cost time, and the tables must not overstate us.
+6. Open a PR and fill in the [template](.github/pull_request_template.md): `Closes #N`, why, what, and the
+   verification evidence. Decisions, plans and measurements that explain the change go in a comment on the
+   issue, not in a file in the repo.
 
-Style is in [STYLE_GUIDE.md](STYLE_GUIDE.md).
+Code style, comments, the public contract (issue codes, output, exit codes) and test conventions are in
+[STYLE_GUIDE.md](STYLE_GUIDE.md).
 
 ## Real datasets
 
 Real data lives in `datasets/` (git-ignored, never commit it). `scripts/fetch-datasets.sh` lists what is
 missing and `--yes` downloads it; `scripts/datasets.tsv` pins each dataset and the counts lecop should report.
-When a check changes what a dataset reports, update the counts in the same commit. A new check should be
+`cargo test` checks those counts on every dataset you have downloaded and skips the rest. When a check changes
+what a dataset reports, update the counts in the same commit.
+
+`tests/goldens.rs` compares lecop with what lerobot-doctor and physlint report on the same datasets
+(`scripts/goldens.py` records them, `scripts/golden_map.tsv` maps their findings to lecop issue codes). A new
+check that matches one of their findings moves its row in the map from `gap` to `matched`. A new check should be
 confirmed on real data and with a mutation of a copy (for example change `fps` in `info.json` and expect
 `timestamp_drift`), not only on synthetic fixtures.
 

@@ -136,18 +136,8 @@ Compared with lerobot-doctor and physlint, check by check, in [docs/comparison.m
 
 ## Contributing
 
-```bash
-cargo test
-cargo bench   # criterion; see .claude/rules/performance.md
-
-scripts/fetch-datasets.sh          # list real test datasets that are missing
-scripts/fetch-datasets.sh --yes    # download them into datasets/ (git-ignored)
-```
-
-`cargo test` also checks the error and warning counts on every downloaded dataset listed in
-`scripts/datasets.tsv` and skips the ones you do not have.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [STYLE_GUIDE.md](STYLE_GUIDE.md).
+Contributions are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) covers setup, tests, real test datasets and how to
+open a PR; code style is in [STYLE_GUIDE.md](STYLE_GUIDE.md).
 
 ## License
 
