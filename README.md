@@ -61,7 +61,7 @@ lecop path/to/dataset
 ```
 
 No config, no dataset download, and the wheel is a single Rust binary: no Python dependencies. Exit code 0 means
-clean, 1 means errors, so it also works as a CI step. The PyPI wheels, `cargo binstall` and the
+clean, 1 means errors, so it works as a step in a data pipeline (see [In a pipeline](docs/usage.md#in-a-pipeline)). The PyPI wheels, `cargo binstall` and the
 [release binaries](https://github.com/michele-xilo/lecop/releases) are built with the AV1 assembly; everything except
 `--decode` runs at the same speed in every build.
 
@@ -96,7 +96,7 @@ for issue in report["issues"]:
 - **Fast.** 8 to 28 ms per dataset without video decoding, 15x to 54x faster than lerobot-doctor on the same checks.
   Video is checked from the container, not by decoding frames, unless you ask for `--decode`.
 - **Nothing to set up.** One binary. LeRobot v2.x and v3.x.
-- **Made for CI.** Stable issue codes, `--format json` and GitHub annotations, a config file to ignore or re-grade
+- **Made for pipelines.** Run it after recording or conversion, or as a gate before training. Stable issue codes, `--format json` and GitHub annotations, a config file to ignore or re-grade
   findings.
 
 Compared with lerobot-doctor and physlint, check by check, in [docs/comparison.md](docs/comparison.md).
