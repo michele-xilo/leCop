@@ -5,6 +5,9 @@
 The PyPI wheel installs a `lecop` Python module: `lecop.validate(path)` runs the bundled binary and returns the
 `--format json` report as a dict. The `lecop` command is unchanged, still the native binary.
 
+The crate documentation has runnable examples and states what is stable: the issue codes, the CLI output and the exit
+codes. The Rust API can change in any 0.x release.
+
 ## 0.1.2
 
 rav1d's assembly moves behind an `asm` feature, off by default, so `cargo install lecop` no longer needs nasm on x86_64.

@@ -39,6 +39,7 @@ use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
+/// How serious a finding is. Errors make the CLI exit with 1; warnings do not.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Severity {
@@ -46,10 +47,13 @@ pub enum Severity {
     Warning,
 }
 
+/// One finding about a dataset.
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct Issue {
     pub severity: Severity,
+    /// The episode the finding is about; `None` when it concerns the dataset as a whole.
     pub episode: Option<usize>,
+    /// Stable identifier, one of [`ALL_CODES`]; see [`explain`].
     pub code: &'static str,
     pub message: String,
 }
