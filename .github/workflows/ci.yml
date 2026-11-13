@@ -53,8 +53,7 @@ jobs:
       - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
       # The release binaries are built with asm, so this is the configuration to test.
       - run: cargo build --release --locked --features asm
-      # A debug build fails to link openh264's nasm objects on MSVC (unresolved *_sse2 symbols); release links.
-      - run: cargo test --release --locked --features asm --no-fail-fast
+      - run: cargo test --locked --features asm --no-fail-fast
 
   # What `cargo install lecop` builds: default features, and no nasm on the machine.
   no-nasm:
