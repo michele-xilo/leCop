@@ -15,9 +15,9 @@ exclude = [".claude", ".github", ".physlint", "assets/demo.gif", "assets/demo.ta
 # `--no-default-features` to leave them out.
 default = ["decode"]
 decode = ["dep:openh264", "dep:rav1d"]
-# rav1d's hand-written assembly: AV1 decodes about 3x faster (Apple M-series, `c_so100_press_red_button`: 19 s against
-# 60 s), but x86_64 builds need nasm installed. Off by default so `cargo install lecop` works anywhere; the PyPI
-# wheels and release binaries are built with it.
+# rav1d's hand-written assembly: AV1 decodes about 3x faster (Apple M-series, `c_so100_press_red_button`: 18 s against
+# 67 s). Always on for aarch64 (see the target dependency below); on x86_64 it needs nasm installed, so it is off by
+# default there and `cargo install lecop` works anywhere. The PyPI wheels and release binaries are built with it.
 asm = ["decode", "rav1d?/asm"]
 
 [dependencies]
@@ -36,6 +36,11 @@ serde_json = { version = "1.0.154", features = ["raw_value"] }
 toml = "1.2.1"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", default-features = false, features = ["env-filter", "fmt", "ansi"] }
+
+# On ARM rav1d's assembly is built by the C compiler the build already needs (no nasm), at no measurable build-time
+# cost, so it is on whenever the decoder is. Cargo merges these features into `rav1d` above only for aarch64 targets.
+[target.'cfg(target_arch = "aarch64")'.dependencies]
+rav1d = { package = "hiraku-rav1d", version = "1.1.1", optional = true, default-features = false, features = ["asm"] }
 
 [dev-dependencies]
 criterion = { version = "0.8.2", default-features = false, features = ["cargo_bench_support"] }

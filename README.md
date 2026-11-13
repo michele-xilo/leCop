@@ -48,9 +48,10 @@ pip install lecop      # or: pipx install lecop
 cargo binstall lecop   # prebuilt binary, nothing to compile
 ```
 
-Or `cargo install lecop` to compile it yourself. That build needs no extra tools, but decodes AV1 (`--decode`) about
-3 times slower; for the fast build install [nasm](https://www.nasm.us) (x86_64 only: `apt install nasm`,
-`brew install nasm`) and run `cargo install lecop --features asm`.
+Or `cargo install lecop` to compile it yourself. That build needs no extra tools. On x86_64 it decodes AV1
+(`--decode`) about 3 times slower; for the fast build install [nasm](https://www.nasm.us) (`apt install nasm`,
+`brew install nasm`) and run `cargo install lecop --features asm`. ARM builds (Apple Silicon, Linux aarch64) are fast
+without it.
 
 </details>
 

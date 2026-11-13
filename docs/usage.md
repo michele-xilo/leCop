@@ -69,12 +69,12 @@ lecop validate --decode datasets/my_dataset
 ```
 
 The PyPI wheels, the release binaries and `cargo binstall lecop` are built with the `asm` feature: rav1d's hand-written
-assembly, which decodes AV1 about 3 times faster (19 s against 60 s on `c_so100_press_red_button`, Apple M-series).
-`cargo install lecop` and a Rust project that depends on the `lecop` crate build without it so that they need no extra
-tools (the crate's `asm` feature turns it on); pip builds from the source distribution, on a platform with no wheel,
-do the same. To get the fast build from source, install
-[nasm](https://www.nasm.us) (x86_64 only; `apt install nasm`, `brew install nasm`; ARM builds use the C compiler) and run
-`cargo install lecop --features asm`. `cargo install lecop --no-default-features` builds without the decoders (9.1 MB
+assembly, which decodes AV1 about 3 times faster (18 s against 67 s on `c_so100_press_red_button`, Apple M-series).
+On ARM (aarch64) every build has it, since it needs only the C compiler. On x86_64 it needs nasm, so
+`cargo install lecop` and a Rust project that depends on the `lecop` crate build without it there so that they need
+no extra tools (the crate's `asm` feature turns it on); pip builds from the source distribution, on a platform with no
+wheel, do the same. To get the fast build from source on x86_64, install [nasm](https://www.nasm.us)
+(`apt install nasm`, `brew install nasm`) and run `cargo install lecop --features asm`. `cargo install lecop --no-default-features` builds without the decoders (9.1 MB
 instead of 11.2 MB); `--decode` then says it needs a build with `--features decode`.
 
 H.264 is decoded with openh264 and AV1 with rav1d (the `hiraku-rav1d` fork). Per frame leCop keeps the mean
