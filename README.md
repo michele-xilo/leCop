@@ -67,17 +67,20 @@ clean, 1 means errors, so it works as a step in a data pipeline (see [In a pipel
 
 ### From Python
 
-leCop is a command-line tool, not an importable module. Call it and read the JSON:
+The PyPI wheel also installs a small `lecop` module that runs the bundled binary and returns the report:
 
 ```python
-import json, subprocess
+import lecop
 
-run = subprocess.run(["lecop", "validate", "--format", "json", "path/to/dataset"], capture_output=True, text=True)
-report = json.loads(run.stdout)
+report = lecop.validate("path/to/dataset")
 print(report["errors"], report["warnings"])
 for issue in report["issues"]:
-    print(issue)
+    print(issue["severity"], issue["code"], issue["episode"], issue["message"])
 ```
+
+`validate` accepts a dataset or a directory that holds many, and `decode`, `jobs`, `ignore` and `select` options that
+match the CLI flags. Errors in the dataset are in the report; `lecop.LecopError` means there was no report (bad path or
+option). The `cargo install` build has no Python module: call the CLI with `--format json`.
 
 ### From Rust
 

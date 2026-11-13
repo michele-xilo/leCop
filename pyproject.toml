@@ -17,6 +17,7 @@ classifiers = [
 Repository = "https://github.com/michele-xilo/lecop"
 Issues = "https://github.com/michele-xilo/lecop/issues"
 
-# The wheel carries the lecop binary itself, not a Python extension.
+# The wheel carries the lecop binary itself, not a Python extension, plus the small `lecop` module that runs it.
 [tool.maturin]
 bindings = "bin"
+python-source = "python"
