@@ -74,7 +74,8 @@ On ARM (aarch64) every build has it, since it needs only the C compiler. On x86_
 `cargo install lecop` and a Rust project that depends on the `lecop` crate build without it there so that they need
 no extra tools (the crate's `asm` feature turns it on); pip builds from the source distribution, on a platform with no
 wheel, do the same. To get the fast build from source on x86_64, install [nasm](https://www.nasm.us)
-(`apt install nasm`, `brew install nasm`) and run `cargo install lecop --features asm`. `cargo install lecop --no-default-features` builds without the decoders (9.1 MB
+(`apt install nasm`, `brew install nasm`) and run `cargo install lecop --features asm`. A `--decode` run on a build without the assembly ends with a `note:` line on
+stderr saying so; stdout and `--format json` are unchanged. `cargo install lecop --no-default-features` builds without the decoders (9.1 MB
 instead of 11.2 MB); `--decode` then says it needs a build with `--features decode`.
 
 H.264 is decoded with openh264 and AV1 with rav1d (the `hiraku-rav1d` fork). Per frame leCop keeps the mean

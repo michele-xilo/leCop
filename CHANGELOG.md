@@ -8,6 +8,9 @@ The PyPI wheel installs a `lecop` Python module: `lecop.validate(path)` runs the
 ARM builds (aarch64) always include rav1d's AV1 assembly, so `cargo install lecop`, crates depending on `lecop` and pip
 builds from the source distribution decode AV1 about 3.8 times faster there, with no extra tools. x86_64 is unchanged.
 
+`--decode` on a build without rav1d's AV1 assembly (x86_64 `cargo install` without nasm) prints a one-line `note:` on
+stderr, after the report, saying AV1 decodes about 3 times slower and how to get the fast build.
+
 The crate documentation has runnable examples and states what is stable: the issue codes, the CLI output and the exit
 codes. The Rust API can change in any 0.x release.
 

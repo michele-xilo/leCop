@@ -153,6 +153,17 @@ fn segments(sync: &[usize], total: usize, target: usize) -> Vec<std::ops::Range<
 
 /// Decode the video at `path`, a task per segment of at least `target` samples; the result does not depend on
 /// `target`. Public so that tests and benchmarks can choose the segment length.
+/// True when rav1d's assembly is compiled in: always on aarch64 (see Cargo.toml), elsewhere only with `asm`.
+pub const AV1_ASM: bool = cfg!(any(target_arch = "aarch64", feature = "asm"));
+
+/// The stderr note for a `--decode` run on a build whose AV1 decoder has no assembly (about 3x slower).
+pub fn asm_note(decoding: bool, asm: bool) -> Option<&'static str> {
+    (decoding && !asm).then_some(
+        "note: this build decodes AV1 without assembly (about 3x slower); the release binaries, PyPI wheels and \
+         cargo binstall have it, or rebuild with --features asm and nasm installed",
+    )
+}
+
 #[cfg(feature = "decode")]
 pub fn decode_segmented(path: &std::path::Path, target: usize) -> anyhow::Result<Decoded> {
     backend::decode_with(path, target)
@@ -449,7 +460,14 @@ mod backend {
 
 #[cfg(test)]
 mod tests {
-    use super::segments;
+    use super::{asm_note, segments};
+
+    #[test]
+    fn asm_note_only_when_decoding_without_assembly() {
+        assert!(asm_note(true, false).is_some_and(|n| n.contains("--features asm")));
+        assert_eq!(asm_note(true, true), None);
+        assert_eq!(asm_note(false, false), None);
+    }
 
     fn spans(sync: &[usize], total: usize, target: usize) -> Vec<(usize, usize)> {
         segments(sync, total, target)
