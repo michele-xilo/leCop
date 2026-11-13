@@ -80,7 +80,8 @@ for issue in report["issues"]:
 
 `validate` accepts a dataset or a directory that holds many, and `decode`, `jobs`, `ignore` and `select` options that
 match the CLI flags. Errors in the dataset are in the report; `lecop.LecopError` means there was no report (bad path or
-option). The `cargo install` build has no Python module: call the CLI with `--format json`.
+option). `decode=True` uses the AV1 assembly in the wheels. The `cargo install` build has no Python module: call the
+CLI with `--format json`.
 
 ### From Rust
 
@@ -97,7 +98,8 @@ for issue in validate(&ds)? {
 ```
 
 The issue codes and the CLI output are a stable contract; the Rust API can change in any 0.x release, so pin the
-version. Several datasets, `--decode` and the other options are in the [crate documentation](https://docs.rs/lecop).
+version. As a dependency, AV1 decoding (`--decode`) runs without rav1d's assembly, about 3 times slower, unless you
+enable the `asm` feature (needs nasm on x86_64). Several datasets, `--decode` and the other options are in the [crate documentation](https://docs.rs/lecop).
 
 ## What it catches
 

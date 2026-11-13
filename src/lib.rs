@@ -51,7 +51,20 @@
 //! repurposed without a version bump. The Rust API is not stable before 1.0: signatures and public fields can change in
 //! any 0.x release, and the changelog says when they do. Pin an exact version if you depend on it.
 //!
-//! The `decode` feature (on by default) adds video frame decoding; `--no-default-features` leaves it out.
+//! # Features
+//!
+//! - `decode` (on by default) adds video frame decoding for H.264 and AV1; `--no-default-features` leaves it out.
+//! - `asm` (off by default) builds rav1d's hand-written assembly, which decodes AV1 about 3 times faster (19 s
+//!   against 60 s on one 1.2 GB dataset, Apple M-series; not measured on x86_64). On x86_64 it needs
+//!   [nasm](https://www.nasm.us) on the build machine; ARM builds only need a C compiler. It is off so that
+//!   `cargo install lecop` and plain dependencies build with no extra tools. The PyPI wheels, the release binaries
+//!   and `cargo binstall lecop` are built with it.
+//!
+//! A program that decodes video and wants the fast build enables it in its own `Cargo.toml`:
+//!
+//! ```toml
+//! lecop = { version = "0.1", features = ["asm"] }
+//! ```
 pub mod config;
 pub mod dataset;
 pub mod decode;

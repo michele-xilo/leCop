@@ -70,7 +70,9 @@ lecop validate --decode datasets/my_dataset
 
 The PyPI wheels, the release binaries and `cargo binstall lecop` are built with the `asm` feature: rav1d's hand-written
 assembly, which decodes AV1 about 3 times faster (19 s against 60 s on `c_so100_press_red_button`, Apple M-series).
-`cargo install lecop` builds without it so that it needs no extra tools. To get the fast build from source, install
+`cargo install lecop` and a Rust project that depends on the `lecop` crate build without it so that they need no extra
+tools (the crate's `asm` feature turns it on); pip builds from the source distribution, on a platform with no wheel,
+do the same. To get the fast build from source, install
 [nasm](https://www.nasm.us) (x86_64 only; `apt install nasm`, `brew install nasm`; ARM builds use the C compiler) and run
 `cargo install lecop --features asm`. `cargo install lecop --no-default-features` builds without the decoders (9.1 MB
 instead of 11.2 MB); `--decode` then says it needs a build with `--features decode`.
