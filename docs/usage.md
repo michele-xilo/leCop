@@ -83,6 +83,30 @@ Measured on an Apple M2 Pro, release build: 1.5 s for `c_so101_pill_sorting_medo
 `c_so100_press_red_button` and 2.7 s for `c_so101_my_task_50ep` (AV1); 0.26 s for `c_d3il_avoiding_vision_224` (H.264). The
 feature adds about 2.1 MB to the binary (11.2 MB against 9.1 MB).
 
+## In a pipeline
+
+leCop is a step you put where a dataset is produced or consumed, not only in CI on a repository: right after
+recording or conversion, as a gate before a training job, or on a schedule against a dataset repository. Exit code 1
+means errors, so a failing run stops the job; `--format json` and `--format github` are for tools that read the result.
+
+```bash
+lecop out/my_dataset || exit 1       # after conversion: stop the pipeline on errors
+lecop "$DATASET_DIR" -q || exit 1    # before training: quiet on success, summary on failure
+```
+
+The default checks read `meta/` and the parquet files, not the videos, so a dataset can be checked without downloading
+them. Fetch everything but the videos, and ignore the one error that says they are absent:
+
+```bash
+hf download lerobot/pusht --repo-type dataset --exclude "videos/*" --local-dir pusht
+lecop --ignore video_missing pusht
+```
+
+Without the videos, every check on the metadata and the data files runs; the checks that read an mp4 (frame count,
+frame rate, resolution, `--decode`) cannot, and the output ends with `Ignored by config: video_missing (1)` so the
+gap is visible. On `lerobot/pusht` (832 KB without videos) this reports the same three warnings as on the full
+dataset. Download the videos and drop `--ignore` when you want the video checks.
+
 ## Config file
 
 `lecop.toml` in the scanned directory or any parent (nearest wins):
