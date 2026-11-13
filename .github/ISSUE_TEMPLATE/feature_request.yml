@@ -1,0 +1,23 @@
+name: Feature or check request
+description: Suggest a new check, option or output, or a LeRobot format case leCop does not handle.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: why
+    attributes:
+      label: What problem does it solve?
+      description: The fault or workflow, and what it cost you (for example a bad episode that reached a training run).
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What should leCop do?
+      description: For a check, how a healthy dataset differs from a faulty one, and whether it is an error or a warning.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: A public dataset that shows it, with the LeRobot version, or a link to the LeRobot code or docs that define the rule.

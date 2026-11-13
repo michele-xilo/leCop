@@ -1,0 +1,51 @@
+name: Bug report
+description: leCop crashed, reported a wrong result, or missed a fault in a dataset.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Name public datasets and give figures; do not paste dataset contents, tokens or private data.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+      description: A false positive (an error on a healthy dataset), a false negative (a fault leCop missed) or a crash.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: leCop version
+      description: Output of `lecop --version`.
+      placeholder: lecop 0.1.2
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How did you install it?
+      options: [uv / pip, cargo binstall, cargo install, release binary or installer, built from source]
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system and CPU
+      placeholder: macOS 15 arm64, Ubuntu 24.04 x86_64, Windows 11 x86_64
+    validations:
+      required: true
+  - type: input
+    id: dataset
+    attributes:
+      label: Dataset and format version
+      description: A public Hub dataset name, and its `codebase_version` from `meta/info.json`, if you can share it.
+      placeholder: lerobot/pusht, v2.1
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and output
+      description: The exact command, and its output (add `--format full` for locations).
+      render: shell
+    validations:
+      required: true
