@@ -127,6 +127,7 @@ Compared with lerobot-doctor and physlint, check by check, in [docs/comparison.m
 
 - [Usage](docs/usage.md): every flag, output formats, `--fix`, `--decode`, `lecop.toml`.
 - [Checks](docs/checks.md): every issue code and what is not supported yet.
+- [Using leCop from code](docs/api.md): the Python module and the Rust crate.
 - [Comparison and speed tables](docs/comparison.md).
 - Open work is tracked in the [issues](https://github.com/michele-xilo/lecop/issues), by priority.
 
