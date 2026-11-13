@@ -79,6 +79,23 @@ for issue in report["issues"]:
     print(issue)
 ```
 
+### From Rust
+
+leCop is also a library crate. Add `lecop` to your `Cargo.toml` and call it:
+
+```rust
+use lecop::dataset::Dataset;
+use lecop::validate::validate;
+
+let ds = Dataset::open("path/to/dataset")?;
+for issue in validate(&ds)? {
+    println!("{:?} {} {}", issue.severity, issue.code, issue.message);
+}
+```
+
+The issue codes and the CLI output are a stable contract; the Rust API can change in any 0.x release, so pin the
+version. Several datasets, `--decode` and the other options are in the [crate documentation](https://docs.rs/lecop).
+
 ## What it catches
 
 - A video with 591 frames for an episode of 588.
