@@ -62,7 +62,7 @@
 //! A program that decodes video and wants the fast build enables it in its own `Cargo.toml`:
 //!
 //! ```toml
-//! lecop = { version = "0.1", features = ["asm"] }
+//! lecop = { version = "0.2", features = ["asm"] }
 //! ```
 pub mod config;
 pub mod dataset;

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0
 
 The PyPI wheel installs a `lecop` Python module: `lecop.validate(path)` runs the bundled binary and returns the
 `--format json` report as a dict. The `lecop` command is unchanged, still the native binary.
