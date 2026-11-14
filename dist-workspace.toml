@@ -18,7 +18,7 @@ hosting = "github"
 # Whether to install an updater program
 install-updater = false
 # Windows: install nasm and put it on PATH (the generated chocolatey step does not)
-github-build-setup = "build-setup.yml"
+github-build-setup = "../build-setup.yml"
 # Release binaries carry the AV1 assembly
 features = ["asm"]
 # Pin the workflow's actions to commits, like ci.yml does
