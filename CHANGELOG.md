@@ -1,10 +1,13 @@
 # Changelog
 
-## Unreleased
+## 0.3.0
 
 H.264 decoding has its x86_64 assembly in every build too: openh264 is now `lecop-openh264`, a fork that ships the
 assembly as prebuilt objects, so `cargo install lecop` on x86_64 Linux, Windows and macOS needs no nasm and decodes
-H.264 up to 1.7 times faster than the silent C-only build it used to fall back to.
+H.264 1.4 to 2 times faster than the silent C-only build it used to fall back to (AMD EPYC 7763, AVX2). AV1 on x86_64
+decodes 4.6 to 14 times faster than 0.1.2, which had no assembly.
+
+The release binaries, PyPI wheels and CI no longer install nasm.
 
 ## 0.2.0
 
