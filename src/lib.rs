@@ -54,8 +54,8 @@
 //! # Features
 //!
 //! - `decode` (on by default) adds video frame decoding for H.264 and AV1; `--no-default-features` leaves it out.
-//! - `asm` (off by default) builds rav1d's hand-written assembly, which decodes AV1 about 3 times faster (19 s
-//!   against 60 s on one 1.2 GB dataset, Apple M-series; not measured on x86_64). ARM (aarch64) builds and
+//! - `asm` (off by default) builds rav1d's hand-written assembly, which decodes AV1 3 to 14 times faster (19 s
+//!   against 60 s on one 1.2 GB dataset, Apple M-series; 4.6 to 14 times on an AMD EPYC 7763). ARM (aarch64) builds and
 //!   x86_64 Linux, Windows and macOS builds always have it, with no extra tools, so the feature only matters on
 //!   other targets, where it needs [nasm](https://www.nasm.us) on the build machine.
 //!
