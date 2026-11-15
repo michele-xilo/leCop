@@ -77,10 +77,9 @@ unless you install [nasm](https://www.nasm.us) and enable the crate's `asm` feat
 stderr saying so; stdout and `--format json` are unchanged. `cargo install lecop --no-default-features` builds without the decoders (9.1 MB
 instead of 11.2 MB); `--decode` then says it needs a build with `--features decode`.
 
-H.264 is decoded with openh264, which has x86_64 assembly of its own. It is built with [nasm](https://www.nasm.us) when
-nasm is installed; a `cargo install lecop` on x86_64 without nasm builds without it, prints no note and decodes H.264
-about 1.1 to 1.7 times slower (measured under Rosetta on four datasets, so indicative). The PyPI wheels, the release
-binaries and `cargo binstall lecop` include it. AV1 is decoded with rav1d (the `lecop-rav1d` fork). Per frame leCop keeps the mean
+H.264 is decoded with openh264 (the `lecop-openh264` fork) and AV1 with rav1d (the `lecop-rav1d` fork). openh264's
+x86_64 assembly is included on Linux, Windows and macOS the same way as the AV1 assembly, with no nasm needed; without
+it H.264 decodes 1.1 to 1.7 times slower. Per frame leCop keeps the mean
 luma and the difference to the previous frame, so it reports frames the decoder rejects (`video_decode`), a camera that
 repeats the same picture (`video_frozen`) and one that shows black (`video_black`). The output ends with
 `Video frames were decoded (--decode).` when it ran. A video in another codec is reported as `not decoded`, not skipped.
