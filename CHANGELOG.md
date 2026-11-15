@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+H.264 decoding has its x86_64 assembly in every build too: openh264 is now `lecop-openh264`, a fork that ships the
+assembly as prebuilt objects, so `cargo install lecop` on x86_64 Linux, Windows and macOS needs no nasm and decodes
+H.264 up to 1.7 times faster than the silent C-only build it used to fall back to.
+
 ## 0.2.0
 
 The PyPI wheel installs a `lecop` Python module: `lecop.validate(path)` runs the bundled binary and returns the
