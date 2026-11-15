@@ -96,39 +96,25 @@ including `cargo install lecop`, with no ffmpeg and no assembler on the machine 
 
 ### A large dataset: RoboTwin
 
-[`lerobot/robotwin_unified`](https://huggingface.co/datasets/lerobot/robotwin_unified) at commit `1287871`: v3.0, 27,500
-episodes, 6,075,103 frames at 30 fps, three AV1 cameras at 640x480, 75 GB on disk (289 MB of parquet, the rest video).
-AMD Ryzen 9 7900X (12 cores, 24 threads), 124 GB RAM, Linux, warm page cache. leCop 0.1.2 built with
-`cargo build --release --features asm`, the AV1 assembly every x86_64 Linux build has since 0.2.0, Rust 1.99.0, default
-thread count.
-lerobot-doctor 0.2.0 and physlint 0.4.0 from PyPI on Python 3.14.3. Same commands and configuration as `scripts/compare.py`.
-leCop is the median of 3 runs without decoding and of 2 runs with decoding, each after one warm-up. lerobot-doctor
-and physlint are single runs, because one physlint run takes almost five hours; an earlier run of each, with a desktop
-file indexer busy in the background, took 8% and 10% longer. Wall time and peak memory are from `/usr/bin/time -v`.
-The runs were sequential, on an otherwise idle machine.
+The datasets above are all fairly small, so we wanted to see what happens on a big one. We picked
+[RoboTwin](https://huggingface.co/datasets/lerobot/robotwin_unified), a public dataset on the Hugging Face hub with
+27,500 episodes, just over 6 million frames and three cameras, 75 GB on disk (v3.0 at commit `1287871`, 30 fps, AV1
+video at 640x480, 289 MB of parquet and the rest video).
+
+We ran the three tools one after the other on an otherwise quiet workstation (AMD Ryzen 9 7900X with 24 threads,
+124 GB RAM, Linux, warm page cache; leCop 0.1.2 built with the AV1 assembly that every x86_64 Linux build has since
+0.2.0, Rust 1.99.0; lerobot-doctor 0.2.0 and physlint 0.4.0 from PyPI on Python 3.14.3; same settings as
+`scripts/compare.py`, times and peak memory from `/usr/bin/time -v`). Here is what we got:
 
 | Run | leCop | lerobot-doctor | physlint |
 |---|---|---|---|
 | Without video decoding | 🏆 **0.72 s**, 1.9 GB | 50 min, 5.5 GB | 4 h 42 min, 1.1 GB |
-| Decoding every frame | 🏆 **11 min 47 s**, 15 GB | n/a | n/a: cannot decode AV1, see below |
+| Decoding every frame | 🏆 **11 min 47 s**, 15 GB | n/a | n/a |
 
-Without decoding, leCop is about 4,200 times faster than lerobot-doctor and 23,000 times faster than physlint on this
-dataset. Both Python tools run on one core (100% and 110% CPU), leCop on four on average (413%) without decoding and
-on all 24 (2384%) when decoding.
-
-Both Python tools slow down faster than the dataset grows, so the speedup depends on its size: 15x to 54x on the small
-datasets above, thousands of times here. lerobot-doctor's near-duplicate check compares every pair of episodes, 378
-million comparisons here, about 48 of its 50 minutes at the 7.6 µs one `np.allclose` takes on this machine; leCop
-looks for exact duplicates only, by hashing each episode's actions. physlint reads an episode's rows by scanning its whole data file,
-once per episode, so each of the 8 files (about 760,000 rows and 3,400 episodes) is read thousands of times.
-
-physlint decodes with the OpenCV wheel from PyPI, whose FFmpeg has no software AV1 decoder. It opens each file, reads
-0 frames, and reports `video.decode` errors such as "Decoded 0 of 139 expected frames" on a healthy dataset, after
-5 h 39 min. That is not the same work as decoding, so there is no physlint figure in the decoding row.
-
-Where their checks overlap, leCop and lerobot-doctor report the same findings: action jumps in episodes 102, 443 and
-19840, and 533 unusually long episodes. leCop reports 0 errors and 1,279 warnings in total; physlint without decoding
-passes, with three rules not run because they need thresholds.
+The leCop times are medians (3 runs without decoding, 2 with, each after a warm-up). The other two are a single run
+each, since one physlint run takes almost five hours (an earlier run of each, with a desktop file indexer busy in the
+background, took 8% and 10% longer). physlint's decoding run read no frames from these AV1 videos, so there is no
+number for it in the second row.
 
 ### Why leCop is fast
 
