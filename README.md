@@ -115,7 +115,9 @@ version. Several datasets, `--decode` and the other options are in the [crate do
 
 ## Why leCop
 
-- **Fast.** 8 to 28 ms per dataset without video decoding, 15x to 54x faster than lerobot-doctor on the same checks.
+- **Fast.** 8 to 28 ms per dataset without video decoding, 15x to 54x faster than lerobot-doctor on the same datasets.
+  On [RoboTwin](docs/comparison.md#a-large-dataset-robotwin) (27,500 episodes, 75 GB), leCop takes 0.7 s, lerobot-doctor
+  50 minutes and physlint 4 h 42 min.
   Video is checked from the container, not by decoding frames, unless you ask for `--decode`.
 - **Fast when it decodes, too.** With `--decode` every frame is decoded, 3.5x to 114x faster than physlint
   ([comparison](docs/comparison.md#with-video-decoding)). Videos are split at keyframes and decoded on every core, and
