@@ -129,3 +129,23 @@ physlint decodes with the OpenCV wheel from PyPI, whose FFmpeg has no software A
 Where their checks overlap, leCop and lerobot-doctor report the same findings: action jumps in episodes 102, 443 and
 19840, and 533 unusually long episodes. leCop reports 0 errors and 1,279 warnings in total; physlint without decoding
 passes, with three rules not run because they need thresholds.
+
+### Why leCop is fast
+
+Four things, in order of how much they matter on a large dataset:
+
+- **Every pass over the data is linear.** leCop reads each data file once and checks all of its episodes from that
+  one read. It finds duplicate episodes by hashing each episode's actions, not by comparing every pair. On RoboTwin
+  this is most of the gap: lerobot-doctor spends about 48 of its 50 minutes comparing 378 million pairs of episodes,
+  and physlint rereads each data file once per episode.
+- **Video is read from the container, not decoded.** leCop's own mp4 parser seeks past the frame data and reads only
+  the `moov` sample tables, so checking a video costs the same whatever its size. Without `--decode`, none of
+  RoboTwin's 74 GB of video frames is read.
+- **Work runs on every core.** Data files and videos are independent, so leCop checks them in parallel. With
+  `--decode`, each video is also split at its keyframes into segments decoded in parallel, so even one large file uses
+  every core. On RoboTwin leCop averaged four cores without decoding and all 24 when decoding (2384% CPU); both Python
+  tools use one.
+- **Compiled Rust, with assembly where it counts.** There is no interpreter to start: on the RoboTwin machine leCop
+  starts in 1 ms and physlint in about 250 ms. Columns are read as typed Arrow arrays and checked in compiled loops,
+  built with link-time optimization. AV1 frames are decoded with rav1d's hand-written SIMD assembly. On RoboTwin, a build
+  without it was still decoding after 41 minutes; the build with it took 14 min 31 s under the same background load.
