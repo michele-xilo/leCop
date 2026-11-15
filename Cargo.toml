@@ -15,8 +15,8 @@ exclude = [".claude", ".github", ".physlint", "assets/demo.gif", "assets/demo.ta
 # `--no-default-features` to leave them out.
 default = ["decode"]
 decode = ["dep:openh264", "dep:rav1d"]
-# rav1d's hand-written assembly: AV1 decodes about 3x faster (Apple M-series, `c_so100_press_red_button`: 18 s against
-# 67 s). Always on for aarch64 and for x86_64 Linux, Windows and macOS (see the target dependency below). On any other
+# rav1d's hand-written assembly: AV1 decodes 3x to 14x faster (`c_so100_press_red_button`: 18 s against 67 s on Apple M-series, 65 s
+# against 296 s on x86_64 AMD EPYC 7763). Always on for aarch64 and for x86_64 Linux, Windows and macOS (see the target dependency below). On any other
 # target it needs nasm installed, so it is off by default there and `cargo install lecop` works anywhere.
 asm = ["decode", "rav1d?/asm"]
 

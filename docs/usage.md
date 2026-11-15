@@ -68,8 +68,9 @@ build includes the decoders; pass `--decode` to use them:
 lecop validate --decode datasets/my_dataset
 ```
 
-AV1 is decoded with rav1d's hand-written assembly, about 3 times faster than without it (18 s against 67 s on
-`c_so100_press_red_button`, Apple M-series). Every build has it on ARM (aarch64) and on x86_64 Linux, Windows and
+AV1 is decoded with rav1d's hand-written assembly, 3 to 4 times faster than without it on ARM (18 s against 67 s on
+`c_so100_press_red_button`, Apple M-series) and 4.6 to 14 times on x86_64 (65 s against 296 s on the same dataset, AMD EPYC
+7763 with AVX2, 4 threads). Every build has it on ARM (aarch64) and on x86_64 Linux, Windows and
 macOS, with no extra tools: the PyPI wheels, the release binaries, `cargo binstall lecop`, `cargo install lecop`, a
 Rust project that depends on the `lecop` crate and pip builds from the source distribution. On ARM the C compiler
 assembles it; for x86_64 the decoder crate ships the assembled objects. On any other target the build leaves it out
@@ -79,7 +80,7 @@ instead of 11.2 MB); `--decode` then says it needs a build with `--features deco
 
 H.264 is decoded with openh264 (the `lecop-openh264` fork) and AV1 with rav1d (the `lecop-rav1d` fork). openh264's
 x86_64 assembly is included on Linux, Windows and macOS the same way as the AV1 assembly, with no nasm needed; without
-it H.264 decodes 1.1 to 1.7 times slower. Per frame leCop keeps the mean
+it H.264 decodes 1.4 to 2 times slower (AMD EPYC 7763, AVX2). Per frame leCop keeps the mean
 luma and the difference to the previous frame, so it reports frames the decoder rejects (`video_decode`), a camera that
 repeats the same picture (`video_frozen`) and one that shows black (`video_black`). The output ends with
 `Video frames were decoded (--decode).` when it ran. A video in another codec is reported as `not decoded`, not skipped.
