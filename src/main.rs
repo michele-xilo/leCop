@@ -185,6 +185,9 @@ fn validate(a: ValidateArgs) -> Result<u8> {
         decoded: a.decode,
     };
     print!("{}", report::render(&reports, &options));
+    if let Some(note) = lecop::decode::asm_note(a.decode, lecop::decode::AV1_ASM) {
+        eprintln!("{note}");
+    }
     Ok(report::exit_code(&reports))
 }
 

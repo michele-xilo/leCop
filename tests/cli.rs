@@ -454,3 +454,16 @@ fn version_flags_print_the_package_version() {
         );
     }
 }
+
+#[cfg(feature = "decode")]
+#[test]
+fn decode_notes_a_build_without_av1_assembly_on_stderr_only() {
+    let d = dataset();
+    let path = d.path().to_str().unwrap();
+    let o = lecop(&["validate", path, "--decode", "--format", "json"]);
+    let has_note = String::from_utf8_lossy(&o.stderr).contains("without assembly");
+    assert_eq!(has_note, !lecop::decode::AV1_ASM, "{o:?}");
+    assert!(serde_json::from_slice::<serde_json::Value>(&o.stdout).is_ok());
+    let o = lecop(&["validate", path, "--format", "json"]);
+    assert!(!String::from_utf8_lossy(&o.stderr).contains("without assembly"));
+}

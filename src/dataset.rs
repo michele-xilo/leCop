@@ -84,6 +84,8 @@ pub struct VideoRef {
     pub span: Option<(f64, f64)>,
 }
 
+/// A LeRobot dataset's metadata, resolved to the files it points at. Opening reads `meta/` only; the data and video
+/// files are read by the checks.
 pub struct Dataset {
     pub root: PathBuf,
     pub info: Info,
@@ -91,6 +93,9 @@ pub struct Dataset {
 }
 
 impl Dataset {
+    /// Load the dataset rooted at `root` (the directory that holds `meta/info.json`). Fails when `info.json` is
+    /// missing, unparsable or lacks required fields, when `fps` is not positive, or the version is unsupported; the
+    /// CLI reports those as `cannot_open`.
     pub fn open(root: impl AsRef<Path>) -> Result<Self> {
         let root = root.as_ref().to_path_buf();
         let p = root.join("meta/info.json");

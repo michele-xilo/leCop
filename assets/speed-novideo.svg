@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 830 356" width="830" height="356" role="img">
+<style>
+text{font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fill:#24292f}
+.muted{fill:#656d76}.grid{stroke:#d0d7de}.span{stroke:#d0d7de;stroke-width:2}
+.lecop{fill:#b74604}.doctor{fill:#57606a}.physlint{fill:#8c959f}
+@media(prefers-color-scheme:dark){
+text{fill:#e6edf3}.muted{fill:#8d96a0}.grid{stroke:#30363d}.span{stroke:#30363d}
+.lecop{fill:#e8651a}.doctor{fill:#9ea7b3}.physlint{fill:#6e7681}}
+</style>
+<circle class="lecop" cx="346.0" cy="14" r="6"/><text x="358" y="18">leCop</text>
+<circle class="doctor" cx="412.5" cy="14" r="5"/><text x="424.5" y="18">lerobot-doctor</text>
+<rect class="physlint" x="539.7" y="9" width="10" height="10" rx="2"/><text x="556.7" y="18">physlint</text>
+<text class="muted" x="826" y="18" text-anchor="end">leCop lead</text>
+<line class="grid" x1="376.1" x2="376.1" y1="32" y2="320"/>
+<text class="muted" x="376.1" y="338" text-anchor="middle">10 ms</text>
+<line class="grid" x1="489.3" x2="489.3" y1="32" y2="320"/>
+<text class="muted" x="489.3" y="338" text-anchor="middle">100 ms</text>
+<line class="grid" x1="602.5" x2="602.5" y1="32" y2="320"/>
+<text class="muted" x="602.5" y="338" text-anchor="middle">1 s</text>
+<line class="grid" x1="715.6" x2="715.6" y1="32" y2="320"/>
+<text class="muted" x="715.6" y="338" text-anchor="middle">10 s</text>
+<text x="252" y="50" text-anchor="end">pusht</text>
+<line class="span" x1="407.6" x2="583.9" y1="46" y2="46"/>
+<circle class="doctor" cx="583.9" cy="46" r="5"/>
+<circle class="lecop" cx="407.6" cy="46" r="6"/>
+<text x="328" y="50" text-anchor="end">19 ms</text>
+<text x="826" y="50" text-anchor="end">36x</text>
+<text x="252" y="78" text-anchor="end">svla_so101_pickplace</text>
+<line class="span" x1="380.8" x2="562.5" y1="74" y2="74"/>
+<circle class="doctor" cx="562.5" cy="74" r="5"/>
+<circle class="lecop" cx="380.8" cy="74" r="6"/>
+<text x="328" y="78" text-anchor="end">11 ms</text>
+<text x="826" y="78" text-anchor="end">40x</text>
+<text x="252" y="106" text-anchor="end">c_careattrs_mug2v2</text>
+<line class="span" x1="365.1" x2="553.3" y1="102" y2="102"/>
+<circle class="doctor" cx="553.3" cy="102" r="5"/>
+<circle class="lecop" cx="365.1" cy="102" r="6"/>
+<text x="328" y="106" text-anchor="end">8 ms</text>
+<text x="826" y="106" text-anchor="end">47x</text>
+<text x="252" y="134" text-anchor="end">v3_pusht</text>
+<line class="span" x1="380.8" x2="736.9" y1="130" y2="130"/>
+<rect class="physlint" x="731.9" y="125" width="10" height="10" rx="2"/>
+<circle class="doctor" cx="577.0" cy="130" r="5"/>
+<circle class="lecop" cx="380.8" cy="130" r="6"/>
+<text x="328" y="134" text-anchor="end">11 ms</text>
+<text x="826" y="134" text-anchor="end">54x</text>
+<text x="252" y="162" text-anchor="end">v3_aloha_sim_insertion_human</text>
+<line class="span" x1="370.9" x2="652.0" y1="158" y2="158"/>
+<rect class="physlint" x="647.0" y="153" width="10" height="10" rx="2"/>
+<circle class="doctor" cx="561.5" cy="158" r="5"/>
+<circle class="lecop" cx="370.9" cy="158" r="6"/>
+<text x="328" y="162" text-anchor="end">9 ms</text>
+<text x="826" y="162" text-anchor="end">50x</text>
+<text x="252" y="190" text-anchor="end">v3_aloha_sim_transfer_cube_human</text>
+<line class="span" x1="370.9" x2="659.8" y1="186" y2="186"/>
+<rect class="physlint" x="654.8" y="181" width="10" height="10" rx="2"/>
+<circle class="doctor" cx="558.9" cy="186" r="5"/>
+<circle class="lecop" cx="370.9" cy="186" r="6"/>
+<text x="328" y="190" text-anchor="end">9 ms</text>
+<text x="826" y="190" text-anchor="end">44x</text>
+<text x="252" y="218" text-anchor="end">c_so101_pill_sorting_medoc</text>
+<line class="span" x1="426.7" x2="583.9" y1="214" y2="214"/>
+<rect class="physlint" x="578.9" y="209" width="10" height="10" rx="2"/>
+<circle class="doctor" cx="559.5" cy="214" r="5"/>
+<circle class="lecop" cx="426.7" cy="214" r="6"/>
+<text x="328" y="218" text-anchor="end">28 ms</text>
+<text x="826" y="218" text-anchor="end">15x</text>
+<text x="252" y="246" text-anchor="end">c_so101_my_task_50ep</text>
+<line class="span" x1="405.0" x2="702.8" y1="242" y2="242"/>
+<rect class="physlint" x="697.8" y="237" width="10" height="10" rx="2"/>
+<circle class="doctor" cx="564.3" cy="242" r="5"/>
+<circle class="lecop" cx="405.0" cy="242" r="6"/>
+<text x="328" y="246" text-anchor="end">18 ms</text>
+<text x="826" y="246" text-anchor="end">25x</text>
+<text x="252" y="274" text-anchor="end">c_so101_block_box_50episodes_final</text>
+<line class="span" x1="385.0" x2="652.6" y1="270" y2="270"/>
+<rect class="physlint" x="647.6" y="265" width="10" height="10" rx="2"/>
+<circle class="doctor" cx="554.5" cy="270" r="5"/>
+<circle class="lecop" cx="385.0" cy="270" r="6"/>
+<text x="328" y="274" text-anchor="end">12 ms</text>
+<text x="826" y="274" text-anchor="end">31x</text>
+<text x="252" y="302" text-anchor="end">c_black-stressball-tutorial</text>
+<line class="span" x1="392.6" x2="708.1" y1="298" y2="298"/>
+<rect class="physlint" x="703.1" y="293" width="10" height="10" rx="2"/>
+<circle class="doctor" cx="563.6" cy="298" r="5"/>
+<circle class="lecop" cx="392.6" cy="298" r="6"/>
+<text x="328" y="302" text-anchor="end">14 ms</text>
+<text x="826" y="302" text-anchor="end">32x</text>
+</svg>

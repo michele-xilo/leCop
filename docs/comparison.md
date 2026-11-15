@@ -47,12 +47,15 @@ frame, and leCop reads container metadata only unless asked. So two tables are r
 the same video work: none decodes in the first, leCop and physlint decode everything in the second. Median wall time of 3 runs after one warm-up, warm page cache, including process start, every run in
 a fresh empty working directory with physlint's result cache off. Apple M2 Pro, Python 3.12, leCop `release` build,
 lerobot-doctor 0.2.0 and physlint 0.4.0 installed from PyPI. physlint reads v3 only. The tools check different things
-(see the comparison above), so this compares speed only. Reproduce with `scripts/compare.py`.
+(see the comparison above), so this compares speed only. Reproduce with `scripts/compare.py`;
+`scripts/speed_chart.py` draws the charts from the tables below. The time axis is logarithmic.
 
 ### Without video decoding
 
 lerobot-doctor runs every check but `videos`; physlint runs with its `video.decode`, `video.frozen_frames` and
 `video.black_frames` rules off; leCop is the default build.
+
+![Wall time per dataset without video decoding, log scale: leCop takes 8 to 28 ms, lerobot-doctor 368 to 686 ms, physlint 0.7 to 15 s](../assets/speed-novideo.svg)
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop vs the fastest other tool |
 |---|---|---|---|---|
@@ -73,6 +76,8 @@ leCop is built with `--features decode` and run with `--decode`; physlint runs a
 Only physlint is compared here, and only on the v3 datasets it reads: lerobot-doctor decodes one frame per video, which
 is not the same work.
 
+![Wall time per dataset with video decoding, log scale: leCop takes 0.2 to 3.2 s, physlint 5 to 21 s](../assets/speed-video.svg)
+
 | Dataset | leCop | physlint | leCop speedup |
 |---|---|---|---|
 | `v3_pusht` (v3.0) | 🏆 **185 ms** | 21,095 ms | 114x faster |
@@ -83,15 +88,19 @@ is not the same work.
 | `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **1,291 ms** | 5,877 ms | 4.6x faster |
 | `c_black-stressball-tutorial` (v3.0) | 🏆 **3,164 ms** | 17,162 ms | 5.4x faster |
 
-leCop splits each video at its keyframes and decodes the pieces in parallel, so one large file uses every core, and AV1
-is decoded with assembly (see [Decoding frames](usage.md#decoding-frames)).
+leCop splits each video at its keyframes and decodes the pieces in parallel, so one large file uses every core. AV1 is
+decoded with rav1d's hand-written assembly, about 3 times faster than the same decoder without it (18 s against 67 s on
+`c_so100_press_red_button`, Apple M-series). Every install has it on ARM and on x86_64 Linux, Windows and macOS,
+including `cargo install lecop`, with no ffmpeg and no assembler on the machine (see
+[Decoding frames](usage.md#decoding-frames)).
 
 ### A large dataset: RoboTwin
 
 [`lerobot/robotwin_unified`](https://huggingface.co/datasets/lerobot/robotwin_unified) at commit `1287871`: v3.0, 27,500
 episodes, 6,075,103 frames at 30 fps, three AV1 cameras at 640x480, 75 GB on disk (289 MB of parquet, the rest video).
 AMD Ryzen 9 7900X (12 cores, 24 threads), 124 GB RAM, Linux, warm page cache. leCop 0.1.2 built with
-`cargo build --release --features asm` (as the PyPI wheels and release binaries are), Rust 1.99.0, default thread count.
+`cargo build --release --features asm`, the AV1 assembly every x86_64 Linux build has since 0.2.0, Rust 1.99.0, default
+thread count.
 lerobot-doctor 0.2.0 and physlint 0.4.0 from PyPI on Python 3.14.3. Same commands and configuration as `scripts/compare.py`.
 leCop is the median of 3 runs without decoding and of 2 runs with decoding, each after one warm-up. lerobot-doctor
 and physlint are single runs, because one physlint run takes almost five hours; an earlier run of each, with a desktop
@@ -109,8 +118,8 @@ on all 24 (2384%) when decoding.
 
 Both Python tools slow down faster than the dataset grows, so the speedup depends on its size: 15x to 54x on the small
 datasets above, thousands of times here. lerobot-doctor's near-duplicate check compares every pair of episodes, 378
-million comparisons here, about 48 of its 50 minutes at the 7.6 µs one `np.allclose` takes on this machine; leCop looks for exact
-duplicates only, by hashing each episode's actions. physlint reads an episode's rows by scanning its whole data file,
+million comparisons here, about 48 of its 50 minutes at the 7.6 µs one `np.allclose` takes on this machine; leCop
+looks for exact duplicates only, by hashing each episode's actions. physlint reads an episode's rows by scanning its whole data file,
 once per episode, so each of the 8 files (about 760,000 rows and 3,400 episodes) is read thousands of times.
 
 physlint decodes with the OpenCV wheel from PyPI, whose FFmpeg has no software AV1 decoder. It opens each file, reads
