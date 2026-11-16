@@ -1,9 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.3.1
 
 A GitHub Action (`uses: michele-xilo/leCop@v0`) and a pre-commit hook run leCop in CI with findings as annotations.
-See [In a pipeline](docs/usage.md#in-a-pipeline).
+See [In a pipeline](docs/usage.md#in-a-pipeline). The `v0` tag follows each release.
+
+`cargo binstall lecop` works on Windows: the release zip has no top-level folder, and the binstall metadata now says so.
 
 ## 0.3.0
 
