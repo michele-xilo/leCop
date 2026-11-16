@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+A GitHub Action (`uses: michele-xilo/leCop@v0`) and a pre-commit hook run leCop in CI with findings as annotations.
+See [In a pipeline](docs/usage.md#in-a-pipeline).
+
 ## 0.3.0
 
 H.264 decoding has its x86_64 assembly in every build too: openh264 is now `lecop-openh264`, a fork that ships the

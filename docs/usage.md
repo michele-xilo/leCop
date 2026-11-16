@@ -112,6 +112,36 @@ frame rate, resolution, `--decode`) cannot, and the output ends with `Ignored by
 gap is visible. On `lerobot/pusht` (832 KB without videos) this reports the same three warnings as on the full
 dataset. Download the videos and drop `--ignore` when you want the video checks.
 
+### GitHub Action
+
+```yaml
+- uses: actions/checkout@v7
+- uses: michele-xilo/leCop@v0
+  with:
+    path: path/to/dataset      # a dataset, or a directory to search (default: .)
+    version: latest            # or a version such as 0.3.0
+    args: --ignore idle_episode  # extra `lecop validate` flags
+```
+
+The step downloads the release binary for the runner (Linux, macOS and Windows; x86_64 and, on Linux and macOS,
+ARM), checks its SHA-256, and runs `lecop validate --format github`, so findings appear as annotations. Errors fail
+the step; warnings do not. To fail on a warning, promote its code with `error = [...]` in `lecop.toml`. leCop reads
+local paths: to check a Hub dataset, download it in an earlier step (see the metadata-only fetch above).
+
+### pre-commit
+
+```yaml
+repos:
+  - repo: https://github.com/michele-xilo/leCop
+    rev: v0.3.0
+    hooks:
+      - id: lecop
+        args: [path/to/dataset]
+```
+
+The hook runs the `lecop` on your `PATH` (`uv tool install lecop`), because pre-commit would otherwise have to build
+the Rust binary.
+
 ## Config file
 
 `lecop.toml` in the scanned directory or any parent (nearest wins):

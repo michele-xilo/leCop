@@ -1,0 +1,8 @@
+# Runs `lecop validate` on the dataset directory given in `args`; install lecop first (`uv tool install lecop`).
+- id: lecop
+  name: leCop dataset check
+  description: Check a LeRobot dataset for broken episodes.
+  entry: lecop validate
+  language: system
+  pass_filenames: false
+  always_run: true

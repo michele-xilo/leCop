@@ -1,0 +1,54 @@
+name: Action
+
+# Tests action.yml against the published release binaries, on the three runner families.
+on:
+  push:
+    branches: [main]
+    paths: [action.yml, .github/fixtures/**, .github/workflows/action.yml]
+  pull_request:
+    paths: [action.yml, .github/fixtures/**, .github/workflows/action.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  action:
+    name: Action (${{ matrix.os }}, ${{ matrix.version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        version: [latest]
+        include:
+          - os: ubuntu-latest
+            version: 0.3.0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Healthy dataset passes
+        uses: ./
+        with:
+          path: .github/fixtures/healthy
+          version: ${{ matrix.version }}
+
+      - name: Make a faulty copy, with a data file missing
+        shell: bash
+        run: |
+          cp -R .github/fixtures/healthy "$RUNNER_TEMP/faulty"
+          rm "$RUNNER_TEMP/faulty/data/chunk-000/episode_000001.parquet"
+          echo "FAULTY=$RUNNER_TEMP/faulty" >> "$GITHUB_ENV"
+
+      - name: Faulty dataset fails the step
+        id: faulty
+        continue-on-error: true
+        uses: ./
+        with:
+          path: ${{ env.FAULTY }}
+          version: ${{ matrix.version }}
+
+      - name: The faulty step failed and left annotations
+        shell: bash
+        run: |
+          test "${{ steps.faulty.outcome }}" = failure
+          lecop validate --format github "$FAULTY" | grep -q '^::error'
