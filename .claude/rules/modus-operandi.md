@@ -99,5 +99,7 @@ supported format version. A README that claims less or more than the code does i
 - Branch from `main` for feature work, naming the branch after the issue when there is one
   (`feat/12-short-name`, see `issues.md`). The repository is public: ask before pushing or publishing
   (crates.io, releases).
+- The moving `v0` tag the GitHub Action is used by is moved by `.github/workflows/action-tag.yml` after a successful
+  Release run. Do not move it by hand; if the workflow fails, fix it.
 - Commit messages: short imperative summary, prefixed with the area where it helps
   (`validate: ...`, `dataset: ...`, `docs: ...`), body explains *why* if non-obvious.
