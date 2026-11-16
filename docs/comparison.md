@@ -101,20 +101,20 @@ The datasets above are all fairly small, so we wanted to see what happens on a b
 27,500 episodes, just over 6 million frames and three cameras, 75 GB on disk (v3.0 at commit `1287871`, 30 fps, AV1
 video at 640x480, 289 MB of parquet and the rest video).
 
-We ran the three tools one after the other on an otherwise quiet workstation (AMD Ryzen 9 7900X with 24 threads,
-124 GB RAM, Linux, warm page cache; leCop 0.1.2 built with the AV1 assembly that every x86_64 Linux build has since
-0.2.0, Rust 1.99.0; lerobot-doctor 0.2.0 and physlint 0.4.0 from PyPI on Python 3.14.3; same settings as
-`scripts/compare.py`, times and peak memory from `/usr/bin/time -v`). Here is what we got:
+We ran the three tools one after the other on a workstation (AMD Ryzen 9 7900X with 24 threads, 124 GB RAM, Linux,
+warm page cache, default thread count; leCop 0.3.0 installed with `cargo install lecop --locked` and no nasm, Rust
+1.99.0; lerobot-doctor 0.2.0 and physlint 0.4.0 from PyPI on Python 3.14.3; same settings as `scripts/compare.py`,
+times and peak memory from `/usr/bin/time -v`). Here is what we got:
 
 | Run | leCop | lerobot-doctor | physlint |
 |---|---|---|---|
-| Without video decoding | 🏆 **0.72 s**, 1.9 GB | 50 min, 5.5 GB | 4 h 42 min, 1.1 GB |
-| Decoding every frame | 🏆 **11 min 47 s**, 15 GB | n/a | n/a |
+| Without video decoding | 🏆 **0.73 s**, 1.8 GB | 50 min, 5.5 GB | 4 h 42 min, 1.1 GB |
+| Decoding every frame | 🏆 **11 min 32 s**, 15 GB | n/a | n/a |
 
-The leCop times are medians (3 runs without decoding, 2 with, each after a warm-up). The other two are a single run
-each, since one physlint run takes almost five hours (an earlier run of each, with a desktop file indexer busy in the
-background, took 8% and 10% longer). physlint's decoding run read no frames from these AV1 videos, so there is no
-number for it in the second row.
+The leCop times are medians (3 runs without decoding, 2 with, each after a warm-up), with another job using under one
+core in the background. The other two are a single run each on an otherwise quiet machine, since one physlint run
+takes almost five hours (an earlier run of each, with a desktop file indexer busy in the background, took 8% and 10%
+longer). physlint's decoding run read no frames from these AV1 videos, so there is no number for it in the second row.
 
 ### Why leCop is fast
 
@@ -126,8 +126,8 @@ number for it in the second row.
   RoboTwin's 74 GB of video frames is read.
 - **Work runs on every core.** Data files and videos are independent, so leCop checks them in parallel. With
   `--decode`, each video is also split at its keyframes into segments decoded in parallel, so even one large file uses
-  every core. On RoboTwin leCop averaged four cores without decoding and all 24 when decoding (2384% CPU).
+  every core. On RoboTwin leCop averaged four cores without decoding and all 24 when decoding (2353% CPU).
 - **Compiled Rust, with assembly where it counts.** There is no interpreter to start: leCop starts in 1 ms. Columns
   are read as typed Arrow arrays and checked in compiled loops, built with link-time optimization. AV1 frames are
-  decoded with rav1d's hand-written SIMD assembly. On RoboTwin, a build without it was still decoding after 41 minutes;
-  the build with it took 14 min 31 s under the same background load.
+  decoded with rav1d's hand-written SIMD assembly, 4.6 to 14 times faster than without it on x86_64
+  ([figures](usage.md#decoding-frames)).
