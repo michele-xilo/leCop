@@ -1,0 +1,61 @@
+name: leCop
+description: Check a LeRobot dataset for broken episodes, in milliseconds.
+author: michele-xilo
+branding:
+  icon: check-circle
+  color: gray-dark
+
+inputs:
+  path:
+    description: Dataset directory, or a directory to search for datasets.
+    default: .
+  version:
+    description: leCop version to install, such as 0.3.0, or latest.
+    default: latest
+  args:
+    description: Extra flags for `lecop validate`, such as `--ignore idle_episode` or `--decode`.
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Install leCop
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        ext=tar.xz
+        case "$RUNNER_OS-$RUNNER_ARCH" in
+          Linux-X64) target=x86_64-unknown-linux-gnu ;;
+          Linux-ARM64) target=aarch64-unknown-linux-gnu ;;
+          macOS-X64) target=x86_64-apple-darwin ;;
+          macOS-ARM64) target=aarch64-apple-darwin ;;
+          Windows-X64) target=x86_64-pc-windows-msvc; ext=zip ;;
+          *) echo "::error::leCop has no release binary for $RUNNER_OS $RUNNER_ARCH"; exit 1 ;;
+        esac
+        base=https://github.com/michele-xilo/leCop/releases
+        if [ "$VERSION" = latest ]; then url="$base/latest/download"; else url="$base/download/v${VERSION#v}"; fi
+        dir="$RUNNER_TEMP/lecop"
+        mkdir -p "$dir"
+        cd "$dir"
+        curl -fsSLO "$url/lecop-$target.$ext"
+        curl -fsSLO "$url/lecop-$target.$ext.sha256"
+        if command -v sha256sum >/dev/null; then sha256sum -c "lecop-$target.$ext.sha256"; else shasum -a 256 -c "lecop-$target.$ext.sha256"; fi
+        if [ "$ext" = zip ]; then unzip -q "lecop-$target.zip" -d "lecop-$target"; else tar -xJf "lecop-$target.tar.xz"; fi
+        # The Windows zip has no top-level folder, the tarballs do.
+        bin="$dir/lecop-$target"
+        if command -v cygpath >/dev/null; then bin=$(cygpath -w "$bin"); fi
+        echo "$bin" >> "$GITHUB_PATH"
+
+    # `github` format puts each finding on the pull request as an annotation. Exit 1 on errors fails the step;
+    # warnings do not (promote one with `error = [...]` in lecop.toml).
+    - name: Check the dataset
+      shell: bash
+      env:
+        DATASET: ${{ inputs.path }}
+        EXTRA_ARGS: ${{ inputs.args }}
+      run: |
+        set -f
+        # shellcheck disable=SC2086
+        lecop validate --format github $EXTRA_ARGS -- "$DATASET"

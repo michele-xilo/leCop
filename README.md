@@ -66,6 +66,19 @@ clean, 1 means errors, so it works as a step in a data pipeline (see [In a pipel
 [release binaries](https://github.com/michele-xilo/lecop/releases) and `cargo install`) decodes AV1 with hand-written
 assembly on ARM and on x86_64 Linux, Windows and macOS.
 
+### In CI
+
+A GitHub Actions step that checks a dataset in the repository (or one an earlier step downloaded) and shows each
+finding as an annotation on the pull request:
+
+```yaml
+- uses: michele-xilo/leCop@v0
+  with:
+    path: path/to/dataset
+```
+
+Options and a pre-commit hook are in [In a pipeline](docs/usage.md#in-a-pipeline).
+
 ### From Python
 
 The PyPI wheel also installs a small `lecop` module that runs the bundled binary and returns the report:

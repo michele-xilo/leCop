@@ -1,0 +1,90 @@
+name: Action
+
+# Tests action.yml against the published release binaries, on the three runner families. Besides changes to the
+# action, it runs after every release and weekly: the action downloads `latest`, so a changed asset name or archive
+# layout in a release, or a new runner image, breaks users without touching this repository. A failure outside a
+# pull request opens (or comments on) an issue.
+on:
+  push:
+    branches: [main]
+    paths: [action.yml, .github/fixtures/**, .github/workflows/action.yml]
+  pull_request:
+    paths: [action.yml, .github/fixtures/**, .github/workflows/action.yml]
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  action:
+    name: Action (${{ matrix.os }}, ${{ matrix.version }})
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        version: [latest]
+        include:
+          - os: ubuntu-latest
+            version: 0.3.0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Healthy dataset passes
+        uses: ./
+        with:
+          path: .github/fixtures/healthy
+          version: ${{ matrix.version }}
+
+      - name: Make a faulty copy, with a data file missing
+        shell: bash
+        run: |
+          cp -R .github/fixtures/healthy "$RUNNER_TEMP/faulty"
+          rm "$RUNNER_TEMP/faulty/data/chunk-000/episode_000001.parquet"
+          echo "FAULTY=$RUNNER_TEMP/faulty" >> "$GITHUB_ENV"
+
+      - name: Faulty dataset fails the step
+        id: faulty
+        continue-on-error: true
+        uses: ./
+        with:
+          path: ${{ env.FAULTY }}
+          version: ${{ matrix.version }}
+
+      - name: The faulty step failed and left annotations
+        shell: bash
+        run: |
+          test "${{ steps.faulty.outcome }}" = failure
+          # lecop exits 1 on the faulty dataset, which `pipefail` would turn into a failure of the pipe.
+          out=$(lecop validate --format github "$FAULTY" || true)
+          echo "$out" | grep -q '^::error'
+
+  report:
+    name: Report a failure
+    needs: action
+    if: failure() && github.event_name != 'pull_request' && github.event_name != 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Open or update the issue
+        run: |
+          title="The GitHub Action fails against the latest release"
+          n=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
+          if [ -n "$n" ]; then
+            gh issue comment "$n" --body "Failed again (${{ github.event_name }}): $RUN_URL"
+          else
+            gh issue create --title "$title" --label "P1,bug" --body "The scheduled or post-release check of \`action.yml\` failed (${{ github.event_name }}): $RUN_URL
+
+          Users of \`uses: michele-xilo/leCop@v0\` are likely affected. Likely causes: a release asset renamed or re-laid-out, or a changed runner image. Priority: P1, because it breaks CI for every user of the action."
+          fi
