@@ -1,0 +1,42 @@
+name: Action tag
+
+# After a release, point the moving major tag (v0 while the version is 0.x) at the released commit, so
+# `uses: michele-xilo/leCop@v0` gets it. cargo-dist creates the release with the workflow token, which does not
+# trigger a `release` event, so this follows the Release workflow instead. It never checks out or runs the
+# tagged code: it only moves a ref through the API.
+on:
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  move-tag:
+    name: Move the major tag
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      startsWith(github.event.workflow_run.head_branch, 'v')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ github.event.workflow_run.head_branch }}
+      SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Point the major tag at the release
+        run: |
+          # Stable releases only: v1.2.3, not v1.2.3-rc.1.
+          if ! echo "$RELEASE_TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "$RELEASE_TAG is not a stable release tag, leaving the major tag alone"
+            exit 0
+          fi
+          major="${RELEASE_TAG%%.*}"
+          if gh api "repos/$GH_REPO/git/ref/tags/$major" >/dev/null 2>&1; then
+            gh api -X PATCH "repos/$GH_REPO/git/refs/tags/$major" -f sha="$SHA" -F force=true
+          else
+            gh api -X POST "repos/$GH_REPO/git/refs" -f ref="refs/tags/$major" -f sha="$SHA"
+          fi
+          echo "$major now points at $SHA ($RELEASE_TAG)"
