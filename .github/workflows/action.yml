@@ -51,4 +51,6 @@ jobs:
         shell: bash
         run: |
           test "${{ steps.faulty.outcome }}" = failure
-          lecop validate --format github "$FAULTY" | grep -q '^::error'
+          # lecop exits 1 on the faulty dataset, which `pipefail` would turn into a failure of the pipe.
+          out=$(lecop validate --format github "$FAULTY" || true)
+          echo "$out" | grep -q '^::error'

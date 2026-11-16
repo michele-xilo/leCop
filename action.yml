@@ -42,7 +42,8 @@ runs:
         curl -fsSLO "$url/lecop-$target.$ext"
         curl -fsSLO "$url/lecop-$target.$ext.sha256"
         if command -v sha256sum >/dev/null; then sha256sum -c "lecop-$target.$ext.sha256"; else shasum -a 256 -c "lecop-$target.$ext.sha256"; fi
-        if [ "$ext" = zip ]; then unzip -q "lecop-$target.zip"; else tar -xJf "lecop-$target.tar.xz"; fi
+        if [ "$ext" = zip ]; then unzip -q "lecop-$target.zip" -d "lecop-$target"; else tar -xJf "lecop-$target.tar.xz"; fi
+        # The Windows zip has no top-level folder, the tarballs do.
         bin="$dir/lecop-$target"
         if command -v cygpath >/dev/null; then bin=$(cygpath -w "$bin"); fi
         echo "$bin" >> "$GITHUB_PATH"
