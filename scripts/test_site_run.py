@@ -99,6 +99,13 @@ class RecordTest(unittest.TestCase):
         self.assertEqual(issues, [{"severity": "warning", "episode": 54, "code": "action_jump", "message": "1 frame-to-frame jump"}])
         self.assertNotIn("/home/someone", json.dumps(record()))
 
+    def test_messages_name_files_relative_to_the_dataset(self):
+        report = copy.deepcopy(REPORT)
+        report["issues"][0]["message"] = "/home/someone/datasets/pusht/data/chunk-000/file-001.parquet"
+        report["issues"].append({**report["issues"][0], "message": "reading /home/someone/datasets/pusht: denied"})
+        messages = [i["message"] for i in site_run.build_record(ENTRY, INFO, report, [10.0], META)["issues"]]
+        self.assertEqual(messages, ["data/chunk-000/file-001.parquet", "reading .: denied"])
+
     def test_dataset_wide_issue_has_null_episode(self):
         report = copy.deepcopy(REPORT)
         del report["issues"][0]["episode"]

@@ -73,12 +73,16 @@ def build_record(entry, info, report, samples_ms, meta):
         },
         "errors": report["errors"],
         "warnings": report["warnings"],
-        # The report's `dataset` is the local path: not part of a public record.
+        # The report's `dataset` is the local path: not part of a public record, nor are messages that quote it.
         "issues": [
-            {"severity": i["severity"], "episode": i.get("episode"), "code": i["code"], "message": i["message"]}
+            {"severity": i["severity"], "episode": i.get("episode"), "code": i["code"], "message": relative(i["message"], i["dataset"])}
             for i in report["issues"]
         ],
     }
+
+
+def relative(message, root):
+    return message.replace(root + "/", "").replace(root, ".")
 
 
 def load_schema():
