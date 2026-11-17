@@ -1,0 +1,46 @@
+{
+  "name": "pusht",
+  "repo": "lerobot/pusht",
+  "revision": "6e1d9c95aaf8abb19342e723935b6af7c54b5903",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 206,
+    "frames": 25650,
+    "fps": 10,
+    "robot": "unknown"
+  },
+  "run": {
+    "wall_ms": 13.9,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 3,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": 54,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 159,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 174,
+      "code": "episode_length_outlier",
+      "message": "246 frames, much longer than the other episodes (mean 125, std 36 over 206 episodes)"
+    }
+  ]
+}

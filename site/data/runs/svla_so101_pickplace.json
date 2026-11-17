@@ -1,0 +1,27 @@
+{
+  "name": "svla_so101_pickplace",
+  "repo": "lerobot/svla_so101_pickplace",
+  "revision": "e18e43de5e31997effab6abbe3810ff0e2e637d5",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 50,
+    "frames": 11939,
+    "fps": 30,
+    "robot": "so100_follower"
+  },
+  "run": {
+    "wall_ms": 8.3,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 0,
+  "issues": []
+}

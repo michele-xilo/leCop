@@ -1,0 +1,112 @@
+{
+  "name": "c_so101_my_task_50ep_20261107_20261107_191948",
+  "repo": "ei1234/so101_my_task_50ep_20261107_20261107_191948",
+  "revision": "73b42cc861cce4a43a2b313c192ccb012d842d06",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 50,
+    "frames": 37184,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 19.2,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 14,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": 0,
+      "code": "action_frozen",
+      "message": "action is identical for 10.5 s (316 frames) from frame 328"
+    },
+    {
+      "severity": "warning",
+      "episode": 14,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 14,
+      "code": "action_frozen",
+      "message": "action is identical for 6.3 s (191 frames) from frame 499"
+    },
+    {
+      "severity": "warning",
+      "episode": 15,
+      "code": "action_frozen",
+      "message": "action is identical for 6.6 s (198 frames) from frame 437"
+    },
+    {
+      "severity": "warning",
+      "episode": 18,
+      "code": "idle_episode",
+      "message": "64% of frames repeat the previous action; it first changes at frame 472 and last at frame 743 of 744"
+    },
+    {
+      "severity": "warning",
+      "episode": 20,
+      "code": "action_frozen",
+      "message": "action is identical for 4.4 s (132 frames) from frame 567"
+    },
+    {
+      "severity": "warning",
+      "episode": 24,
+      "code": "action_frozen",
+      "message": "action is identical for 6.6 s (199 frames) from frame 500"
+    },
+    {
+      "severity": "warning",
+      "episode": 28,
+      "code": "idle_episode",
+      "message": "50% of frames repeat the previous action; it first changes at frame 21 and last at frame 545 of 743"
+    },
+    {
+      "severity": "warning",
+      "episode": 35,
+      "code": "action_frozen",
+      "message": "action is identical for 3.2 s (96 frames) from frame 484"
+    },
+    {
+      "severity": "warning",
+      "episode": 38,
+      "code": "idle_episode",
+      "message": "53% of frames repeat the previous action; it first changes at frame 44 and last at frame 396 of 744"
+    },
+    {
+      "severity": "warning",
+      "episode": 43,
+      "code": "idle_episode",
+      "message": "52% of frames repeat the previous action; it first changes at frame 72 and last at frame 512 of 745"
+    },
+    {
+      "severity": "warning",
+      "episode": 44,
+      "code": "action_frozen",
+      "message": "action is identical for 6.8 s (205 frames) from frame 437"
+    },
+    {
+      "severity": "warning",
+      "episode": 46,
+      "code": "idle_episode",
+      "message": "54% of frames repeat the previous action; it first changes at frame 1 and last at frame 373 of 744"
+    },
+    {
+      "severity": "warning",
+      "episode": 48,
+      "code": "action_frozen",
+      "message": "action is identical for 5.1 s (153 frames) from frame 459"
+    }
+  ]
+}

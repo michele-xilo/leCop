@@ -1,0 +1,27 @@
+{
+  "name": "v3_aloha_sim_transfer_cube_human",
+  "repo": "lerobot/aloha_sim_transfer_cube_human",
+  "revision": "6a43d500f101255823a9d2b9dc244eeb01a2cd31",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 50,
+    "frames": 20000,
+    "fps": 50,
+    "robot": "aloha"
+  },
+  "run": {
+    "wall_ms": 9.1,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 0,
+  "issues": []
+}

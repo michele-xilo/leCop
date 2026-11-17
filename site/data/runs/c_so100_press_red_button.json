@@ -1,0 +1,220 @@
+{
+  "name": "c_so100_press_red_button",
+  "repo": "jchandru08/so100_press_red_button",
+  "revision": "b8544ee7cb9075efbf5f4d2c49f7a6aa93fe0e09",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 29,
+    "frames": 19028,
+    "fps": 30,
+    "robot": "so100"
+  },
+  "run": {
+    "wall_ms": 9.3,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 22,
+  "warnings": 10,
+  "issues": [
+    {
+      "severity": "error",
+      "episode": null,
+      "code": "frame_count",
+      "message": "info.json says 19028 frames, episode lengths sum to 17156"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 5 reaches 20 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 7 is at its minimum (186.064453125) in 38.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 8 is at its maximum (173.408203125) in 13.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 11 is at its minimum (0) in 12.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 5 reaches 23 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 7 is at its minimum (185.625) in 13.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 8 is at its maximum (173.583984375) in 43.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 11 is at its minimum (0.7735583186149597) in 17.2% of the frames"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "video_frame_count",
+      "message": "observation.images.top has 592 frames, episode has 594"
+    },
+    {
+      "severity": "error",
+      "episode": 1,
+      "code": "video_frame_count",
+      "message": "observation.images.top has 588 frames, episode has 593"
+    },
+    {
+      "severity": "error",
+      "episode": 7,
+      "code": "video_frame_count",
+      "message": "observation.images.left has 591 frames, episode has 588"
+    },
+    {
+      "severity": "error",
+      "episode": 8,
+      "code": "video_frame_count",
+      "message": "observation.images.top has 592 frames, episode has 591"
+    },
+    {
+      "severity": "error",
+      "episode": 11,
+      "code": "video_frame_count",
+      "message": "observation.images.left has 590 frames, episode has 591"
+    },
+    {
+      "severity": "error",
+      "episode": 14,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000014.parquet has no rows with episode_index 14"
+    },
+    {
+      "severity": "error",
+      "episode": 15,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000015.parquet has no rows with episode_index 15"
+    },
+    {
+      "severity": "error",
+      "episode": 16,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000016.parquet has no rows with episode_index 16"
+    },
+    {
+      "severity": "warning",
+      "episode": 17,
+      "code": "stats_mismatch",
+      "message": "action: dimension 0 min is -15.380859 in episodes_stats.jsonl but -27.509766 in the data (and 41 more differences); episodes_stats.jsonl is out of date for this episode"
+    },
+    {
+      "severity": "warning",
+      "episode": 17,
+      "code": "stats_mismatch",
+      "message": "observation.state: dimension 0 min is -14.941406 in episodes_stats.jsonl but -27.421875 in the data (and 41 more differences); episodes_stats.jsonl is out of date for this episode"
+    },
+    {
+      "severity": "error",
+      "episode": 17,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000017.parquet has no rows with episode_index 17"
+    },
+    {
+      "severity": "error",
+      "episode": 18,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000018.parquet has no rows with episode_index 18"
+    },
+    {
+      "severity": "error",
+      "episode": 19,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000019.parquet has no rows with episode_index 19"
+    },
+    {
+      "severity": "error",
+      "episode": 20,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000020.parquet has no rows with episode_index 20"
+    },
+    {
+      "severity": "error",
+      "episode": 21,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000021.parquet has no rows with episode_index 21"
+    },
+    {
+      "severity": "error",
+      "episode": 22,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000022.parquet has no rows with episode_index 22"
+    },
+    {
+      "severity": "error",
+      "episode": 23,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000023.parquet has no rows with episode_index 23"
+    },
+    {
+      "severity": "error",
+      "episode": 24,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000024.parquet has no rows with episode_index 24"
+    },
+    {
+      "severity": "error",
+      "episode": 25,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000025.parquet has no rows with episode_index 25"
+    },
+    {
+      "severity": "error",
+      "episode": 26,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000026.parquet has no rows with episode_index 26"
+    },
+    {
+      "severity": "error",
+      "episode": 27,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000027.parquet has no rows with episode_index 27"
+    },
+    {
+      "severity": "error",
+      "episode": 28,
+      "code": "video_frame_count",
+      "message": "observation.images.left has 592 frames, episode has 589"
+    },
+    {
+      "severity": "error",
+      "episode": 28,
+      "code": "episode_rows_missing",
+      "message": "data/chunk-000/episode_000028.parquet has no rows with episode_index 28"
+    }
+  ]
+}

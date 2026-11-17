@@ -1,0 +1,46 @@
+{
+  "name": "c_piperx-two-color-block-sorting",
+  "repo": "tianxiwei/piperx-two-color-block-sorting",
+  "revision": "7b210f57c5d843162fe3ac5bfbb40f63a7db88c5",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 60,
+    "frames": 12519,
+    "fps": 30,
+    "robot": "piper_standard"
+  },
+  "run": {
+    "wall_ms": 9.1,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 3,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `action` feature, which LeRobot policies expect; running the action checks on `actions`"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `observation.state` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "actions: dimension 6 is at its maximum (0.07000000029802322) in 19.7% of the frames"
+    }
+  ]
+}

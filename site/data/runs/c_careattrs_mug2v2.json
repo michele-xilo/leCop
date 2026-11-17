@@ -1,0 +1,46 @@
+{
+  "name": "c_careattrs_mug2v2",
+  "repo": "Aaronng456/careattrs_mug2v2",
+  "revision": "7ed6203cdb625a01e0a045651da4a48edda95683",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 30,
+    "frames": 15085,
+    "fps": 30,
+    "robot": "so101_follower"
+  },
+  "run": {
+    "wall_ms": 7.6,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 3,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 1 is at its minimum (-99.99999237060547) in 15.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 3 is at its maximum (100) in 19.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 5 is at its minimum (0.0000008669766202729079) in 66.0% of the frames"
+    }
+  ]
+}

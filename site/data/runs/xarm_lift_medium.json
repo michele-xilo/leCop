@@ -1,0 +1,52 @@
+{
+  "name": "xarm_lift_medium",
+  "repo": "lerobot/xarm_lift_medium",
+  "revision": "89d5752c021e580d26d90ceec7e8192ef01e7c30",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 800,
+    "frames": 20000,
+    "fps": 15,
+    "robot": "unknown"
+  },
+  "run": {
+    "wall_ms": 35.3,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 4,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 0 is at its maximum (1) in 19.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 1 is at its minimum (-1) in 16.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 2 is at its minimum (-1) in 15.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 3 is at its minimum (-1) in 19.0% of the frames"
+    }
+  ]
+}

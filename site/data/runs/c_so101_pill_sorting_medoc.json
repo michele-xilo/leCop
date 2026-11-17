@@ -1,0 +1,27 @@
+{
+  "name": "c_so101_pill_sorting_medoc",
+  "repo": "TomasAnderegg/so101_pill_sorting_medoc",
+  "revision": "5fa2a224f01339fe8fdde8a076eda75e70ad2d06",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 24,
+    "frames": 14662,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 28.3,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 0,
+  "issues": []
+}

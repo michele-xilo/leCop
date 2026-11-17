@@ -1,0 +1,52 @@
+{
+  "name": "c_so101_block_box_50episodes_final_20261107_190045",
+  "repo": "kei111111/so101_block_box_50episodes_final_20261107_190045",
+  "revision": "40f7429398dcb3e02471df8c882cb68a75656f45",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 50,
+    "frames": 10971,
+    "fps": 15,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 12.0,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 4,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "action: dimension 4 of the last quarter of the episodes is 4.4 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "observation.state: dimension 4 of the last quarter of the episodes is 4.5 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": 31,
+      "code": "episode_length_outlier",
+      "message": "444 frames, much longer than the other episodes (mean 219, std 67 over 50 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 37,
+      "code": "episode_length_outlier",
+      "message": "449 frames, much longer than the other episodes (mean 219, std 67 over 50 episodes)"
+    }
+  ]
+}

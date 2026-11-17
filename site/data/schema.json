@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "leCop results record: one run on one dataset",
+  "type": "object",
+  "required": ["name", "repo", "revision", "dataset", "run", "errors", "warnings", "issues"],
+  "properties": {
+    "name": {"type": "string"},
+    "repo": {"type": "string"},
+    "revision": {"type": "string"},
+    "dataset": {
+      "type": "object",
+      "required": ["format", "episodes", "frames", "fps", "robot"],
+      "properties": {
+        "format": {"type": "string"},
+        "episodes": {"type": "integer"},
+        "frames": {"type": "integer"},
+        "fps": {"type": "number"},
+        "robot": {"type": "string"}
+      }
+    },
+    "run": {
+      "type": "object",
+      "required": ["wall_ms", "runs", "cache", "threads", "lecop_version", "lecop_commit", "rustc", "machine", "os", "date"],
+      "properties": {
+        "wall_ms": {"type": "number"},
+        "runs": {"type": "integer"},
+        "cache": {"type": "string", "enum": ["warm"]},
+        "threads": {"type": "integer"},
+        "lecop_version": {"type": "string"},
+        "lecop_commit": {"type": "string"},
+        "rustc": {"type": "string"},
+        "machine": {"type": "string"},
+        "os": {"type": "string"},
+        "date": {"type": "string"}
+      }
+    },
+    "errors": {"type": "integer"},
+    "warnings": {"type": "integer"},
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "episode", "code", "message"],
+        "properties": {
+          "severity": {"type": "string", "enum": ["error", "warning"]},
+          "episode": {"type": ["integer", "null"]},
+          "code": {"type": "string"},
+          "message": {"type": "string"}
+        }
+      }
+    }
+  }
+}
