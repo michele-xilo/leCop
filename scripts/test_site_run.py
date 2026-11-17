@@ -65,6 +65,27 @@ class ScanListTest(unittest.TestCase):
         self.assertEqual(set(r) - {"dataset", "run", "errors", "warnings", "issues"}, {"name", "repo", "revision"})
 
 
+class DecodeRecordTest(unittest.TestCase):
+    LIST = "a/x\tabc\tv3.0\t1.0\t10\tav1\tyes\nb/y\tdef\tv3.0\t1.0\t10\th264\tno\n"
+
+    def test_decode_only_keeps_the_rows_marked_decode_yes(self):
+        self.assertEqual([e["repo"] for e in site_run.read_scan_list(self.LIST, decode_only=True)], ["a/x"])
+        self.assertEqual(len(site_run.read_scan_list(self.LIST)), 2)
+
+    def test_a_decode_run_goes_to_its_own_file(self):
+        self.assertEqual(site_run.record_file("a__x", decode=False), "a__x.json")
+        self.assertEqual(site_run.record_file("a__x", decode=True), "a__x.decode.json")
+
+    def test_a_decode_record_is_valid_and_says_so(self):
+        r = site_run.build_record(ENTRY, INFO, REPORT, [10.0], {**META, "decode": True})
+        self.assertIs(r["run"]["decode"], True)
+        self.assertEqual(site_run.validate(r, site_run.load_schema()), [])
+
+    def test_a_non_boolean_decode_is_rejected(self):
+        r = site_run.build_record(ENTRY, INFO, REPORT, [10.0], {**META, "decode": "yes"})
+        self.assertTrue(any("decode" in e for e in site_run.validate(r, site_run.load_schema())))
+
+
 class RecordTest(unittest.TestCase):
     def test_wall_time_is_the_median_of_the_samples(self):
         self.assertEqual(record()["run"]["wall_ms"], 10.0)
