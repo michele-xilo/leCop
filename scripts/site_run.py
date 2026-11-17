@@ -3,6 +3,7 @@
 
     scripts/site_run.py                    every dataset in datasets/ that is listed in scripts/datasets.tsv
     scripts/site_run.py --only pusht       one of them
+    scripts/site_run.py --scan             every downloaded dataset of scripts/scan-datasets.tsv (datasets/scan/)
     scripts/site_run.py --check            validate every site/data/runs/*.json against site/data/schema.json
 
 Each record is self-contained (dataset revision, leCop version and commit, machine, threads), so records made on
@@ -32,6 +33,16 @@ def read_registry(text):
         if line.strip() and not line.startswith("#"):
             name, repo, revision = line.split("\t")[:3]
             out.append({"name": name, "repo": repo, "revision": revision})
+    return out
+
+
+def read_scan_list(text):
+    """(name, repo, revision) of each dataset in scripts/scan-datasets.tsv, named owner__name as on disk."""
+    out = []
+    for line in text.splitlines():
+        if line.strip() and not line.startswith("#"):
+            repo, revision = line.split("\t")[:2]
+            out.append({"name": repo.replace("/", "__"), "repo": repo, "revision": revision})
     return out
 
 
@@ -128,11 +139,15 @@ def time_ms(cmd, runs):
     return samples
 
 
-def run_dataset(entry, lecop, runs, meta):
-    path = os.path.join(ROOT, "datasets", entry["name"])
+def run_dataset(entry, path, lecop, runs, meta):
     with open(os.path.join(path, "meta", "info.json")) as f:
         info = json.load(f)
-    report = json.loads(subprocess.run([lecop, "validate", "--format", "json", path], capture_output=True, text=True).stdout)
+    proc = subprocess.run([lecop, "validate", "--format", "json", path], capture_output=True, text=True)
+    try:
+        report = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        # A crash gets no record: it is a P0 bug to file, not a result to publish.
+        raise RuntimeError(f"lecop exited {proc.returncode} without a JSON report: {proc.stderr.strip()[-300:]}")
     return build_record(entry, info, report, time_ms([lecop, "validate", "-q", path], runs), meta)
 
 
@@ -154,25 +169,39 @@ def main():
     ap.add_argument("--runs", type=int, default=5, help="timed runs per dataset (default 5)")
     ap.add_argument("--lecop", default=os.environ.get("LECOP", os.path.join(ROOT, "target/release/lecop")))
     ap.add_argument("--check", action="store_true", help="validate the committed records and exit")
+    ap.add_argument("--scan", action="store_true", help="the Hub scan list, scripts/scan-datasets.tsv, in datasets/scan/")
     args = ap.parse_args()
     if args.check:
         return check()
-    with open(os.path.join(ROOT, "scripts", "datasets.tsv")) as f:
-        entries = read_registry(f.read())
+    if args.scan:
+        with open(os.path.join(ROOT, "scripts", "scan-datasets.tsv")) as f:
+            entries = read_scan_list(f.read())
+        base, fetch, ready = os.path.join(ROOT, "datasets", "scan"), "scripts/fetch-scan-datasets.sh --yes", ".complete"
+    else:
+        with open(os.path.join(ROOT, "scripts", "datasets.tsv")) as f:
+            entries = read_registry(f.read())
+        base, fetch, ready = os.path.join(ROOT, "datasets"), "scripts/fetch-datasets.sh --yes", ""
     meta = run_meta(args.lecop)
     os.makedirs(RUNS_DIR, exist_ok=True)
+    crashed = 0
     for entry in entries:
         if args.only and entry["name"] not in args.only:
             continue
-        if not os.path.isdir(os.path.join(ROOT, "datasets", entry["name"])):
-            print(f"missing  {entry['name']}: run scripts/fetch-datasets.sh --yes {entry['name']}")
+        path = os.path.join(base, entry["name"])
+        if not os.path.exists(os.path.join(path, ready)):
+            print(f"missing  {entry['name']}: run {fetch} {entry['repo'] if args.scan else entry['name']}")
             continue
-        record = run_dataset(entry, args.lecop, args.runs, meta)
+        try:
+            record = run_dataset(entry, path, args.lecop, args.runs, meta)
+        except RuntimeError as e:
+            print(f"CRASH    {entry['name']}: {e}")
+            crashed += 1
+            continue
         with open(os.path.join(RUNS_DIR, entry["name"] + ".json"), "w") as f:
             json.dump(record, f, indent=2)
             f.write("\n")
         print(f"{entry['name']}: {record['run']['wall_ms']} ms, {record['errors']}E {record['warnings']}W")
-    return 0
+    return 1 if crashed else 0
 
 
 if __name__ == "__main__":

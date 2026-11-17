@@ -50,6 +50,21 @@ class RegistryTest(unittest.TestCase):
         )
 
 
+class ScanListTest(unittest.TestCase):
+    def test_names_records_owner__name_and_reads_repo_revision(self):
+        text = "# header\n# repo\trevision\tversion\n" "lerobot/libero\tabc123\tv3.0\t1.94\t1693\tav1\tno\n"
+        self.assertEqual(
+            site_run.read_scan_list(text),
+            [{"name": "lerobot__libero", "repo": "lerobot/libero", "revision": "abc123"}],
+        )
+
+    def test_a_scan_record_is_valid_and_has_no_local_path(self):
+        entry = site_run.read_scan_list("lerobot/libero\tabc123\tv3.0\t1.94\t1693\tav1\tno\n")[0]
+        r = site_run.build_record(entry, INFO, REPORT, [10.0], META)
+        self.assertEqual(site_run.validate(r, site_run.load_schema()), [])
+        self.assertEqual(set(r) - {"dataset", "run", "errors", "warnings", "issues"}, {"name", "repo", "revision"})
+
+
 class RecordTest(unittest.TestCase):
     def test_wall_time_is_the_median_of_the_samples(self):
         self.assertEqual(record()["run"]["wall_ms"], 10.0)
