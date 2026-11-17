@@ -1,0 +1,35 @@
+name: Wrong finding
+description: leCop reported something on a dataset of the results site that is not a real fault.
+title: "Wrong finding on <dataset>"
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks. The results site shows what leCop reported, not a verdict. A wrong finding is fixed in leCop or removed from the site.
+        Name public datasets and give figures; do not paste dataset contents, tokens or private data.
+  - type: input
+    id: dataset
+    attributes:
+      label: Dataset and revision
+      description: Filled in by the link on the results site.
+      placeholder: lerobot/pusht @ 6e1d9c9
+    validations:
+      required: true
+  - type: input
+    id: code
+    attributes:
+      label: Issue code
+      placeholder: clipped_dimension
+  - type: input
+    id: lecop_version
+    attributes:
+      label: leCop version
+      placeholder: 0.3.1
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it wrong?
+      description: What the data really is, and how you checked. The command `lecop validate --format full <dataset>` shows where each finding is.
+    validations:
+      required: true
