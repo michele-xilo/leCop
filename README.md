@@ -18,6 +18,8 @@ At the speed of Rust and assembly.**
   <img src="assets/demo.gif" alt="lecop validating a dataset: it lists a video with the wrong number of frames and an idle episode" width="800">
 </p>
 
+See what leCop reports on common LeRobot datasets, and how fast, on the [results site](https://michele-xilo.github.io/leCop/).
+
 ## Quick start
 
 Install it with the tool you already use:
