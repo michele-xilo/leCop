@@ -27,8 +27,9 @@ grep -v '^#' scripts/scan-datasets.tsv | while IFS="$(printf '\t')" read -r repo
   if [ "$free_gb" -lt "$min_free_gb" ]; then
     echo "stopping: $free_gb GB free, below $min_free_gb GB"; exit 1
   fi
+  # No clean-up of a partial download: hf download resumes it, which matters for datasets of tens of thousands of
+  # files that take hours at the Hub's per-file rate limit.
   echo "fetching $repo ($size GB)"
-  rm -rf "$dir"
   if uvx --from huggingface_hub hf download "$repo" --repo-type dataset --revision "$rev" --local-dir "$dir" >/dev/null 2>&1 ||
      { echo "hf download failed, retrying $repo with curl"; curl_fetch "$repo" "$rev" "$dir"; }; then
     touch "$dir/.complete"
