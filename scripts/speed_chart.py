@@ -17,9 +17,6 @@ STYLE = """
 text{font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fill:#24292f}
 .muted{fill:#656d76}.grid{stroke:#d0d7de}.span{stroke:#d0d7de;stroke-width:2}
 .lecop{fill:#b74604}.doctor{fill:#57606a}.physlint{fill:#8c959f}
-@media(prefers-color-scheme:dark){
-text{fill:#e6edf3}.muted{fill:#8d96a0}.grid{stroke:#30363d}.span{stroke:#30363d}
-.lecop{fill:#e8651a}.doctor{fill:#9ea7b3}.physlint{fill:#6e7681}}
 """
 
 
@@ -66,6 +63,9 @@ def svg(tools, rows):
     out = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="{width}" height="{height}" role="img">',
         f"<style>{STYLE}</style>",
+        # Opaque white, with no dark-mode palette: a transparent chart has no contrast on a dark page, and a
+        # light-on-dark palette would be unreadable on this background.
+        '<rect width="100%" height="100%" fill="#ffffff"/>',
     ]
     legend_x = LEFT
     for tool in tools:
