@@ -1,0 +1,1013 @@
+{
+  "name": "Jingyi-Z__sotac",
+  "repo": "Jingyi-Z/sotac",
+  "revision": "7d1afea96bfa96290d339690c5440e67baa700fc",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 163,
+    "frames": 55457,
+    "fps": 30,
+    "robot": "so_sensor_follower"
+  },
+  "run": {
+    "wall_ms": 82.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 164,
+  "warnings": 0,
+  "issues": [
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "feature_dtype",
+      "message": "`observation.sensors.paxini_fingertip` is List(List(Float32, field: 'element'), field: 'element') in the data but info.json declares float32"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 1,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 2,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 3,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 4,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 5,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 6,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 7,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 8,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 9,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 10,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 11,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 12,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 13,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 14,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 15,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 16,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 17,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 18,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 19,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 20,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 21,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 22,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 23,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 24,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 25,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 26,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 27,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 28,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 29,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 30,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 31,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 32,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 33,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 34,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 35,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 36,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 37,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 38,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 39,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 40,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 41,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 42,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 43,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 44,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 45,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 46,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 47,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 48,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 49,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 50,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 51,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 52,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 53,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 54,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 55,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 56,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 57,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 58,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 59,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 60,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 61,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 62,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 63,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 64,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 65,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 66,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 67,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 68,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 69,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 70,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 71,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 72,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 73,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 74,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 75,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 76,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 77,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 78,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 79,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 80,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 81,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 82,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 83,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 84,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 85,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 86,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 87,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 88,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 89,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 90,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 91,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 92,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 93,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 94,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 95,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 96,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 97,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 98,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 99,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 100,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 101,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 102,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 103,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 104,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 105,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 106,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 107,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 108,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 109,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 110,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 111,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 112,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 113,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 114,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 115,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 116,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 117,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 118,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 119,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 120,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 121,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 122,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 123,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 124,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 125,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 126,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 127,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 128,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 129,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 130,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 131,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 132,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 133,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 134,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 135,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 136,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 137,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 138,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 139,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 140,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 141,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 142,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 143,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 144,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 145,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 146,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 147,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 148,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 149,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 150,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 151,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 152,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 153,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 154,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 155,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 156,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 157,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 158,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 159,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 160,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 161,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    },
+    {
+      "severity": "error",
+      "episode": 162,
+      "code": "column_shape",
+      "message": "observation.sensors.paxini_fingertip: 0 values do not fit 55457 rows of width 2"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "name": "ReubenLim__xarm_lite6_gripper_cube_in_box",
+  "repo": "ReubenLim/xarm_lite6_gripper_cube_in_box",
+  "revision": "f0a53ff927402afbd66482eea44b40621c773279",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 50,
+    "frames": 46763,
+    "fps": 30,
+    "robot": "xarm_lite6"
+  },
+  "run": {
+    "wall_ms": 6.3,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 4,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 6 is at its maximum (360) in 73.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.state: dimension 6 (= 360) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": 11,
+      "code": "episode_length_outlier",
+      "message": "1506 frames, much longer than the other episodes (mean 935, std 157 over 50 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 41,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    }
+  ]
+}

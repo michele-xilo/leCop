@@ -1,0 +1,71 @@
+{
+  "name": "MarcelTorne__put_cube_in_bowl_preferences",
+  "repo": "MarcelTorne/put_cube_in_bowl_preferences",
+  "revision": "2ce734ef046ed88035f1fb4bcf2c45a7e6a5c7e7",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 540,
+    "frames": 65083,
+    "fps": 15,
+    "robot": "panda"
+  },
+  "run": {
+    "wall_ms": 2189.0,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": true
+  },
+  "errors": 0,
+  "warnings": 7,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 7 is at its maximum (1) in 43.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "action_jump",
+      "message": "and 42 more episodes with action jumps"
+    },
+    {
+      "severity": "warning",
+      "episode": 130,
+      "code": "action_jump",
+      "message": "3 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 131,
+      "code": "action_jump",
+      "message": "2 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 132,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 135,
+      "code": "action_jump",
+      "message": "3 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 136,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    }
+  ]
+}

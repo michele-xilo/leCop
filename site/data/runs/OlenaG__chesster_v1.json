@@ -1,0 +1,287 @@
+{
+  "name": "OlenaG__chesster_v1",
+  "repo": "OlenaG/chesster_v1",
+  "revision": "b1896a8afd68512117d57566036386ff5ee49ae2",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 201,
+    "frames": 210526,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 99.4,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 38,
+  "warnings": 5,
+  "issues": [
+    {
+      "severity": "error",
+      "episode": 3,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [0.000, 36.833) s is 36.833 s, 1013 frames are 33.767 s"
+    },
+    {
+      "severity": "error",
+      "episode": 3,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [0.000, 36.833) s is 36.833 s, 1013 frames are 33.767 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 6,
+      "code": "episode_length_outlier",
+      "message": "1628 frames, much longer than the other episodes (mean 1047, std 181 over 201 episodes)"
+    },
+    {
+      "severity": "error",
+      "episode": 12,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [42.233, 88.667) s is 46.433 s, 937 frames are 31.233 s"
+    },
+    {
+      "severity": "error",
+      "episode": 12,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [42.233, 88.667) s is 46.433 s, 937 frames are 31.233 s"
+    },
+    {
+      "severity": "error",
+      "episode": 20,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [0.000, 40.500) s is 40.500 s, 1130 frames are 37.667 s"
+    },
+    {
+      "severity": "error",
+      "episode": 20,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [0.000, 40.500) s is 40.500 s, 1130 frames are 37.667 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 25,
+      "code": "episode_length_outlier",
+      "message": "1591 frames, much longer than the other episodes (mean 1047, std 181 over 201 episodes)"
+    },
+    {
+      "severity": "error",
+      "episode": 32,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [0.000, 44.433) s is 44.433 s, 971 frames are 32.367 s"
+    },
+    {
+      "severity": "error",
+      "episode": 32,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [0.000, 44.433) s is 44.433 s, 971 frames are 32.367 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 34,
+      "code": "episode_length_outlier",
+      "message": "1607 frames, much longer than the other episodes (mean 1047, std 181 over 201 episodes)"
+    },
+    {
+      "severity": "error",
+      "episode": 48,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [36.633, 85.767) s is 49.133 s, 1023 frames are 34.100 s"
+    },
+    {
+      "severity": "error",
+      "episode": 48,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [36.633, 85.767) s is 49.133 s, 1023 frames are 34.100 s"
+    },
+    {
+      "severity": "error",
+      "episode": 55,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [62.167, 102.367) s is 40.200 s, 916 frames are 30.533 s"
+    },
+    {
+      "severity": "error",
+      "episode": 55,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [62.167, 102.367) s is 40.200 s, 916 frames are 30.533 s"
+    },
+    {
+      "severity": "error",
+      "episode": 56,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [0.000, 50.933) s is 50.933 s, 1009 frames are 33.633 s"
+    },
+    {
+      "severity": "error",
+      "episode": 56,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [0.000, 50.933) s is 50.933 s, 1009 frames are 33.633 s"
+    },
+    {
+      "severity": "error",
+      "episode": 57,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [50.933, 94.867) s is 43.933 s, 773 frames are 25.767 s"
+    },
+    {
+      "severity": "error",
+      "episode": 57,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [50.933, 94.867) s is 43.933 s, 773 frames are 25.767 s"
+    },
+    {
+      "severity": "error",
+      "episode": 64,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [65.400, 106.000) s is 40.600 s, 1171 frames are 39.033 s"
+    },
+    {
+      "severity": "error",
+      "episode": 64,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [65.400, 106.000) s is 40.600 s, 1171 frames are 39.033 s"
+    },
+    {
+      "severity": "error",
+      "episode": 65,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [0.000, 37.267) s is 37.267 s, 892 frames are 29.733 s"
+    },
+    {
+      "severity": "error",
+      "episode": 65,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [0.000, 37.267) s is 37.267 s, 892 frames are 29.733 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 69,
+      "code": "episode_length_outlier",
+      "message": "178 frames, much shorter than the other episodes (mean 1047, std 181 over 201 episodes)"
+    },
+    {
+      "severity": "error",
+      "episode": 69,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [37.700, 57.200) s is 19.500 s, 178 frames are 5.933 s"
+    },
+    {
+      "severity": "error",
+      "episode": 69,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [37.700, 57.200) s is 19.500 s, 178 frames are 5.933 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 69,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "error",
+      "episode": 73,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [0.000, 36.500) s is 36.500 s, 1023 frames are 34.100 s"
+    },
+    {
+      "severity": "error",
+      "episode": 73,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [0.000, 36.500) s is 36.500 s, 1023 frames are 34.100 s"
+    },
+    {
+      "severity": "error",
+      "episode": 76,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [0.000, 46.100) s is 46.100 s, 1132 frames are 37.733 s"
+    },
+    {
+      "severity": "error",
+      "episode": 76,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [0.000, 46.100) s is 46.100 s, 1132 frames are 37.733 s"
+    },
+    {
+      "severity": "error",
+      "episode": 110,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [0.000, 34.267) s is 34.267 s, 885 frames are 29.500 s"
+    },
+    {
+      "severity": "error",
+      "episode": 110,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [0.000, 34.267) s is 34.267 s, 885 frames are 29.500 s"
+    },
+    {
+      "severity": "error",
+      "episode": 114,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [32.667, 62.800) s is 30.133 s, 838 frames are 27.933 s"
+    },
+    {
+      "severity": "error",
+      "episode": 114,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [32.667, 62.800) s is 30.133 s, 838 frames are 27.933 s"
+    },
+    {
+      "severity": "error",
+      "episode": 124,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [79.267, 116.133) s is 36.867 s, 1001 frames are 33.367 s"
+    },
+    {
+      "severity": "error",
+      "episode": 124,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [79.267, 116.133) s is 36.867 s, 1001 frames are 33.367 s"
+    },
+    {
+      "severity": "error",
+      "episode": 139,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [64.000, 95.767) s is 31.767 s, 925 frames are 30.833 s"
+    },
+    {
+      "severity": "error",
+      "episode": 139,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [64.000, 95.767) s is 31.767 s, 925 frames are 30.833 s"
+    },
+    {
+      "severity": "error",
+      "episode": 168,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [40.600, 73.300) s is 32.700 s, 950 frames are 31.667 s"
+    },
+    {
+      "severity": "error",
+      "episode": 168,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [40.600, 73.300) s is 32.700 s, 950 frames are 31.667 s"
+    },
+    {
+      "severity": "error",
+      "episode": 192,
+      "code": "video_span_length",
+      "message": "observation.images.front: span [0.000, 42.567) s is 42.567 s, 738 frames are 24.600 s"
+    },
+    {
+      "severity": "error",
+      "episode": 192,
+      "code": "video_span_length",
+      "message": "observation.images.hand: span [0.000, 42.567) s is 42.567 s, 738 frames are 24.600 s"
+    }
+  ]
+}

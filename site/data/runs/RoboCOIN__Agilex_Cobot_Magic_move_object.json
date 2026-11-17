@@ -1,0 +1,143 @@
+{
+  "name": "RoboCOIN__Agilex_Cobot_Magic_move_object",
+  "repo": "RoboCOIN/Agilex_Cobot_Magic_move_object",
+  "revision": "f1a3d5b8af04e0bce7f93e5ceef1a608a951f7cf",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 1163,
+    "frames": 478405,
+    "fps": 30,
+    "robot": "Agilex_Cobot_Magic"
+  },
+  "run": {
+    "wall_ms": 71.8,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 2,
+  "warnings": 17,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 3 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 6 is at its maximum (1) in 63.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 19 is at its maximum (1) in 55.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 3 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 6 is at its maximum (1) in 63.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 19 is at its maximum (1) in 55.2% of the frames"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "feature_dtype",
+      "message": "`gripper_open_scale_action` is Float64 in the data but info.json declares float32"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "feature_dtype",
+      "message": "`gripper_open_scale_state` is Float64 in the data but info.json declares float32"
+    },
+    {
+      "severity": "warning",
+      "episode": 108,
+      "code": "episode_length_outlier",
+      "message": "726 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 259,
+      "code": "episode_length_outlier",
+      "message": "724 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 385,
+      "code": "episode_length_outlier",
+      "message": "772 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 682,
+      "code": "episode_length_outlier",
+      "message": "895 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 774,
+      "code": "episode_length_outlier",
+      "message": "699 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 797,
+      "code": "episode_length_outlier",
+      "message": "879 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 823,
+      "code": "episode_length_outlier",
+      "message": "714 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 831,
+      "code": "episode_length_outlier",
+      "message": "710 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 893,
+      "code": "episode_length_outlier",
+      "message": "689 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 894,
+      "code": "episode_length_outlier",
+      "message": "712 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 969,
+      "code": "episode_length_outlier",
+      "message": "689 frames, much longer than the other episodes (mean 411, std 88 over 1163 episodes)"
+    }
+  ]
+}

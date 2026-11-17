@@ -1,0 +1,47 @@
+{
+  "name": "geonmin-kim__SO101-lv4-3color-cube-mat-to-mat-no-human-reset-v1",
+  "repo": "geonmin-kim/SO101-lv4-3color-cube-mat-to-mat-no-human-reset-v1",
+  "revision": "fc8e4090155ad23efd7f6c5269c1b9e54d9999b4",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 246,
+    "frames": 79145,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 24.0,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 3,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": 18,
+      "code": "episode_length_outlier",
+      "message": "591 frames, much longer than the other episodes (mean 322, std 69 over 246 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 100,
+      "code": "episode_length_outlier",
+      "message": "711 frames, much longer than the other episodes (mean 322, std 69 over 246 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 188,
+      "code": "episode_length_outlier",
+      "message": "620 frames, much longer than the other episodes (mean 322, std 69 over 246 episodes)"
+    }
+  ]
+}

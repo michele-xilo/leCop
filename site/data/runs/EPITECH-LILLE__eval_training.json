@@ -1,0 +1,881 @@
+{
+  "name": "EPITECH-LILLE__eval_training",
+  "repo": "EPITECH-LILLE/eval_training",
+  "revision": "aac018d6559add8fbb18aa60575d4420ac3c6d8d",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 0,
+    "frames": 0,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 37.6,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 141,
+  "warnings": 1,
+  "issues": [
+    {
+      "severity": "error",
+      "episode": null,
+      "code": "episode_count",
+      "message": "info.json says 0 episodes, metadata has 80"
+    },
+    {
+      "severity": "error",
+      "episode": null,
+      "code": "frame_count",
+      "message": "info.json says 0 frames, episode lengths sum to 41686"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 5 is at its minimum (0) in 43.6% of the frames"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "episode_index",
+      "message": "episode at position 1 has index 0"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "range_gap",
+      "message": "starts at 29775, previous episode ended at 446"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 29775 through this episode, but frame 0 reads 0 instead of 29775"
+    },
+    {
+      "severity": "error",
+      "episode": 1,
+      "code": "episode_index",
+      "message": "episode at position 2 has index 1"
+    },
+    {
+      "severity": "error",
+      "episode": 1,
+      "code": "range_gap",
+      "message": "starts at 446, previous episode ended at 30370"
+    },
+    {
+      "severity": "error",
+      "episode": 1,
+      "code": "episode_index",
+      "message": "episode at position 3 has index 1"
+    },
+    {
+      "severity": "error",
+      "episode": 1,
+      "code": "range_gap",
+      "message": "starts at 30370, previous episode ended at 892"
+    },
+    {
+      "severity": "error",
+      "episode": 1,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 30370 through this episode, but frame 0 reads 595 instead of 30370"
+    },
+    {
+      "severity": "error",
+      "episode": 2,
+      "code": "episode_index",
+      "message": "episode at position 4 has index 2"
+    },
+    {
+      "severity": "error",
+      "episode": 2,
+      "code": "range_gap",
+      "message": "starts at 892, previous episode ended at 30966"
+    },
+    {
+      "severity": "error",
+      "episode": 2,
+      "code": "episode_index",
+      "message": "episode at position 5 has index 2"
+    },
+    {
+      "severity": "error",
+      "episode": 2,
+      "code": "range_gap",
+      "message": "starts at 30966, previous episode ended at 1339"
+    },
+    {
+      "severity": "error",
+      "episode": 2,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 30966 through this episode, but frame 0 reads 1191 instead of 30966"
+    },
+    {
+      "severity": "error",
+      "episode": 3,
+      "code": "episode_index",
+      "message": "episode at position 6 has index 3"
+    },
+    {
+      "severity": "error",
+      "episode": 3,
+      "code": "range_gap",
+      "message": "starts at 1339, previous episode ended at 31562"
+    },
+    {
+      "severity": "error",
+      "episode": 3,
+      "code": "episode_index",
+      "message": "episode at position 7 has index 3"
+    },
+    {
+      "severity": "error",
+      "episode": 3,
+      "code": "range_gap",
+      "message": "starts at 31562, previous episode ended at 1785"
+    },
+    {
+      "severity": "error",
+      "episode": 3,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 31562 through this episode, but frame 0 reads 1787 instead of 31562"
+    },
+    {
+      "severity": "error",
+      "episode": 4,
+      "code": "episode_index",
+      "message": "episode at position 8 has index 4"
+    },
+    {
+      "severity": "error",
+      "episode": 4,
+      "code": "range_gap",
+      "message": "starts at 1785, previous episode ended at 32158"
+    },
+    {
+      "severity": "error",
+      "episode": 4,
+      "code": "episode_index",
+      "message": "episode at position 9 has index 4"
+    },
+    {
+      "severity": "error",
+      "episode": 4,
+      "code": "range_gap",
+      "message": "starts at 32158, previous episode ended at 2232"
+    },
+    {
+      "severity": "error",
+      "episode": 4,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 32158 through this episode, but frame 0 reads 2383 instead of 32158"
+    },
+    {
+      "severity": "error",
+      "episode": 5,
+      "code": "episode_index",
+      "message": "episode at position 10 has index 5"
+    },
+    {
+      "severity": "error",
+      "episode": 5,
+      "code": "range_gap",
+      "message": "starts at 2232, previous episode ended at 32754"
+    },
+    {
+      "severity": "error",
+      "episode": 5,
+      "code": "episode_index",
+      "message": "episode at position 11 has index 5"
+    },
+    {
+      "severity": "error",
+      "episode": 5,
+      "code": "range_gap",
+      "message": "starts at 32754, previous episode ended at 2678"
+    },
+    {
+      "severity": "error",
+      "episode": 5,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 32754 through this episode, but frame 0 reads 2979 instead of 32754"
+    },
+    {
+      "severity": "error",
+      "episode": 6,
+      "code": "episode_index",
+      "message": "episode at position 12 has index 6"
+    },
+    {
+      "severity": "error",
+      "episode": 6,
+      "code": "range_gap",
+      "message": "starts at 2678, previous episode ended at 33350"
+    },
+    {
+      "severity": "error",
+      "episode": 6,
+      "code": "episode_index",
+      "message": "episode at position 13 has index 6"
+    },
+    {
+      "severity": "error",
+      "episode": 6,
+      "code": "range_gap",
+      "message": "starts at 33350, previous episode ended at 3124"
+    },
+    {
+      "severity": "error",
+      "episode": 6,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 33350 through this episode, but frame 0 reads 3575 instead of 33350"
+    },
+    {
+      "severity": "error",
+      "episode": 7,
+      "code": "episode_index",
+      "message": "episode at position 14 has index 7"
+    },
+    {
+      "severity": "error",
+      "episode": 7,
+      "code": "range_gap",
+      "message": "starts at 3124, previous episode ended at 33946"
+    },
+    {
+      "severity": "error",
+      "episode": 7,
+      "code": "episode_index",
+      "message": "episode at position 15 has index 7"
+    },
+    {
+      "severity": "error",
+      "episode": 7,
+      "code": "range_gap",
+      "message": "starts at 33946, previous episode ended at 3570"
+    },
+    {
+      "severity": "error",
+      "episode": 7,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 33946 through this episode, but frame 0 reads 4171 instead of 33946"
+    },
+    {
+      "severity": "error",
+      "episode": 8,
+      "code": "episode_index",
+      "message": "episode at position 16 has index 8"
+    },
+    {
+      "severity": "error",
+      "episode": 8,
+      "code": "range_gap",
+      "message": "starts at 3570, previous episode ended at 34542"
+    },
+    {
+      "severity": "error",
+      "episode": 8,
+      "code": "episode_index",
+      "message": "episode at position 17 has index 8"
+    },
+    {
+      "severity": "error",
+      "episode": 8,
+      "code": "range_gap",
+      "message": "starts at 34542, previous episode ended at 4016"
+    },
+    {
+      "severity": "error",
+      "episode": 8,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 34542 through this episode, but frame 0 reads 4767 instead of 34542"
+    },
+    {
+      "severity": "error",
+      "episode": 9,
+      "code": "episode_index",
+      "message": "episode at position 18 has index 9"
+    },
+    {
+      "severity": "error",
+      "episode": 9,
+      "code": "range_gap",
+      "message": "starts at 4016, previous episode ended at 35139"
+    },
+    {
+      "severity": "error",
+      "episode": 9,
+      "code": "episode_index",
+      "message": "episode at position 19 has index 9"
+    },
+    {
+      "severity": "error",
+      "episode": 9,
+      "code": "range_gap",
+      "message": "starts at 35139, previous episode ended at 4463"
+    },
+    {
+      "severity": "error",
+      "episode": 9,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 35139 through this episode, but frame 0 reads 5364 instead of 35139"
+    },
+    {
+      "severity": "error",
+      "episode": 10,
+      "code": "episode_index",
+      "message": "episode at position 20 has index 10"
+    },
+    {
+      "severity": "error",
+      "episode": 10,
+      "code": "range_gap",
+      "message": "starts at 4463, previous episode ended at 35736"
+    },
+    {
+      "severity": "error",
+      "episode": 10,
+      "code": "episode_index",
+      "message": "episode at position 21 has index 10"
+    },
+    {
+      "severity": "error",
+      "episode": 10,
+      "code": "range_gap",
+      "message": "starts at 35736, previous episode ended at 4908"
+    },
+    {
+      "severity": "error",
+      "episode": 10,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 35736 through this episode, but frame 0 reads 5961 instead of 35736"
+    },
+    {
+      "severity": "error",
+      "episode": 11,
+      "code": "episode_index",
+      "message": "episode at position 22 has index 11"
+    },
+    {
+      "severity": "error",
+      "episode": 11,
+      "code": "range_gap",
+      "message": "starts at 4908, previous episode ended at 36333"
+    },
+    {
+      "severity": "error",
+      "episode": 11,
+      "code": "episode_index",
+      "message": "episode at position 23 has index 11"
+    },
+    {
+      "severity": "error",
+      "episode": 11,
+      "code": "range_gap",
+      "message": "starts at 36333, previous episode ended at 5354"
+    },
+    {
+      "severity": "error",
+      "episode": 11,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 36333 through this episode, but frame 0 reads 6558 instead of 36333"
+    },
+    {
+      "severity": "error",
+      "episode": 12,
+      "code": "episode_index",
+      "message": "episode at position 24 has index 12"
+    },
+    {
+      "severity": "error",
+      "episode": 12,
+      "code": "range_gap",
+      "message": "starts at 5354, previous episode ended at 36930"
+    },
+    {
+      "severity": "error",
+      "episode": 12,
+      "code": "episode_index",
+      "message": "episode at position 25 has index 12"
+    },
+    {
+      "severity": "error",
+      "episode": 12,
+      "code": "range_gap",
+      "message": "starts at 36930, previous episode ended at 5800"
+    },
+    {
+      "severity": "error",
+      "episode": 12,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 36930 through this episode, but frame 0 reads 7155 instead of 36930"
+    },
+    {
+      "severity": "error",
+      "episode": 13,
+      "code": "episode_index",
+      "message": "episode at position 26 has index 13"
+    },
+    {
+      "severity": "error",
+      "episode": 13,
+      "code": "range_gap",
+      "message": "starts at 5800, previous episode ended at 37526"
+    },
+    {
+      "severity": "error",
+      "episode": 13,
+      "code": "episode_index",
+      "message": "episode at position 27 has index 13"
+    },
+    {
+      "severity": "error",
+      "episode": 13,
+      "code": "range_gap",
+      "message": "starts at 37526, previous episode ended at 6248"
+    },
+    {
+      "severity": "error",
+      "episode": 13,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 37526 through this episode, but frame 0 reads 7751 instead of 37526"
+    },
+    {
+      "severity": "error",
+      "episode": 14,
+      "code": "episode_index",
+      "message": "episode at position 28 has index 14"
+    },
+    {
+      "severity": "error",
+      "episode": 14,
+      "code": "range_gap",
+      "message": "starts at 6248, previous episode ended at 38121"
+    },
+    {
+      "severity": "error",
+      "episode": 14,
+      "code": "episode_index",
+      "message": "episode at position 29 has index 14"
+    },
+    {
+      "severity": "error",
+      "episode": 14,
+      "code": "range_gap",
+      "message": "starts at 38121, previous episode ended at 6695"
+    },
+    {
+      "severity": "error",
+      "episode": 14,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 38121 through this episode, but frame 0 reads 8346 instead of 38121"
+    },
+    {
+      "severity": "error",
+      "episode": 15,
+      "code": "episode_index",
+      "message": "episode at position 30 has index 15"
+    },
+    {
+      "severity": "error",
+      "episode": 15,
+      "code": "range_gap",
+      "message": "starts at 6695, previous episode ended at 38717"
+    },
+    {
+      "severity": "error",
+      "episode": 15,
+      "code": "episode_index",
+      "message": "episode at position 31 has index 15"
+    },
+    {
+      "severity": "error",
+      "episode": 15,
+      "code": "range_gap",
+      "message": "starts at 38717, previous episode ended at 7143"
+    },
+    {
+      "severity": "error",
+      "episode": 15,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 38717 through this episode, but frame 0 reads 8942 instead of 38717"
+    },
+    {
+      "severity": "error",
+      "episode": 16,
+      "code": "episode_index",
+      "message": "episode at position 32 has index 16"
+    },
+    {
+      "severity": "error",
+      "episode": 16,
+      "code": "range_gap",
+      "message": "starts at 7143, previous episode ended at 39311"
+    },
+    {
+      "severity": "error",
+      "episode": 16,
+      "code": "episode_index",
+      "message": "episode at position 33 has index 16"
+    },
+    {
+      "severity": "error",
+      "episode": 16,
+      "code": "range_gap",
+      "message": "starts at 39311, previous episode ended at 7590"
+    },
+    {
+      "severity": "error",
+      "episode": 16,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 39311 through this episode, but frame 0 reads 9536 instead of 39311"
+    },
+    {
+      "severity": "error",
+      "episode": 17,
+      "code": "episode_index",
+      "message": "episode at position 34 has index 17"
+    },
+    {
+      "severity": "error",
+      "episode": 17,
+      "code": "range_gap",
+      "message": "starts at 7590, previous episode ended at 39905"
+    },
+    {
+      "severity": "error",
+      "episode": 17,
+      "code": "episode_index",
+      "message": "episode at position 35 has index 17"
+    },
+    {
+      "severity": "error",
+      "episode": 17,
+      "code": "range_gap",
+      "message": "starts at 39905, previous episode ended at 8037"
+    },
+    {
+      "severity": "error",
+      "episode": 17,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 39905 through this episode, but frame 0 reads 10130 instead of 39905"
+    },
+    {
+      "severity": "error",
+      "episode": 18,
+      "code": "episode_index",
+      "message": "episode at position 36 has index 18"
+    },
+    {
+      "severity": "error",
+      "episode": 18,
+      "code": "range_gap",
+      "message": "starts at 8037, previous episode ended at 40499"
+    },
+    {
+      "severity": "error",
+      "episode": 18,
+      "code": "episode_index",
+      "message": "episode at position 37 has index 18"
+    },
+    {
+      "severity": "error",
+      "episode": 18,
+      "code": "range_gap",
+      "message": "starts at 40499, previous episode ended at 8482"
+    },
+    {
+      "severity": "error",
+      "episode": 18,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 40499 through this episode, but frame 0 reads 10724 instead of 40499"
+    },
+    {
+      "severity": "error",
+      "episode": 19,
+      "code": "episode_index",
+      "message": "episode at position 38 has index 19"
+    },
+    {
+      "severity": "error",
+      "episode": 19,
+      "code": "range_gap",
+      "message": "starts at 8482, previous episode ended at 41092"
+    },
+    {
+      "severity": "error",
+      "episode": 19,
+      "code": "episode_index",
+      "message": "episode at position 39 has index 19"
+    },
+    {
+      "severity": "error",
+      "episode": 19,
+      "code": "range_gap",
+      "message": "starts at 41092, previous episode ended at 8929"
+    },
+    {
+      "severity": "error",
+      "episode": 19,
+      "code": "index_mismatch",
+      "message": "data/chunk-000/file-005.parquet: the global `index` column should count up from 41092 through this episode, but frame 0 reads 11317 instead of 41092"
+    },
+    {
+      "severity": "error",
+      "episode": 20,
+      "code": "episode_index",
+      "message": "episode at position 40 has index 20"
+    },
+    {
+      "severity": "error",
+      "episode": 20,
+      "code": "range_gap",
+      "message": "starts at 8929, previous episode ended at 41686"
+    },
+    {
+      "severity": "error",
+      "episode": 21,
+      "code": "episode_index",
+      "message": "episode at position 41 has index 21"
+    },
+    {
+      "severity": "error",
+      "episode": 22,
+      "code": "episode_index",
+      "message": "episode at position 42 has index 22"
+    },
+    {
+      "severity": "error",
+      "episode": 23,
+      "code": "episode_index",
+      "message": "episode at position 43 has index 23"
+    },
+    {
+      "severity": "error",
+      "episode": 24,
+      "code": "episode_index",
+      "message": "episode at position 44 has index 24"
+    },
+    {
+      "severity": "error",
+      "episode": 25,
+      "code": "episode_index",
+      "message": "episode at position 45 has index 25"
+    },
+    {
+      "severity": "error",
+      "episode": 26,
+      "code": "episode_index",
+      "message": "episode at position 46 has index 26"
+    },
+    {
+      "severity": "error",
+      "episode": 27,
+      "code": "episode_index",
+      "message": "episode at position 47 has index 27"
+    },
+    {
+      "severity": "error",
+      "episode": 28,
+      "code": "episode_index",
+      "message": "episode at position 48 has index 28"
+    },
+    {
+      "severity": "error",
+      "episode": 29,
+      "code": "episode_index",
+      "message": "episode at position 49 has index 29"
+    },
+    {
+      "severity": "error",
+      "episode": 30,
+      "code": "episode_index",
+      "message": "episode at position 50 has index 30"
+    },
+    {
+      "severity": "error",
+      "episode": 31,
+      "code": "episode_index",
+      "message": "episode at position 51 has index 31"
+    },
+    {
+      "severity": "error",
+      "episode": 32,
+      "code": "episode_index",
+      "message": "episode at position 52 has index 32"
+    },
+    {
+      "severity": "error",
+      "episode": 33,
+      "code": "episode_index",
+      "message": "episode at position 53 has index 33"
+    },
+    {
+      "severity": "error",
+      "episode": 34,
+      "code": "episode_index",
+      "message": "episode at position 54 has index 34"
+    },
+    {
+      "severity": "error",
+      "episode": 35,
+      "code": "episode_index",
+      "message": "episode at position 55 has index 35"
+    },
+    {
+      "severity": "error",
+      "episode": 36,
+      "code": "episode_index",
+      "message": "episode at position 56 has index 36"
+    },
+    {
+      "severity": "error",
+      "episode": 37,
+      "code": "episode_index",
+      "message": "episode at position 57 has index 37"
+    },
+    {
+      "severity": "error",
+      "episode": 38,
+      "code": "episode_index",
+      "message": "episode at position 58 has index 38"
+    },
+    {
+      "severity": "error",
+      "episode": 39,
+      "code": "episode_index",
+      "message": "episode at position 59 has index 39"
+    },
+    {
+      "severity": "error",
+      "episode": 40,
+      "code": "episode_index",
+      "message": "episode at position 60 has index 40"
+    },
+    {
+      "severity": "error",
+      "episode": 41,
+      "code": "episode_index",
+      "message": "episode at position 61 has index 41"
+    },
+    {
+      "severity": "error",
+      "episode": 42,
+      "code": "episode_index",
+      "message": "episode at position 62 has index 42"
+    },
+    {
+      "severity": "error",
+      "episode": 43,
+      "code": "episode_index",
+      "message": "episode at position 63 has index 43"
+    },
+    {
+      "severity": "error",
+      "episode": 44,
+      "code": "episode_index",
+      "message": "episode at position 64 has index 44"
+    },
+    {
+      "severity": "error",
+      "episode": 45,
+      "code": "episode_index",
+      "message": "episode at position 65 has index 45"
+    },
+    {
+      "severity": "error",
+      "episode": 46,
+      "code": "episode_index",
+      "message": "episode at position 66 has index 46"
+    },
+    {
+      "severity": "error",
+      "episode": 47,
+      "code": "episode_index",
+      "message": "episode at position 67 has index 47"
+    },
+    {
+      "severity": "error",
+      "episode": 48,
+      "code": "episode_index",
+      "message": "episode at position 68 has index 48"
+    },
+    {
+      "severity": "error",
+      "episode": 49,
+      "code": "episode_index",
+      "message": "episode at position 69 has index 49"
+    },
+    {
+      "severity": "error",
+      "episode": 50,
+      "code": "episode_index",
+      "message": "episode at position 70 has index 50"
+    },
+    {
+      "severity": "error",
+      "episode": 51,
+      "code": "episode_index",
+      "message": "episode at position 71 has index 51"
+    },
+    {
+      "severity": "error",
+      "episode": 52,
+      "code": "episode_index",
+      "message": "episode at position 72 has index 52"
+    },
+    {
+      "severity": "error",
+      "episode": 53,
+      "code": "episode_index",
+      "message": "episode at position 73 has index 53"
+    },
+    {
+      "severity": "error",
+      "episode": 54,
+      "code": "episode_index",
+      "message": "episode at position 74 has index 54"
+    },
+    {
+      "severity": "error",
+      "episode": 55,
+      "code": "episode_index",
+      "message": "episode at position 75 has index 55"
+    },
+    {
+      "severity": "error",
+      "episode": 56,
+      "code": "episode_index",
+      "message": "episode at position 76 has index 56"
+    },
+    {
+      "severity": "error",
+      "episode": 57,
+      "code": "episode_index",
+      "message": "episode at position 77 has index 57"
+    },
+    {
+      "severity": "error",
+      "episode": 58,
+      "code": "episode_index",
+      "message": "episode at position 78 has index 58"
+    },
+    {
+      "severity": "error",
+      "episode": 59,
+      "code": "episode_index",
+      "message": "episode at position 79 has index 59"
+    }
+  ]
+}

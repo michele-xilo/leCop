@@ -1,0 +1,71 @@
+{
+  "name": "allenai__eval_molmoact_cup_stacking_in-distribution",
+  "repo": "allenai/eval_molmoact_cup_stacking_in-distribution",
+  "revision": "bb2699eb38716133671b88ad5ebd942335004000",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 35,
+    "frames": 32048,
+    "fps": 30,
+    "robot": "bi_yam_follower"
+  },
+  "run": {
+    "wall_ms": 28.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 1,
+  "warnings": 6,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 1 is at its minimum (0.0027637917082756758) in 31.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 2 is at its minimum (0.0045817214995622635) in 31.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 6 is at its maximum (1) in 8.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 8 is at its minimum (0.002442541066557169) in 45.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 9 is at its minimum (0.007728587370365858) in 51.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 13 is at its maximum (1) in 26.2% of the frames"
+    },
+    {
+      "severity": "error",
+      "episode": 7,
+      "code": "data_missing",
+      "message": "data/chunk-000/file-001.parquet"
+    }
+  ]
+}

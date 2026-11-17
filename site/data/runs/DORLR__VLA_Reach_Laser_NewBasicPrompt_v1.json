@@ -1,0 +1,47 @@
+{
+  "name": "DORLR__VLA_Reach_Laser_NewBasicPrompt_v1",
+  "repo": "DORLR/VLA_Reach_Laser_NewBasicPrompt_v1",
+  "revision": "b8c5b93c83d91f81ec9e75d673ac6839ca2eb3dc",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 1000,
+    "frames": 308848,
+    "fps": 30,
+    "robot": "isaaclab_ur5"
+  },
+  "run": {
+    "wall_ms": 68.6,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 3,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 6 is at its maximum (0.7850000262260437) in 99.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": 800,
+      "code": "episode_length_outlier",
+      "message": "480 frames, much longer than the other episodes (mean 309, std 39 over 1000 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 975,
+      "code": "episode_length_outlier",
+      "message": "480 frames, much longer than the other episodes (mean 309, std 39 over 1000 episodes)"
+    }
+  ]
+}

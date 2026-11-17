@@ -1,0 +1,155 @@
+{
+  "name": "Xense__earbud_case_insertion_teleop_0515",
+  "repo": "Xense/earbud_case_insertion_teleop_0515",
+  "revision": "c1bcb61c428a7c3ef484d7398ff178b959987377",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 888,
+    "frames": 1290091,
+    "fps": 30,
+    "robot": "bi_flexiv_rizon4_rt"
+  },
+  "run": {
+    "wall_ms": 455.8,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 21,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 16 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 18 is at its minimum (0) in 74.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 19 is at its maximum (1) in 50.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 16 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 18 is at its maximum (1) in 17.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 19 is at its maximum (1) in 48.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "action_jump",
+      "message": "and 1 more episodes with action jumps"
+    },
+    {
+      "severity": "warning",
+      "episode": 5,
+      "code": "episode_length_outlier",
+      "message": "2073 frames, much longer than the other episodes (mean 1453, std 195 over 888 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 15,
+      "code": "episode_length_outlier",
+      "message": "2086 frames, much longer than the other episodes (mean 1453, std 195 over 888 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 18,
+      "code": "episode_length_outlier",
+      "message": "2186 frames, much longer than the other episodes (mean 1453, std 195 over 888 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 23,
+      "code": "episode_length_outlier",
+      "message": "2205 frames, much longer than the other episodes (mean 1453, std 195 over 888 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 51,
+      "code": "episode_length_outlier",
+      "message": "2342 frames, much longer than the other episodes (mean 1453, std 195 over 888 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 79,
+      "code": "action_frozen",
+      "message": "action is identical for 4.9 s (148 frames) from frame 801"
+    },
+    {
+      "severity": "warning",
+      "episode": 129,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 133,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 162,
+      "code": "episode_length_outlier",
+      "message": "2122 frames, much longer than the other episodes (mean 1453, std 195 over 888 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 187,
+      "code": "action_jump",
+      "message": "2 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 201,
+      "code": "action_jump",
+      "message": "2 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 204,
+      "code": "episode_length_outlier",
+      "message": "2141 frames, much longer than the other episodes (mean 1453, std 195 over 888 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 306,
+      "code": "episode_length_outlier",
+      "message": "2075 frames, much longer than the other episodes (mean 1453, std 195 over 888 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 448,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    }
+  ]
+}

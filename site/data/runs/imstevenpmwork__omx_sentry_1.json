@@ -1,0 +1,41 @@
+{
+  "name": "imstevenpmwork__omx_sentry_1",
+  "repo": "imstevenpmwork/omx_sentry_1",
+  "revision": "78fa3774ed70057809444195a68d31320cf125e5",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 7,
+    "frames": 1007,
+    "fps": 30,
+    "robot": "omx_follower"
+  },
+  "run": {
+    "wall_ms": 5.0,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 2,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 5 is at its minimum (48.27838897705078) in 99.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_mismatch",
+      "message": "observation.state: dimension 5 std is 0.109538 in stats.json but 0.087376 in the data; stats.json is out of date with the data"
+    }
+  ]
+}
