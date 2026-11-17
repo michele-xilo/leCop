@@ -1,0 +1,40 @@
+{
+  "name": "c_d3il_avoiding_vision_224",
+  "repo": "shivakanthsujit/d3il_avoiding_vision_224",
+  "revision": "e7c3f92f5e816e006e643f170ffc88dda2f58a8d",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 96,
+    "frames": 7305,
+    "fps": 29,
+    "robot": "franka_panda"
+  },
+  "run": {
+    "wall_ms": 11.9,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 2,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 1 is at its minimum (-0.27973672747612) in 6.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 1 is at its minimum (-0.27973672747612) in 7.5% of the frames"
+    }
+  ]
+}

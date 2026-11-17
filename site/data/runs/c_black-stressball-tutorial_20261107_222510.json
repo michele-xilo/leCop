@@ -1,0 +1,34 @@
+{
+  "name": "c_black-stressball-tutorial_20261107_222510",
+  "repo": "SergeAlhalbi/black-stressball-tutorial_20261107_222510",
+  "revision": "de761c88e6021dd36c281047c914169a150a3f12",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 50,
+    "frames": 35536,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 14.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 10,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "29ff292",
+    "rustc": "1.99.1",
+    "machine": "Apple M2 Pro",
+    "os": "Darwin 25.5.0",
+    "date": "2026-11-17"
+  },
+  "errors": 0,
+  "warnings": 1,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 2 is at its maximum (96.17582702636719) in 9.1% of the frames"
+    }
+  ]
+}
