@@ -75,7 +75,9 @@ something (no network, dataset not downloaded), say so rather than claim it work
 - Do not commit files that record decisions, plans, findings or working notes about the past. They go stale
   and the repository is not their history. Put them on the GitHub issue the work belongs to: a comment
   stating what was decided and why, what was measured (dataset, machine, commit, numbers), what was tried
-  and rejected. Link the issue from the PR. If the work has no issue yet, create one (`issues.md`).
+  and rejected. Link the issue from the PR. If the work has no issue yet, create one (`issues.md`). The one
+  exception is the results site's records in `site/data/runs/`, which every run on a real dataset updates
+  (`results-site.md`).
 - A decision that changes a public contract (issue codes, CLI output, JSON schema) is also stated in the
   README or the code docs that describe the contract, as present-tense fact, not as a log entry.
 - Work that is not being done now becomes a GitHub issue with a priority, see `issues.md`.
