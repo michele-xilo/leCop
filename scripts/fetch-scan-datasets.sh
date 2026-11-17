@@ -34,6 +34,7 @@ grep -v '^#' scripts/scan-datasets.tsv | while IFS="$(printf '\t')" read -r repo
   mkdir -p "$dir"
   missing_files "$repo" "$rev" "$dir" | tr '\n' '\0' |
     xargs -0 -r -n 1000 uvx --from huggingface_hub hf download "$repo" --repo-type dataset --revision "$rev" \
+      --max-workers "${HF_MAX_WORKERS:-32}" \
       --local-dir "$dir" >/dev/null 2>&1 || true
   if [ -n "$(missing_files "$repo" "$rev" "$dir")" ]; then
     echo "hf download left files missing, retrying $repo with curl"
