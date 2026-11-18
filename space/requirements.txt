@@ -1,0 +1,2 @@
+lecop==0.3.1
+huggingface_hub==2.4.0
