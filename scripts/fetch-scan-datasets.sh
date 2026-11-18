@@ -1,15 +1,18 @@
 #!/bin/sh
 # Download the Hub scan datasets listed in scripts/scan-datasets.tsv into datasets/scan/<owner>__<name>, one at
 # a time. Without --yes it only prints what is missing. Usage: scripts/fetch-scan-datasets.sh [--yes] [repo...]
+# For another list: LIST=scripts/top-datasets.tsv DEST=datasets/top ONLY="meta/ data/" SIZE_COL=5, where ONLY
+# limits the fetch to those folders and SIZE_COL is the list's column with the size that fetch costs, in GB.
 set -eu
 cd "$(dirname "$0")/.."
+list=${LIST:-scripts/scan-datasets.tsv} dest=${DEST:-datasets/scan} size_col=${SIZE_COL:-4}
 yes=0
 if [ "${1:-}" = "--yes" ]; then yes=1; shift; fi
 # Stop well before the disk fills, as datasets/ may be on a disk shared with other people.
 min_free_gb=${MIN_FREE_GB:-100}
 # Files of the dataset not yet on disk (see hub_missing_files.py for why not a plain resume).
 missing_files() {
-  uv run -q --no-project --with huggingface_hub python3 scripts/hub_missing_files.py "$1" "$2" "$3" </dev/null
+  uv run -q --no-project --with huggingface_hub python3 scripts/hub_missing_files.py "$1" "$2" "$3" ${ONLY:-} </dev/null
 }
 # Same fallback as fetch-datasets.sh: the hf client rejects some files the Hub serves with other bytes.
 curl_fetch() {
@@ -19,13 +22,13 @@ curl_fetch() {
     curl -fsSL -o "$dir/$f" "https://huggingface.co/datasets/$repo/resolve/$rev/$f"
   done
 }
-mkdir -p datasets/scan
-grep -v '^#' scripts/scan-datasets.tsv | while IFS="$(printf '\t')" read -r repo rev _ size _; do
+mkdir -p "$dest"
+grep -v '^#' "$list" | cut -f "1,2,$size_col" | while IFS="$(printf '\t')" read -r repo rev size; do
   if [ $# -gt 0 ] && ! printf '%s\n' "$@" | grep -qx "$repo"; then continue; fi
-  dir="datasets/scan/$(echo "$repo" | sed 's#/#__#')"
+  dir="$dest/$(echo "$repo" | sed 's#/#__#')"
   [ -f "$dir/.complete" ] && { echo "have     $repo"; continue; }
   if [ "$yes" = 0 ]; then echo "missing  $repo ($size GB)"; continue; fi
-  free_gb=$(df -P -BG datasets/scan/ | awk 'NR==2 {sub("G", "", $4); print $4}')
+  free_gb=$(df -P -BG "$dest/" | awk 'NR==2 {sub("G", "", $4); print $4}')
   if [ "$free_gb" -lt "$min_free_gb" ]; then
     echo "stopping: $free_gb GB free, below $min_free_gb GB"; exit 1
   fi
