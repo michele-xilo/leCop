@@ -70,6 +70,7 @@ def build_record(entry, info, report, samples_ms, meta):
             "runs": len(samples_ms),
             "cache": "warm",
             **meta,
+            "video": video_mode(info, meta.get("decode")),
         },
         "errors": report["errors"],
         "warnings": report["warnings"],
@@ -79,6 +80,13 @@ def build_record(entry, info, report, samples_ms, meta):
             for i in report["issues"]
         ],
     }
+
+
+def video_mode(info, decode):
+    """How the run looked at the videos: `decoded` (--decode), `container` (metadata only, the default) or `none`."""
+    if not any(f.get("dtype") == "video" for f in info.get("features", {}).values()):
+        return "none"
+    return "decoded" if decode else "container"
 
 
 def relative(message, root):

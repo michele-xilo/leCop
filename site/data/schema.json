@@ -20,13 +20,14 @@
     },
     "run": {
       "type": "object",
-      "required": ["wall_ms", "runs", "cache", "threads", "lecop_version", "lecop_commit", "rustc", "machine", "os", "date"],
+      "required": ["wall_ms", "runs", "cache", "threads", "video", "lecop_version", "lecop_commit", "rustc", "machine", "os", "date"],
       "properties": {
         "wall_ms": {"type": "number"},
         "runs": {"type": "integer"},
         "cache": {"type": "string", "enum": ["warm"]},
         "threads": {"type": "integer"},
         "decode": {"type": "boolean"},
+        "video": {"type": "string", "enum": ["container", "decoded", "none"]},
         "lecop_version": {"type": "string"},
         "lecop_commit": {"type": "string"},
         "rustc": {"type": "string"},

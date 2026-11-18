@@ -21,7 +21,7 @@ def record(name="pusht", repo="lerobot/pusht", issues=None, wall_ms=10.0, fmt="v
         "revision": "6e1d9c95aaf8abb19342e723935b6af7c54b5903",
         "dataset": {"format": fmt, "episodes": 206, "frames": 25650, "fps": 10, "robot": "unknown"},
         "run": {
-            "wall_ms": wall_ms, "runs": 5, "cache": "warm", "threads": 10, "lecop_version": "0.3.1",
+            "wall_ms": wall_ms, "runs": 5, "cache": "warm", "threads": 10, "video": "container", "lecop_version": "0.3.1",
             "lecop_commit": "29ff292", "rustc": "1.99.1", "machine": "Apple M2 Pro", "os": "Darwin 25.5.0",
             "date": "2026-11-17",
         },
@@ -176,6 +176,58 @@ class BuildTest(unittest.TestCase):
                 page = f.read()
             for text in ["Scanned in 10 ms", "--decode", "Scanned in 4.32 s", "video_frozen", "frozen camera"]:
                 self.assertIn(text, page)
+
+
+class VideoMarkerTest(unittest.TestCase):
+    def test_the_dataset_page_says_how_the_videos_were_checked(self):
+        self.assertIn("Videos: metadata only", build_site.dataset_page(record()))
+        no_video = record()
+        no_video["run"]["video"] = "none"
+        self.assertIn("No video", build_site.dataset_page(no_video))
+        decode = record()
+        decode["run"].update(decode=True, video="decoded")
+        self.assertIn("Videos: decoded", build_site.dataset_page(record(), decode))
+
+    def test_the_home_row_names_the_videos_only_when_they_were_decoded(self):
+        self.assertIn("Videos decoded", build_site.row(record(), decoded=True))
+        self.assertNotIn("Videos", build_site.row(record()))
+
+
+class DownloadsTest(unittest.TestCase):
+    DL = {"date": "2026-11-18", "counts": {"a/small": 10, "b/big": 500, "c/gone": None}}
+
+    def test_home_ranks_by_30_day_downloads_with_unknown_counts_last(self):
+        recs = [record("c", repo="c/gone"), record("a", repo="a/small"), record("b", repo="b/big")]
+        home = build_site.home_page(recs, downloads=self.DL)
+        self.assertLess(home.index("b/big"), home.index("a/small"))
+        self.assertLess(home.index("a/small"), home.index("c/gone"))
+        self.assertIn("500 downloads", home)
+        self.assertIn("as of 2026-11-18", home)
+
+    def test_a_failed_fetch_keeps_the_last_published_count(self):
+        def get(repo):
+            if repo == "x/flaky":
+                raise OSError("timeout")
+            return {"y/ok": 7, "z/gated": None}[repo]
+        dl = build_site.downloads_for(["x/flaky", "y/ok", "z/gated"], get=get,
+                                      previous=lambda: ({"x/flaky": 42}, "2026-11-10"), today="2026-11-18")
+        self.assertEqual(dl["counts"], {"x/flaky": 42, "y/ok": 7, "z/gated": None})
+        self.assertEqual(dl["date"], "2026-11-10")
+
+    def test_counts_fetched_in_full_are_dated_today(self):
+        dl = build_site.downloads_for(["y/ok"], get=lambda r: 7, previous=lambda: ({}, None), today="2026-11-18")
+        self.assertEqual(dl, {"date": "2026-11-18", "counts": {"y/ok": 7}})
+
+    def test_build_puts_the_counts_in_the_index(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            runs, dist = os.path.join(tmp, "runs"), os.path.join(tmp, "dist")
+            os.makedirs(runs)
+            with open(os.path.join(runs, "pusht.json"), "w") as f:
+                json.dump(record(), f)
+            build_site.build(runs, dist, downloads={"date": "2026-11-18", "counts": {"lerobot/pusht": 1234}})
+            with open(os.path.join(dist, "index.json")) as f:
+                (entry,) = json.load(f)
+            self.assertEqual((entry["downloads"], entry["downloads_date"]), (1234, "2026-11-18"))
 
 
 class ContrastTest(unittest.TestCase):

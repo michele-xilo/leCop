@@ -2,6 +2,10 @@
 """Build the results site from site/data/runs/*.json into site/dist/ (standard library only).
 
     scripts/build_site.py            writes site/dist/index.html, index.json, datasets/<name>.html, assets/
+    scripts/build_site.py --offline  the same without fetching the Hub download counts
+
+Datasets are ranked by their Hugging Face downloads over the last 30 days, fetched at build time: the count changes
+daily, a record only when leCop runs again. If the Hub cannot be reached, the counts on the published site are kept.
 
 Every page is plain HTML with inline CSS. The home page lists every record and the dataset pages list every
 finding without JavaScript; a small script adds search and a status filter, with the state in the URL.
@@ -12,13 +16,18 @@ import json
 import os
 import shutil
 import sys
-from urllib.parse import urlencode
+import time
+import urllib.error
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor
+from urllib.parse import quote, urlencode
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RUNS = os.path.join(ROOT, "site", "data", "runs")
 DIST = os.path.join(ROOT, "site", "dist")
 REPO_URL = "https://github.com/michele-xilo/leCop"
 DOCS_URL = REPO_URL + "/tree/main/docs"
+SITE_URL = "https://michele-xilo.github.io/leCop/"
 CAP = 200  # findings shown per code on a dataset page; a few datasets have thousands of one code
 
 THEMES = {
@@ -163,12 +172,66 @@ def plural(n, word):
     return f"{n} {word}" + ("" if n == 1 else "s")
 
 
-def row(rec):
+def get_json(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "lecop-site-build"})
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        return json.load(resp)
+
+
+def hub_downloads(repo):
+    """30-day downloads of a Hub dataset; None when the Hub has no count for it (gated, private or deleted)."""
+    try:
+        return get_json(f"https://huggingface.co/api/datasets/{quote(repo)}?expand[]=downloads").get("downloads")
+    except urllib.error.HTTPError as err:
+        if err.code in (401, 403, 404):
+            return None
+        raise
+
+
+def published_downloads():
+    """The counts and their date on the live site, for repos the Hub could not be asked about this time."""
+    try:
+        entries = get_json(SITE_URL + "index.json")
+    except (OSError, ValueError):
+        return {}, None
+    dates = [x["downloads_date"] for x in entries if x.get("downloads_date")]
+    return {x["repo"]: x.get("downloads") for x in entries}, min(dates, default=None)
+
+
+def downloads_for(repos, get=hub_downloads, previous=published_downloads, today=None):
+    """{"date", "counts": {repo: downloads or None}}. The date is the oldest of the counts used."""
+    def fetch(repo):
+        try:
+            return True, get(repo)
+        except (OSError, ValueError):
+            return False, None
+
+    with ThreadPoolExecutor(16) as pool:
+        results = dict(zip(repos, pool.map(fetch, repos)))
+    date = today or time.strftime("%Y-%m-%d", time.gmtime())
+    counts = {repo: n for repo, (ok, n) in results.items() if ok}
+    missing = [repo for repo, (ok, _) in results.items() if not ok]
+    if missing:
+        old, old_date = previous()
+        counts.update({repo: old.get(repo) for repo in missing})
+        date = min(date, old_date) if old_date else date
+    return {"date": date, "counts": counts}
+
+
+def fmt_downloads(n):
+    return "downloads n/a" if n is None else f"{n:,} download" + ("" if n == 1 else "s")
+
+
+def row(rec, decoded=False, downloads=None):
     s, d, r = status(rec), rec["dataset"], rec["run"]
     codes = sorted({i["code"] for i in rec["issues"]})
     label = {"errors": plural(rec["errors"], "error"), "warnings": plural(rec["warnings"], "warning"), "clean": "Clean"}[s]
     search = " ".join([rec["repo"], rec["name"], *codes]).lower()
     meta = f"{e(d['format'])} &middot; {d['episodes']:,} episodes &middot; {d['frames']:,} frames"
+    if downloads is not None:
+        meta += f" &middot; {fmt_downloads(downloads.get(rec['repo']))}"
+    if decoded:
+        meta += " &middot; Videos decoded"
     return (
         f'<a class="row" href="datasets/{e(rec["name"])}.html" data-search="{e(search)}" data-status="{s}">'
         f'<span class="dot {s}" aria-hidden="true"></span>'
@@ -193,9 +256,16 @@ apply();
 """
 
 
-def home_page(records):
+def home_page(records, decodes=(), downloads=None):
+    """`decodes`: names of the datasets with a --decode record. `downloads`: see downloads_for; without counts the
+    rows are sorted by name."""
     times = sorted(r["run"]["wall_ms"] for r in records)
-    rows = "".join(row(r) for r in sorted(records, key=lambda r: r["repo"].lower()))
+    counts = downloads["counts"] if downloads and downloads.get("date") else None
+    rank = lambda r: (counts.get(r["repo"]) is None, -(counts.get(r["repo"]) or 0), r["repo"].lower()) if counts else r["repo"].lower()
+    rows = "".join(row(r, r["name"] in decodes, counts) for r in sorted(records, key=rank))
+    ranked = ""
+    if counts:
+        ranked = f"Ranked by Hugging Face downloads over the last 30 days, as of {e(downloads['date'])}. "
     n = len(records)
     tab = lambda key, text, on=False: f'<button type="button" class="js-only" data-status="{key}" aria-pressed="{str(on).lower()}">{text}</button>'
     lens = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z"/></svg>'
@@ -212,7 +282,9 @@ def home_page(records):
         f'<span class="grow"></span><span class="median">Median scan {fmt_ms(times[len(times) // 2])}</span></div>'
         f'<div id="list">{rows}<div id="empty" class="empty" hidden>No dataset matches.</div></div>'
         '<p class="fine">Each result is what leCop reported at a pinned revision, not a verdict, and can be reproduced with one command. '
-        'Scan times are the median of warm-cache runs on the machine named on each dataset page. '
+        f'{ranked}Scan times are the median of warm-cache runs on the machine named on each dataset page. '
+        'Videos are checked from their container metadata, without decoding frames, unless a row says they were '
+        'decoded (<code class="mono">lecop validate --decode</code>). '
         'leCop is unofficial and not affiliated with Hugging Face or LeRobot. '
         f'<a class="link" href="{REPO_URL}/issues/new?template=wrong-finding.yml">Report a wrong finding</a></p>'
         f"</main><script>{SCRIPT}</script></body></html>"
@@ -262,6 +334,8 @@ def dataset_page(rec, decode=None):
         counts += f'<span class="warning">{plural(rec["warnings"], "warning")}</span>'
     if not rec["issues"]:
         counts = '<span class="clean">Clean</span>'
+    video = {"none": "No video", "container": "Videos: metadata only", "decoded": "Videos: decoded"}[
+        "decoded" if decode else r["video"]]
     repro = f"hf download {rec['repo']} \\\n  --repo-type dataset --revision {rec['revision']} \\\n  --local-dir {rec['name']}\nlecop validate {rec['name']}"
     details = (f"leCop {e(r['lecop_version'])} ({e(r['lecop_commit'])}) &middot; rustc {e(r['rustc'])} &middot; {e(r['machine'])}, {e(r['threads'])} threads "
                f"&middot; {e(r['cache'])} cache, median of {e(r['runs'])} runs &middot; {e(r['date'])}")
@@ -271,7 +345,7 @@ def dataset_page(rec, decode=None):
         head(f"{rec['repo']}: leCop results", 1, desc)
         + f'<main class="page ds"><a class="back" href="../index.html">&larr; All datasets</a><h1>{e(rec["repo"])}</h1>'
         f'<div class="mono muted"><a class="link" href="{e(hub)}">huggingface.co/datasets/{e(rec["repo"])}</a> @ {e(rec["revision"][:7])}</div>'
-        f'<div class="strip"><span class="big">Scanned in {fmt_ms(r["wall_ms"])}</span><span class="muted">{d["episodes"]:,} episodes &middot; {d["frames"]:,} frames</span>'
+        f'<div class="strip"><span class="big">Scanned in {fmt_ms(r["wall_ms"])}</span><span class="muted">{d["episodes"]:,} episodes &middot; {d["frames"]:,} frames &middot; {video}</span>'
         f'<span class="grow"></span>{counts}</div>'
         f'<p class="note">What leCop reported at this revision, not a verdict. <a class="link" href="{e(report_url(rec))}">Report a wrong finding</a></p>'
         f'{body}{decode_html(rec, decode)}'
@@ -280,16 +354,19 @@ def dataset_page(rec, decode=None):
     )
 
 
-def index_entry(rec):
+def index_entry(rec, downloads):
     codes = {}
     for i in rec["issues"]:
         codes[i["code"]] = codes.get(i["code"], 0) + 1
     return {"name": rec["name"], "repo": rec["repo"], "revision": rec["revision"], "format": rec["dataset"]["format"],
             "episodes": rec["dataset"]["episodes"], "frames": rec["dataset"]["frames"], "wall_ms": rec["run"]["wall_ms"],
-            "errors": rec["errors"], "warnings": rec["warnings"], "status": status(rec), "codes": codes}
+            "errors": rec["errors"], "warnings": rec["warnings"], "status": status(rec), "codes": codes,
+            "downloads": downloads["counts"].get(rec["repo"]), "downloads_date": downloads["date"]}
 
 
-def build(runs=RUNS, dist=DIST):
+def build(runs=RUNS, dist=DIST, downloads=None):
+    """`downloads`: counts from downloads_for; None builds without them (tests, --offline)."""
+    downloads = downloads or {"date": None, "counts": {}}
     records, decodes = [], {}
     for name in sorted(os.listdir(runs)):
         with open(os.path.join(runs, name)) as f:
@@ -305,9 +382,9 @@ def build(runs=RUNS, dist=DIST):
     for asset in ("logo.png", "social-preview.png"):
         shutil.copy(os.path.join(ROOT, "assets", asset), os.path.join(dist, "assets", asset))
     with open(os.path.join(dist, "index.html"), "w") as f:
-        f.write(home_page(records))
+        f.write(home_page(records, set(decodes), downloads))
     with open(os.path.join(dist, "index.json"), "w") as f:
-        json.dump([index_entry(r) for r in records], f, indent=1)
+        json.dump([index_entry(r, downloads) for r in records], f, indent=1)
     for r in records:
         with open(os.path.join(dist, "datasets", r["name"] + ".html"), "w") as f:
             f.write(dataset_page(r, decodes.get(r["name"])))
@@ -315,5 +392,12 @@ def build(runs=RUNS, dist=DIST):
 
 
 if __name__ == "__main__":
-    print(f"{build()} datasets -> {os.path.relpath(DIST, ROOT)}")
+    dl = None
+    if "--offline" not in sys.argv:
+        repos = []
+        for name in sorted(os.listdir(RUNS)):
+            with open(os.path.join(RUNS, name)) as f:
+                repos.append(json.load(f)["repo"])
+        dl = downloads_for(sorted(set(repos)))
+    print(f"{build(downloads=dl)} datasets -> {os.path.relpath(DIST, ROOT)}")
     sys.exit(0)
