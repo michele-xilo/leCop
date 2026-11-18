@@ -211,7 +211,7 @@ pub fn explain(code: &str) -> &'static str {
             "a dimension of the action or an observation has the same value in every frame"
         }
         "clipped_dimension" => {
-            "a dimension sits at its minimum or maximum in at least clipped_fraction of the frames (5% by default)"
+            "a dimension with more than two values sits at its minimum or maximum in at least clipped_fraction of the frames (5% by default)"
         }
         "outlier_values" => {
             "a value is more than 10 standard deviations from the mean of its dimension"

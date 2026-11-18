@@ -128,7 +128,8 @@ def machine():
 
 def run_meta(lecop):
     commit = out(["git", "-C", ROOT, "rev-parse", "--short", "HEAD"])
-    if out(["git", "-C", ROOT, "status", "--porcelain", "--untracked-files=no"]):
+    # Records written by an earlier pass of the same commit are output, not a change to the code being reported.
+    if out(["git", "-C", ROOT, "status", "--porcelain", "--untracked-files=no", "--", ".", ":!site/data/runs"]):
         commit += "-dirty"
     return {
         "threads": os.cpu_count() or 1,

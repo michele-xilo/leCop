@@ -45,7 +45,8 @@ Gaps are tracked as issues by priority; see the open issues labelled `feature`.
 Video is where the tools differ most: lerobot-doctor decodes the first frame of each video, physlint decodes every
 frame, and leCop reads container metadata only unless asked. So two tables are reported, each giving the tools compared
 the same video work: none decodes in the first, leCop and physlint decode everything in the second. Median wall time of 3 runs after one warm-up, warm page cache, including process start, every run in
-a fresh empty working directory with physlint's result cache off. Apple M2 Pro, Python 3.12, leCop `release` build,
+a fresh empty working directory with physlint's result cache off. AMD Ryzen 9 7900X (24 threads), Linux, Python 3.12.3,
+leCop `release` build at commit `80ba8f6` (Rust 1.99.0), with two dataset downloads running in the background,
 lerobot-doctor 0.2.0 and physlint 0.4.0 installed from PyPI. physlint reads v3 only. The tools check different things
 (see the comparison above), so this compares speed only. Reproduce with `scripts/compare.py`;
 `scripts/speed_chart.py` draws the charts from the tables below. The time axis is logarithmic.
@@ -55,20 +56,20 @@ lerobot-doctor 0.2.0 and physlint 0.4.0 installed from PyPI. physlint reads v3 o
 lerobot-doctor runs every check but `videos`; physlint runs with its `video.decode`, `video.frozen_frames` and
 `video.black_frames` rules off; leCop is the default build.
 
-![Wall time per dataset without video decoding, log scale: leCop takes 8 to 28 ms, lerobot-doctor 368 to 686 ms, physlint 0.7 to 15 s](../assets/speed-novideo.svg)
+![Wall time per dataset without video decoding, log scale: leCop takes 5 to 32 ms, lerobot-doctor 383 to 721 ms, physlint 0.7 to 14 s](../assets/speed-novideo.svg)
 
 | Dataset | leCop | lerobot-doctor | physlint | leCop vs the fastest other tool |
 |---|---|---|---|---|
-| `pusht` (v2.1) | 🏆 **19 ms** | 686 ms | n/a | 36x |
-| `svla_so101_pickplace` (v2.1) | 🏆 **11 ms** | 444 ms | n/a | 40x |
-| `c_careattrs_mug2v2` (v2.1) | 🏆 **8 ms** | 368 ms | n/a | 47x |
-| `v3_pusht` (v3.0) | 🏆 **11 ms** | 596 ms | 15,408 ms | 54x |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **9 ms** | 435 ms | 2,742 ms | 50x |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **9 ms** | 412 ms | 3,213 ms | 44x |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **28 ms** | 417 ms | 685 ms | 15x |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **18 ms** | 460 ms | 7,700 ms | 25x |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **12 ms** | 377 ms | 2,774 ms | 31x |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **14 ms** | 454 ms | 8,582 ms | 32x |
+| `pusht` (v2.1) | 🏆 **7 ms** | 721 ms | n/a | 107x |
+| `svla_so101_pickplace` (v2.1) | 🏆 **5 ms** | 411 ms | n/a | 87x |
+| `c_careattrs_mug2v2` (v2.1) | 🏆 **5 ms** | 392 ms | n/a | 83x |
+| `v3_pusht` (v3.0) | 🏆 **11 ms** | 623 ms | 14,026 ms | 58x |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **9 ms** | 458 ms | 2,700 ms | 50x |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **9 ms** | 442 ms | 3,168 ms | 48x |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **32 ms** | 449 ms | 726 ms | 14x |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **24 ms** | 468 ms | 7,580 ms | 19x |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **13 ms** | 383 ms | 2,601 ms | 30x |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **18 ms** | 472 ms | 7,767 ms | 27x |
 
 ### With video decoding
 
@@ -76,17 +77,17 @@ leCop is built with `--features decode` and run with `--decode`; physlint runs a
 Only physlint is compared here, and only on the v3 datasets it reads: lerobot-doctor decodes one frame per video, which
 is not the same work.
 
-![Wall time per dataset with video decoding, log scale: leCop takes 0.2 to 3.2 s, physlint 5 to 21 s](../assets/speed-video.svg)
+![Wall time per dataset with video decoding, log scale: leCop takes 0.1 to 2.2 s, physlint 5 to 19 s](../assets/speed-video.svg)
 
 | Dataset | leCop | physlint | leCop speedup |
 |---|---|---|---|
-| `v3_pusht` (v3.0) | 🏆 **185 ms** | 21,095 ms | 114x faster |
-| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **2,585 ms** | 11,517 ms | 4.5x faster |
-| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **2,049 ms** | 10,226 ms | 5x faster |
-| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **1,503 ms** | 5,190 ms | 3.5x faster |
-| `c_so101_my_task_50ep` (v3.0) | 🏆 **2,664 ms** | 19,661 ms | 7.4x faster |
-| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **1,291 ms** | 5,877 ms | 4.6x faster |
-| `c_black-stressball-tutorial` (v3.0) | 🏆 **3,164 ms** | 17,162 ms | 5.4x faster |
+| `v3_pusht` (v3.0) | 🏆 **108 ms** | 19,322 ms | 178x faster |
+| `v3_aloha_sim_insertion_human` (v3.0) | 🏆 **1,154 ms** | 11,305 ms | 9.8x faster |
+| `v3_aloha_sim_transfer_cube_human` (v3.0) | 🏆 **904 ms** | 10,046 ms | 11x faster |
+| `c_so101_pill_sorting_medoc` (v3.0) | 🏆 **627 ms** | 5,331 ms | 8.5x faster |
+| `c_so101_my_task_50ep` (v3.0) | 🏆 **912 ms** | 17,503 ms | 19x faster |
+| `c_so101_block_box_50episodes_final` (v3.0) | 🏆 **749 ms** | 6,021 ms | 8x faster |
+| `c_black-stressball-tutorial` (v3.0) | 🏆 **2,162 ms** | 17,085 ms | 7.9x faster |
 
 leCop splits each video at its keyframes and decodes the pieces in parallel, so one large file uses every core. AV1 is
 decoded with rav1d's hand-written assembly, 3 to 4 times faster than the same decoder without it on ARM (18 s against 67 s on

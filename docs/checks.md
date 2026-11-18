@@ -54,8 +54,8 @@ Beyond what LeRobot checks:
 | Episode shorter than a second | warning | `episode_short` |
 | Episode length more than 3 standard deviations from the mean (judged from 10 episodes up) | warning | `episode_length_outlier` |
 | Episode whose action sequence repeats an earlier one | warning | `duplicate_episode` |
-| Dimension of `action` or `observation.*` that never changes | warning | `constant_dimension` |
-| Dimension with 5% or more of its frames on its minimum or maximum (`clipped_fraction` under `[numeric]`; a gripper that stays closed counts) | warning | `clipped_dimension` |
+| Dimension of `action` or `observation.*` that never changes (not camera parameters: features named `*intrinsics*` or `*extrinsics*`) | warning | `constant_dimension` |
+| Dimension with 5% or more of its frames on its minimum or maximum (`clipped_fraction` under `[numeric]`; a continuous gripper that stays closed counts, a dimension with only two values such as a binary gripper does not) | warning | `clipped_dimension` |
 | Values more than 10 standard deviations from the mean of their dimension (judged from 100 frames up) | warning | `outlier_values` |
 | A frame-to-frame action change whose mean over the dimensions is more than 8 standard deviations from the usual step (up to 5 episodes listed, the rest counted) | warning | `action_jump` |
 | The mean of the action or a state column in the last quarter of the episodes more than 3 standard deviations (of the first quarter) from the first quarter's (judged from 10 episodes up) | warning | `distribution_shift` |

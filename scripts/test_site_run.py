@@ -1,7 +1,9 @@
 import copy
 import json
 import os
+import subprocess
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -143,6 +145,32 @@ class SchemaTest(unittest.TestCase):
         r["issues"][0]["severity"] = "fatal"
         self.assertTrue(any("severity" in e for e in site_run.validate(r, self.schema)))
 
+
+
+class CommitTest(unittest.TestCase):
+    def meta_after_editing(self, path):
+        with tempfile.TemporaryDirectory() as root:
+            os.makedirs(os.path.join(root, "site", "data", "runs"))
+            for f in ["src.txt", "site/data/runs/a.json"]:
+                with open(os.path.join(root, f), "w") as fh:
+                    fh.write("1")
+            git = lambda *a: subprocess.run(["git", "-C", root, "-c", "user.name=t", "-c", "user.email=t@t", *a], check=True, capture_output=True)
+            git("init", "-q")
+            git("add", ".")
+            git("commit", "-q", "-m", "c")
+            with open(os.path.join(root, path), "w") as fh:
+                fh.write("2")
+            old, site_run.ROOT = site_run.ROOT, root
+            try:
+                return site_run.run_meta("/bin/echo")["lecop_commit"]
+            finally:
+                site_run.ROOT = old
+
+    def test_records_written_by_an_earlier_pass_do_not_make_the_commit_dirty(self):
+        self.assertNotIn("dirty", self.meta_after_editing("site/data/runs/a.json"))
+
+    def test_an_edited_source_file_makes_the_commit_dirty(self):
+        self.assertTrue(self.meta_after_editing("src.txt").endswith("-dirty"))
 
 if __name__ == "__main__":
     unittest.main()
