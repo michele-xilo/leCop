@@ -225,8 +225,23 @@ def group_html(rec, g):
     )
 
 
-def dataset_page(rec):
+def decode_html(rec, decode):
+    """The --decode run of the same revision: its time and counts, and the findings only decoding produced."""
+    if decode is None:
+        return "", ""
+    seen = {i["code"] for i in rec["issues"]}
+    extra = "".join(group_html(decode, g) for g in group_issues([i for i in decode["issues"] if i["code"] not in seen]))
+    side = (
+        f'<div class="section"><h3 class="muted">With --decode</h3><div class="big">{fmt_ms(decode["run"]["wall_ms"])}</div>'
+        f'<div class="meta">{decode["errors"]} errors and {decode["warnings"]} warnings with frames decoded.</div></div>'
+    )
+    main = f'<h2 style="margin:24px 0 8px">Only with --decode</h2>{extra}' if extra else ""
+    return side, main
+
+
+def dataset_page(rec, decode=None):
     s, d, r = status(rec), rec["dataset"], rec["run"]
+    decode_side, decode_main = decode_html(rec, decode)
     groups = group_issues(rec["issues"])
     labels = ""
     if rec["errors"]:
@@ -251,9 +266,9 @@ def dataset_page(rec):
         f'<div class="notice"><div><strong>leCop reported these. It is a checker\'s report, not a verdict.</strong> Each finding was produced from the files at this revision and can be reproduced with the command on the right. If one is wrong, tell us and it gets fixed or removed.</div>'
         f'<a class="btn" href="{e(report_url(rec))}">Report a wrong finding</a></div>'
         f'<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start"><div class="main">'
-        f'<div class="stack" style="margin-bottom:8px">{stack}</div><div class="legend" style="margin:0 0 16px">{legend}</div>{body}</div>'
+        f'<div class="stack" style="margin-bottom:8px">{stack}</div><div class="legend" style="margin:0 0 16px">{legend}</div>{body}{decode_main}</div>'
         f'<aside class="side"><div class="section" style="margin:0;padding:0;border:0"><h3 class="muted">Wall time</h3><div class="big">{fmt_ms(r["wall_ms"])}</div>'
-        f'<div class="meta">{d["episodes"]:,} episodes, {d["frames"]:,} frames declared.</div></div>'
+        f'<div class="meta">{d["episodes"]:,} episodes, {d["frames"]:,} frames declared.</div></div>{decode_side}'
         f'<div class="section"><h3 class="muted">Run</h3><div class="facts mono">{facts_html}</div></div>'
         f'<div class="section"><h3 class="muted">Reproduce</h3><pre class="mono">{e(repro)}</pre></div>'
         '<div class="section"><h3 class="muted">Review status</h3><span class="label scheduled">unreviewed</span>'
@@ -272,10 +287,14 @@ def index_entry(rec):
 
 
 def build(runs=RUNS, dist=DIST):
-    records = []
+    records, decodes = [], {}
     for name in sorted(os.listdir(runs)):
         with open(os.path.join(runs, name)) as f:
-            records.append(json.load(f))
+            rec = json.load(f)
+        if rec["run"].get("decode"):
+            decodes[rec["name"]] = rec
+        else:
+            records.append(rec)
     records.sort(key=lambda r: r["name"])
     shutil.rmtree(dist, ignore_errors=True)
     os.makedirs(os.path.join(dist, "datasets"))
@@ -288,7 +307,7 @@ def build(runs=RUNS, dist=DIST):
         json.dump([index_entry(r) for r in records], f, indent=1)
     for r in records:
         with open(os.path.join(dist, "datasets", r["name"] + ".html"), "w") as f:
-            f.write(dataset_page(r))
+            f.write(dataset_page(r, decodes.get(r["name"])))
     return len(records)
 
 
