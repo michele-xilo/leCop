@@ -5,9 +5,15 @@ from __future__ import annotations
 
 import re
 from collections import OrderedDict
+from html import escape
 from typing import Dict, Iterable, List, Optional, Tuple
 
 CHECKS_URL = "https://github.com/michele-xilo/lecop/blob/main/docs/checks.md"
+SITE_URL = "https://michele-xilo.github.io/leCop"
+# Like the results site: a few findings per code in view, the rest folded, and a cap so a code with thousands of
+# findings does not make the page unusable.
+SHOWN_PER_CODE = 5
+CAP_PER_CODE = 200
 
 # The Space downloads no videos, so the checks that read them would report every file missing.
 VIDEO_CODES = (
@@ -89,25 +95,83 @@ def group_by_code(issues: Iterable[Dict]) -> "OrderedDict[str, List[Dict]]":
     return OrderedDict((c, [i for i in issues if i["code"] == c]) for c in codes)
 
 
-def render_markdown(repo: str, revision: str, report: Dict, version: str) -> str:
-    """The report as Markdown: a summary line, then one section per issue code."""
+def plural(n: int, word: str) -> str:
+    return f"{n:,} {word}{'' if n == 1 else 's'}"
+
+
+def dataset_choices(hub_ids: Iterable[str], index: Iterable[Dict]) -> List[str]:
+    """The dropdown's datasets: the Hub's, in its order, then the results site's that the Hub list missed."""
+    seen = set()
+    out = []
+    for repo in list(hub_ids) + [e.get("repo") for e in index]:
+        if repo and repo not in seen:
+            seen.add(repo)
+            out.append(repo)
+    return out
+
+
+def site_page(repo: str, index: Iterable[Dict]) -> Optional[str]:
+    """The results-site page of `repo`, if the site has a record of it (from the site's index.json)."""
+    for entry in index:
+        if entry.get("repo") == repo and entry.get("name"):
+            return f"{SITE_URL}/datasets/{entry['name']}.html"
+    return None
+
+
+def _finding(issue: Dict) -> str:
+    where = "dataset" if issue.get("episode") is None else f"episode {issue['episode']}"
+    return f'<div class="lc-find"><span class="lc-muted">{where}</span>{escape(issue["message"])}</div>'
+
+
+def _group(code: str, issues: List[Dict]) -> str:
+    shown = issues[:SHOWN_PER_CODE]
+    rest = issues[SHOWN_PER_CODE:CAP_PER_CODE]
+    more = ""
+    if rest:
+        hidden = len(issues) - SHOWN_PER_CODE - len(rest)
+        tail = f'<div class="lc-find lc-muted">+ {hidden:,} not shown, run leCop locally to see them all</div>' if hidden else ""
+        more = f'<details class="lc-more"><summary>+ {len(issues) - SHOWN_PER_CODE:,} more</summary>{"".join(map(_finding, rest))}{tail}</details>'
+    severity = escape(issues[0]["severity"])
+    return (
+        f'<section class="lc-group"><div class="lc-ghead"><span class="lc-dot lc-{severity}" aria-hidden="true"></span>'
+        f'<strong class="lc-mono">{escape(code)}</strong><span class="lc-muted">{len(issues):,}</span><span class="lc-grow"></span>'
+        f'<a class="lc-link lc-small" href="{CHECKS_URL}" target="_blank">About this check</a></div>'
+        f'{"".join(map(_finding, shown))}{more}</section>'
+    )
+
+
+def render_html(repo: str, revision: str, report: Dict, version: str, site_url: Optional[str] = None) -> str:
+    """The report in the results site's look: a summary strip, then one group per issue code."""
     errors, warnings = report["errors"], report["warnings"]
-    lines = [
-        f"### leCop {version} on [`{repo}`](https://huggingface.co/datasets/{repo}/tree/{revision}) at `{revision[:12]}`",
-        "",
-        f"**{errors} error{'s' if errors != 1 else ''}, {warnings} warning{'s' if warnings != 1 else ''}.** "
-        f"Video checks were skipped: this Space reads `meta/` and `data/` only. "
-        f"What each code means: [checks]({CHECKS_URL}).",
-        "",
-    ]
+    counts = ""
+    if errors:
+        counts += f'<span class="lc-error">{plural(errors, "error")}</span>'
+    if warnings:
+        counts += f'<span class="lc-warning">{plural(warnings, "warning")}</span>'
+    if not counts:
+        counts = '<span class="lc-clean">Clean</span>'
+    hub = f"https://huggingface.co/datasets/{repo}/tree/{revision}"
     groups = group_by_code(report["issues"])
-    if not groups:
-        lines.append("leCop reported nothing on the metadata and data.")
-    for code, issues in groups.items():
-        severity = issues[0]["severity"]
-        lines.append(f"#### `{code}` ({severity}, {len(issues)})")
-        for i in issues:
-            where = f"episode {i['episode']}: " if i.get("episode") is not None else ""
-            lines.append(f"- {where}{i['message']}")
-        lines.append("")
-    return "\n".join(lines)
+    body = "".join(_group(c, i) for c, i in groups.items()) or (
+        '<p class="lc-muted">leCop reported nothing on the metadata and data.</p>'
+    )
+    site = (
+        f' The <a class="lc-link" href="{escape(site_url)}" target="_blank">results site</a> has a full run of this dataset, videos included.'
+        if site_url
+        else ""
+    )
+    return (
+        f'<div class="lc-report"><h2 class="lc-title">{escape(repo)}</h2>'
+        f'<div class="lc-mono lc-muted"><a class="lc-link" href="{escape(hub)}" target="_blank">huggingface.co/datasets/{escape(repo)}</a>'
+        f" @ {escape(revision[:7])} &middot; leCop {escape(version)}</div>"
+        f'<div class="lc-strip"><span class="lc-big">{counts}</span></div>'
+        f'<p class="lc-note">What leCop reported on <code>meta/</code> and <code>data/</code>, not a verdict. '
+        f"The video checks were skipped: this Space does not download the videos.{site}</p>"
+        f"{body}</div>"
+    )
+
+
+def notice_html(message: str) -> str:
+    """A request that was not checked, with the reason. `message` may hold `code` spans in backticks."""
+    text = re.sub(r"`([^`]*)`", r"<code>\1</code>", escape(message))
+    return f'<div class="lc-report"><p class="lc-notice"><strong>Not checked.</strong> {text}</p></div>'

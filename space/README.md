@@ -13,8 +13,10 @@ short_description: Fast health checks for LeRobot datasets on the Hub
 
 # leCop on a Hub dataset
 
-Type a public LeRobot dataset on the Hub (`owner/name`, optionally a revision) and get
-[leCop](https://github.com/michele-xilo/lecop)'s report, grouped by issue code.
+Pick a public LeRobot dataset on the Hub and get [leCop](https://github.com/michele-xilo/lecop)'s report, grouped by
+issue code in the look of the [results site](https://michele-xilo.github.io/leCop/). The dataset box filters the 2,000
+most downloaded datasets the Hub tags LeRobot (gated ones left out) plus those on the results site; any other
+`owner/name`, `owner/name@revision` or Hub URL can be typed in full.
 
 - The Space downloads `meta/` and `data/` only, so the video checks are skipped. Run `lecop validate` locally on a
   full download to check the videos too.

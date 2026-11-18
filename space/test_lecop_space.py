@@ -1,6 +1,16 @@
 import unittest
 
-from lecop_space import Refused, group_by_code, parse_repo, plan_download, refuse_access, render_markdown
+from lecop_space import (
+    Refused,
+    dataset_choices,
+    group_by_code,
+    notice_html,
+    parse_repo,
+    plan_download,
+    refuse_access,
+    render_html,
+    site_page,
+)
 
 
 class ParseRepo(unittest.TestCase):
@@ -79,19 +89,67 @@ class Render(unittest.TestCase):
         self.assertEqual(list(groups), ["frame_count", "action_jump", "episode_length_outlier"])
         self.assertEqual([i["episode"] for i in groups["action_jump"]], [54, 159])
 
-    def test_markdown_lists_every_finding_and_links_the_checks(self):
+    def test_html_lists_every_finding_by_code_and_links_the_checks(self):
         report = {"errors": 1, "warnings": 3, "ignored": {}, "issues": ISSUES}
-        page = render_markdown("lerobot/pusht", "6e1d9c95aaf8abb19342e723935b6af7c54b5903", report, "0.3.1")
-        self.assertIn("1 error, 3 warnings", page)
-        self.assertIn("#### `action_jump` (warning, 2)", page)
-        self.assertIn("- episode 159: jump b", page)
-        self.assertIn("- frames", page)
+        page = render_html("lerobot/pusht", "6e1d9c95aaf8abb19342e723935b6af7c54b5903", report, "0.3.1")
+        self.assertIn("1 error", page)
+        self.assertIn("3 warnings", page)
+        self.assertIn('<strong class="lc-mono">action_jump</strong><span class="lc-muted">2</span>', page)
+        self.assertIn('<span class="lc-muted">episode 159</span>jump b', page)
+        self.assertIn('<span class="lc-muted">dataset</span>frames', page)
         self.assertIn("docs/checks.md", page)
-        self.assertIn("Video checks were skipped", page)
+        self.assertIn("video checks were skipped", page)
+        self.assertIn("@ 6e1d9c9", page)
+        self.assertNotIn("results site", page)
+
+    def test_html_escapes_messages(self):
+        issue = {"severity": "warning", "episode": 1, "code": "action_jump", "message": "<script>x</script>"}
+        page = render_html("a/b", "abc", {"errors": 0, "warnings": 1, "ignored": {}, "issues": [issue]}, "0.3.1")
+        self.assertNotIn("<script>", page)
+        self.assertIn("&lt;script&gt;", page)
+
+    def test_html_folds_findings_past_five_and_caps_them(self):
+        issues = [{"severity": "warning", "episode": n, "code": "episode_short", "message": "m"} for n in range(250)]
+        page = render_html("a/b", "abc", {"errors": 0, "warnings": 250, "ignored": {}, "issues": issues}, "0.3.1")
+        self.assertIn("<summary>+ 245 more</summary>", page)
+        self.assertIn("episode 199<", page)
+        self.assertNotIn("episode 200<", page)
+        self.assertIn("+ 50 not shown", page)
 
     def test_clean_report_says_so(self):
-        page = render_markdown("a/b", "abc", {"errors": 0, "warnings": 0, "ignored": {}, "issues": []}, "0.3.1")
+        page = render_html("a/b", "abc", {"errors": 0, "warnings": 0, "ignored": {}, "issues": []}, "0.3.1")
+        self.assertIn("Clean", page)
         self.assertIn("leCop reported nothing", page)
+
+    def test_html_links_the_results_site_when_it_has_the_dataset(self):
+        url = "https://michele-xilo.github.io/leCop/datasets/pusht.html"
+        page = render_html("lerobot/pusht", "abc", {"errors": 0, "warnings": 0, "ignored": {}, "issues": []}, "0.3.1", url)
+        self.assertIn(url, page)
+
+    def test_notice_shows_code_spans_and_escapes(self):
+        page = notice_html("`<b>` is not a Hub dataset name")
+        self.assertIn("Not checked.", page)
+        self.assertIn("<code>&lt;b&gt;</code>", page)
+
+
+class DatasetChoices(unittest.TestCase):
+    def test_hub_order_first_then_site_datasets_without_duplicates(self):
+        index = [{"repo": "lerobot/pusht"}, {"repo": "c/d"}, {"repo": "c/d"}]
+        self.assertEqual(dataset_choices(["a/b", "lerobot/pusht"], index), ["a/b", "lerobot/pusht", "c/d"])
+
+    def test_site_alone_when_the_hub_list_failed(self):
+        self.assertEqual(dataset_choices([], [{"repo": "c/d"}]), ["c/d"])
+
+
+class SitePage(unittest.TestCase):
+    INDEX = [{"name": "v3_pusht", "repo": "lerobot/pusht"}, {"name": "aloha", "repo": "lerobot/aloha"}]
+
+    def test_finds_the_record_of_a_repo(self):
+        self.assertEqual(site_page("lerobot/aloha", self.INDEX), "https://michele-xilo.github.io/leCop/datasets/aloha.html")
+
+    def test_none_when_the_site_has_no_record(self):
+        self.assertIsNone(site_page("x/y", self.INDEX))
+        self.assertIsNone(site_page("x/y", []))
 
 
 if __name__ == "__main__":
