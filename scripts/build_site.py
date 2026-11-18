@@ -232,6 +232,8 @@ def row(rec, decoded=False, downloads=None):
         meta += f" &middot; {fmt_downloads(downloads.get(rec['repo']))}"
     if decoded:
         meta += " &middot; Videos decoded"
+    elif r["video"] == "skipped":
+        meta += " &middot; Videos not checked"
     return (
         f'<a class="row" href="datasets/{e(rec["name"])}.html" data-search="{e(search)}" data-status="{s}">'
         f'<span class="dot {s}" aria-hidden="true"></span>'
@@ -334,9 +336,12 @@ def dataset_page(rec, decode=None):
         counts += f'<span class="warning">{plural(rec["warnings"], "warning")}</span>'
     if not rec["issues"]:
         counts = '<span class="clean">Clean</span>'
-    video = {"none": "No video", "container": "Videos: metadata only", "decoded": "Videos: decoded"}[
-        "decoded" if decode else r["video"]]
-    repro = f"hf download {rec['repo']} \\\n  --repo-type dataset --revision {rec['revision']} \\\n  --local-dir {rec['name']}\nlecop validate {rec['name']}"
+    video = {"none": "No video", "container": "Videos: metadata only", "decoded": "Videos: decoded",
+             "skipped": "Videos: not downloaded, not checked"}["decoded" if decode else r["video"]]
+    skipped = r["video"] == "skipped"
+    repro = (f"hf download {rec['repo']} \\\n  --repo-type dataset --revision {rec['revision']} \\\n"
+             + ('  --exclude "videos/*" \\\n' if skipped else "")
+             + f"  --local-dir {rec['name']}\nlecop validate {'--ignore video_missing ' if skipped else ''}{rec['name']}")
     details = (f"leCop {e(r['lecop_version'])} ({e(r['lecop_commit'])}) &middot; rustc {e(r['rustc'])} &middot; {e(r['machine'])}, {e(r['threads'])} threads "
                f"&middot; {e(r['cache'])} cache, median of {e(r['runs'])} runs &middot; {e(r['date'])}")
     desc = f"leCop reported {rec['errors']} errors and {rec['warnings']} warnings on {rec['repo']}, scanned in {fmt_ms(r['wall_ms'])}."

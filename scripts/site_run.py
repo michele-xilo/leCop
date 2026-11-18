@@ -5,6 +5,7 @@
     scripts/site_run.py --only pusht       one of them
     scripts/site_run.py --scan             every downloaded dataset of scripts/scan-datasets.tsv (datasets/scan/)
     scripts/site_run.py --scan --decode    the scan's decode=yes datasets with --decode, into <name>.decode.json
+    scripts/site_run.py --top              every downloaded dataset of scripts/top-datasets.tsv (datasets/top/)
     scripts/site_run.py --check            validate every site/data/runs/*.json against site/data/schema.json
 
 Each record is self-contained (dataset revision, leCop version and commit, machine, threads), so records made on
@@ -24,6 +25,15 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCHEMA = os.path.join(ROOT, "site", "data", "schema.json")
 RUNS_DIR = os.path.join(ROOT, "site", "data", "runs")
+# The Hub lists the runner reads besides scripts/datasets.tsv: where each is downloaded and how to fetch it.
+LISTS = {
+    "scan": {"list": "scripts/scan-datasets.tsv", "dir": "datasets/scan", "fetch": "scripts/fetch-scan-datasets.sh --yes"},
+    "top": {
+        "list": "scripts/top-datasets.tsv",
+        "dir": "datasets/top",
+        "fetch": 'LIST=scripts/top-datasets.tsv DEST=datasets/top ONLY="meta/ data/" SIZE_COL=5 scripts/fetch-scan-datasets.sh --yes',
+    },
+}
 TYPES = {"boolean": bool, "string": str, "integer": int, "number": (int, float), "array": list, "object": dict, "null": type(None)}
 
 
@@ -55,7 +65,7 @@ def record_file(name, decode):
     return f"{name}.decode.json" if decode else f"{name}.json"
 
 
-def build_record(entry, info, report, samples_ms, meta):
+def build_record(entry, info, report, samples_ms, meta, videos_skipped=False):
     return {
         **entry,
         "dataset": {
@@ -70,7 +80,7 @@ def build_record(entry, info, report, samples_ms, meta):
             "runs": len(samples_ms),
             "cache": "warm",
             **meta,
-            "video": video_mode(info, meta.get("decode")),
+            "video": video_mode(info, meta.get("decode"), videos_skipped),
         },
         "errors": report["errors"],
         "warnings": report["warnings"],
@@ -82,11 +92,26 @@ def build_record(entry, info, report, samples_ms, meta):
     }
 
 
-def video_mode(info, decode):
-    """How the run looked at the videos: `decoded` (--decode), `container` (metadata only, the default) or `none`."""
-    if not any(f.get("dtype") == "video" for f in info.get("features", {}).values()):
+def has_video(info):
+    return any(f.get("dtype") == "video" for f in info.get("features", {}).values())
+
+
+def video_mode(info, decode, skipped=False):
+    """How the run looked at the videos: `decoded` (--decode), `container` (metadata only, the default), `skipped`
+    (not downloaded) or `none`."""
+    if not has_video(info):
         return "none"
+    if skipped:
+        return "skipped"
     return "decoded" if decode else "container"
+
+
+def video_flags(info, path):
+    """lecop flags for a dataset fetched without its videos (datasets too large to download whole), and whether the
+    videos are skipped: their absence is then expected, not a finding."""
+    if has_video(info) and not os.path.isdir(os.path.join(path, "videos")):
+        return ["--ignore", "video_missing"], True
+    return [], False
 
 
 def relative(message, root):
@@ -164,14 +189,15 @@ def time_ms(cmd, runs):
 def run_dataset(entry, path, lecop, runs, meta):
     with open(os.path.join(path, "meta", "info.json")) as f:
         info = json.load(f)
-    flags = ["--decode"] if meta.get("decode") else []
+    flags, skipped = video_flags(info, path)
+    flags += ["--decode"] if meta.get("decode") else []
     proc = subprocess.run([lecop, "validate", "--format", "json", *flags, path], capture_output=True, text=True)
     try:
         report = json.loads(proc.stdout)
     except json.JSONDecodeError:
         # A crash gets no record: it is a P0 bug to file, not a result to publish.
         raise RuntimeError(f"lecop exited {proc.returncode} without a JSON report: {proc.stderr.strip()[-300:]}")
-    return build_record(entry, info, report, time_ms([lecop, "validate", "-q", *flags, path], runs), meta)
+    return build_record(entry, info, report, time_ms([lecop, "validate", "-q", *flags, path], runs), meta, skipped)
 
 
 def check():
@@ -193,14 +219,16 @@ def main():
     ap.add_argument("--lecop", default=os.environ.get("LECOP", os.path.join(ROOT, "target/release/lecop")))
     ap.add_argument("--check", action="store_true", help="validate the committed records and exit")
     ap.add_argument("--scan", action="store_true", help="the Hub scan list, scripts/scan-datasets.tsv, in datasets/scan/")
+    ap.add_argument("--top", action="store_true", help="the most downloaded datasets, scripts/top-datasets.tsv, in datasets/top/")
     ap.add_argument("--decode", action="store_true", help="run with --decode into <name>.decode.json (with --scan: the decode=yes rows)")
     args = ap.parse_args()
     if args.check:
         return check()
-    if args.scan:
-        with open(os.path.join(ROOT, "scripts", "scan-datasets.tsv")) as f:
+    hub = "top" if args.top else "scan" if args.scan else None
+    if hub:
+        with open(os.path.join(ROOT, LISTS[hub]["list"])) as f:
             entries = read_scan_list(f.read(), decode_only=args.decode)
-        base, fetch, ready = os.path.join(ROOT, "datasets", "scan"), "scripts/fetch-scan-datasets.sh --yes", ".complete"
+        base, fetch, ready = os.path.join(ROOT, LISTS[hub]["dir"]), LISTS[hub]["fetch"], ".complete"
     else:
         with open(os.path.join(ROOT, "scripts", "datasets.tsv")) as f:
             entries = read_registry(f.read())
@@ -213,7 +241,7 @@ def main():
             continue
         path = os.path.join(base, entry["name"])
         if not os.path.exists(os.path.join(path, ready)):
-            print(f"missing  {entry['name']}: run {fetch} {entry['repo'] if args.scan else entry['name']}")
+            print(f"missing  {entry['name']}: run {fetch} {entry['repo'] if hub else entry['name']}")
             continue
         try:
             record = run_dataset(entry, path, args.lecop, args.runs, meta)

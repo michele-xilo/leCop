@@ -67,6 +67,17 @@ class ScanListTest(unittest.TestCase):
         self.assertEqual(set(r) - {"dataset", "run", "errors", "warnings", "issues"}, {"name", "repo", "revision"})
 
 
+class TopListTest(unittest.TestCase):
+    def test_the_top_list_names_records_owner__name(self):
+        text = "# repo\trevision\tversion\ttotal_gb\tmeta_gb\nlerobot/FineART\t15746b7\tv3.0\t1855.97\t25.18\t220\t40543\t1153939\n"
+        self.assertEqual(site_run.read_scan_list(text), [{"name": "lerobot__FineART", "repo": "lerobot/FineART", "revision": "15746b7"}])
+
+    def test_the_runner_reads_the_committed_top_list(self):
+        self.assertIn("top", site_run.LISTS)
+        with open(os.path.join(site_run.ROOT, site_run.LISTS["top"]["list"])) as f:
+            self.assertGreaterEqual(len(site_run.read_scan_list(f.read())), 50)
+
+
 class DecodeRecordTest(unittest.TestCase):
     LIST = "a/x\tabc\tv3.0\t1.0\t10\tav1\tyes\nb/y\tdef\tv3.0\t1.0\t10\th264\tno\n"
 
@@ -105,6 +116,18 @@ class VideoTest(unittest.TestCase):
 
     def test_a_dataset_without_video_features_has_no_video(self):
         self.assertEqual(self.video({"action": {"dtype": "float32", "shape": [2]}}, decode=True), "none")
+
+    def test_videos_not_downloaded_are_skipped_and_their_absence_ignored(self):
+        with tempfile.TemporaryDirectory() as d:
+            self.assertEqual(site_run.video_flags({"features": self.CAM}, d), (["--ignore", "video_missing"], True))
+            os.mkdir(os.path.join(d, "videos"))
+            self.assertEqual(site_run.video_flags({"features": self.CAM}, d), ([], False))
+            self.assertEqual(site_run.video_flags({"features": {}}, tempfile.gettempdir()), ([], False))
+
+    def test_a_run_without_the_videos_says_they_were_skipped(self):
+        r = site_run.build_record(ENTRY, {**INFO, "features": self.CAM}, REPORT, [10.0], META, videos_skipped=True)
+        self.assertEqual(site_run.validate(r, site_run.load_schema()), [])
+        self.assertEqual(r["run"]["video"], "skipped")
 
     def test_a_record_without_video_or_with_an_unknown_value_is_rejected(self):
         r = record()
