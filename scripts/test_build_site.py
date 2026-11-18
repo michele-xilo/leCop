@@ -65,8 +65,28 @@ class PageTest(unittest.TestCase):
 
     def test_dataset_page_names_the_run_and_the_reproduce_command(self):
         page = build_site.dataset_page(record())
-        for text in ["Apple M2 Pro", "0.3.1", "29ff292", "hf download lerobot/pusht", "lecop validate", "10 ms"]:
+        for text in ["Apple M2 Pro", "0.3.1", "29ff292", "1.99.1", "hf download lerobot/pusht", "lecop validate",
+                     "Scanned in 10 ms", "median of 5 runs", "2026-11-17"]:
             self.assertIn(text, page)
+
+    def test_dataset_page_describes_each_finding_group_and_links_the_check_docs(self):
+        page = build_site.dataset_page(record())
+        self.assertIn(build_site.DESCRIPTIONS["action_jump"], page)
+        self.assertIn("About this check", page)
+
+    def test_every_code_in_the_committed_records_has_a_description(self):
+        codes = set()
+        for name in os.listdir(build_site.RUNS):
+            with open(os.path.join(build_site.RUNS, name)) as f:
+                codes |= {i["code"] for i in json.load(f)["issues"]}
+        self.assertEqual(sorted(codes - set(build_site.DESCRIPTIONS)), [])
+
+    def test_no_page_says_wall_time(self):
+        recs = [record(), record("v3_pusht", fmt="v3.0")]
+        decode = record(wall_ms=4321.0)
+        for page in [build_site.home_page(recs), build_site.dataset_page(recs[0]), build_site.dataset_page(recs[0], decode)]:
+            self.assertNotIn("wall time", page.lower())
+            self.assertNotIn("wall-time", page.lower())
 
     def test_home_lists_every_record_without_javascript(self):
         recs = [record(), record("v3_pusht", fmt="v3.0", wall_ms=12.0)]
@@ -74,7 +94,27 @@ class PageTest(unittest.TestCase):
         self.assertEqual(home.count('class="row"'), 2)
         self.assertIn("datasets/v3_pusht.html", home)
 
-    def test_wall_time_shows_one_decimal_only_below_ten_ms(self):
+    def test_home_rows_say_scanned_in_and_the_filter_line_gives_the_median(self):
+        home = build_site.home_page([record(wall_ms=10.0), record("v3_pusht", fmt="v3.0", wall_ms=12.0)])
+        self.assertIn("Scanned in 10 ms", home)
+        self.assertIn("Scanned in 12 ms", home)
+        self.assertIn("Median scan 12 ms", home)
+        self.assertIn('placeholder="Search 2 datasets"', home)
+
+    def test_home_has_no_sort_control_bars_or_format_filter(self):
+        home = build_site.home_page([record()])
+        for gone in ["<select", 'id="sort"', 'class="bar"', "Most findings", "data-ms"]:
+            self.assertNotIn(gone, home)
+
+    def test_home_row_shows_findings_label_and_meta(self):
+        rows = build_site.home_page([record(), record("c", "o/c", issues=[]), record("e", "o/e", issues=[issue("x", "error")])])
+        for text in ["1 warning<", "Clean<", "1 error<", "v2.1 &middot; 206 episodes &middot; 25,650 frames"]:
+            self.assertIn(text, rows)
+
+    def test_search_still_matches_issue_codes(self):
+        self.assertIn('data-search="lerobot/pusht pusht action_jump"', build_site.home_page([record()]))
+
+    def test_scan_time_shows_one_decimal_only_below_ten_ms(self):
         self.assertEqual(build_site.fmt_ms(9.3), "9.3 ms")
         self.assertEqual(build_site.fmt_ms(35.5), "36 ms")
         self.assertEqual(build_site.fmt_ms(1234.0), "1.23 s")
@@ -113,7 +153,7 @@ class BuildTest(unittest.TestCase):
                 self.assertEqual(f.read().count('class="row"'), 1)
             with open(os.path.join(dist, "datasets", "pusht.html")) as f:
                 page = f.read()
-            for text in ["10 ms", "--decode", "4.32 s", "video_frozen", "frozen camera"]:
+            for text in ["Scanned in 10 ms", "--decode", "Scanned in 4.32 s", "video_frozen", "frozen camera"]:
                 self.assertIn(text, page)
 
 
@@ -130,8 +170,10 @@ class ContrastTest(unittest.TestCase):
     def test_text_colours_reach_wcag_aa_on_both_backgrounds_in_both_themes(self):
         for theme, p in build_site.THEMES.items():
             for fg in ["text", "muted", "link", "ok", "warn", "err"]:
-                for bg in ["bg", "subtle"]:
-                    self.assertGreaterEqual(self.ratio(p[fg], p[bg]), 4.5, f"{theme} {fg} on {bg}")
+                self.assertGreaterEqual(self.ratio(p[fg], p["bg"]), 4.5, f"{theme} {fg} on bg")
+
+    def test_the_stylesheet_uses_no_background_other_than_bg(self):
+        self.assertEqual(sorted(k for k in build_site.THEMES["light"] if k not in {"line", "text", "muted", "link", "ok", "warn", "err"}), ["bg"])
 
 
 if __name__ == "__main__":
