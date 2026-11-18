@@ -136,27 +136,28 @@ FOOTER = (
     'target="_blank">Report a wrong finding</a></p>'
 )
 
-# The results site's palette (GitHub's), with the logo's orange as the accent.
+# The results site's palette (GitHub's), with the logo's orange as the accent. On a Space, Gradio wraps the HTML in its
+# `.prose` styles, which underline links and recolour text over plain class rules, hence the !important.
 CSS = """
 :root{--lc-ok:#1a7f37;--lc-warn:#9a6700;--lc-err:#cf222e;--lc-link:#0969da;--lc-accent:#b64605}
 .dark{--lc-ok:#3fb950;--lc-warn:#d29922;--lc-err:#f85149;--lc-link:#4493f8}
 .gradio-container{max-width:880px!important;margin:0 auto!important}
 .lc-top{display:flex;align-items:center;gap:16px;padding:4px 0 12px;border-bottom:1px solid var(--border-color-primary)}
-.lc-top a{color:var(--body-text-color-subdued);text-decoration:none;display:flex;align-items:center}
-.lc-top a:hover{color:var(--body-text-color)}
-.lc-top .lc-brand{gap:10px;font-size:18px;font-weight:600;color:var(--body-text-color)}
+.lc-top a{color:var(--body-text-color-subdued)!important;text-decoration:none!important;display:flex;align-items:center}
+.lc-top a:hover{color:var(--body-text-color)!important}
+.lc-top .lc-brand{gap:10px;font-size:18px;font-weight:600;color:var(--body-text-color)!important}
 .lc-top img{width:32px;height:32px;border-radius:50%}
 .lc-grow{flex-grow:1}
 .lc-lede{margin:16px 0 4px;color:var(--body-text-color-subdued)}
-.lc-link,.lc-report a{color:var(--lc-link)!important;text-decoration:none;padding:0!important}
+.lc-link,.lc-report a{color:var(--lc-link)!important;text-decoration:none!important;padding:0!important}
 .lc-mono,.lc-find{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.lc-muted{color:var(--body-text-color-subdued)}
+.lc-muted{color:var(--body-text-color-subdued)!important}
 .lc-small{font-size:12px}
 .lc-title{margin:8px 0 4px!important;font-size:22px;font-weight:600;overflow-wrap:anywhere}
 .lc-report .lc-mono.lc-muted{font-size:12px;overflow-wrap:anywhere}
 .lc-strip{display:flex;gap:16px;margin:16px 0 0;padding:12px 0;border-top:1px solid var(--border-color-primary);border-bottom:1px solid var(--border-color-primary)}
 .lc-big{font-size:18px;font-weight:600;display:flex;gap:16px}
-.lc-error{color:var(--lc-err)}.lc-warning{color:var(--lc-warn)}.lc-clean{color:var(--lc-ok)}
+.lc-error{color:var(--lc-err)!important}.lc-warning{color:var(--lc-warn)!important}.lc-clean{color:var(--lc-ok)!important}
 .lc-note{margin:12px 0 24px;font-size:13px;color:var(--body-text-color-subdued)}
 .lc-group{margin:0 0 20px}
 .lc-ghead{display:flex;align-items:center;gap:8px}
