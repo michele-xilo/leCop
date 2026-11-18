@@ -20,6 +20,9 @@ At the speed of Rust and assembly.**
 
 See what leCop reports on common LeRobot datasets, and how fast, on the [results site](https://michele-xilo.github.io/leCop/).
 
+Try it without installing anything: type a Hub dataset into the [leCop Space](https://huggingface.co/spaces/michele-xilo/lecop). It checks
+`meta/` and `data/` of public datasets up to 2 GB; the video checks need a local run.
+
 ## Quick start
 
 Install it with the tool you already use:

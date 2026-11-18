@@ -77,13 +77,15 @@ jobs:
       - run: python3 -m venv .venv && .venv/bin/pip install maturin pytest
       - run: . .venv/bin/activate && maturin develop --locked && pytest python/tests
 
-  # The results site's records are committed data: each must match the schema, and the scripts that make them are tested.
+  # The results site's records are committed data: each must match the schema, and the scripts that make them (and the
+  # Hugging Face Space's logic) are tested.
   site-data:
     name: Site data
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: python3 -m unittest discover -s scripts -p 'test_*.py'
+      - run: python3 -m unittest discover -s space -p 'test_*.py'
       - run: python3 scripts/site_run.py --check
       - run: python3 scripts/build_site.py
 
