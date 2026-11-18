@@ -10,20 +10,20 @@
     "robot": "aloha_agilex"
   },
   "run": {
-    "wall_ms": 19.1,
+    "wall_ms": 20.8,
     "runs": 5,
     "cache": "warm",
     "threads": 24,
     "lecop_version": "0.3.1",
-    "lecop_commit": "4413e82",
+    "lecop_commit": "80ba8f6",
     "rustc": "1.99.0",
     "machine": "AMD Ryzen 9 7900X 12-Core Processor",
     "os": "Linux 7.0.0-42-generic",
-    "date": "2026-11-17",
+    "date": "2026-11-18",
     "decode": false
   },
   "errors": 0,
-  "warnings": 12,
+  "warnings": 10,
   "issues": [
     {
       "severity": "warning",
@@ -72,18 +72,6 @@
       "episode": null,
       "code": "clipped_dimension",
       "message": "action: dimension 13 is at its maximum (1) in 47.1% of the frames"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "clipped_dimension",
-      "message": "observation.arm_active_mask: dimension 0 is at its maximum (1) in 66.8% of the frames"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "clipped_dimension",
-      "message": "observation.arm_active_mask: dimension 1 is at its maximum (1) in 66.7% of the frames"
     },
     {
       "severity": "warning",

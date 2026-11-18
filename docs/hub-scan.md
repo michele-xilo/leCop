@@ -7,13 +7,13 @@ data. Findings that turned out to be leCop bugs are excluded from the counts bel
 |---|---|
 | Datasets | 75 (51 v3.0, 19 v2.1, 5 v2.0), 208 GB, 144,211 episodes, 26.8 million frames |
 | Selection | top 1000 LeRobot datasets by 30-day Hub downloads; not gated; at most 10 GB (v2.0: 20 GB); at most 4 per owner; mirrors removed |
-| No findings | 7 |
-| Warnings only | 52 |
+| No findings | 6 |
+| Warnings only | 53 |
 | At least one error | 16 |
 | Crashes | 0 |
-| leCop | 0.3.1, commit `4413e82`, release build |
+| leCop | 0.3.1, commit `80ba8f6`, release build |
 | Machine | AMD Ryzen 9 7900X (24 threads), Linux, Rust 1.99.0, warm cache |
-| Wall time | median of 5 runs each: 10.6 s for all 75 together, the slowest single dataset 2.9 s |
+| Wall time | median of 5 runs each: 10.6 s for all 75 together (at `4413e82`), the slowest single dataset 3.1 s |
 
 ## Counts by issue code
 
@@ -28,14 +28,14 @@ heuristic worth a look, not a verdict (see [checks.md](checks.md)).
 | `episode_index` | error | 2 | 169 |
 | `range_gap` | error | 2 | 83 |
 | `data_missing` | error | 2 | 5 |
-| `feature_missing` | error | 2 | 4 |
 | `feature_dtype` | error | 2 | 4 |
+| `feature_missing` | error | 2 | 4 |
 | `video_resolution` | error | 2 | 2 |
 | `index_mismatch` | error | 1 | 20 |
 | `cannot_open` | error | 1 | 1 |
-| `clipped_dimension` | warning | 51 | 164 |
 | `episode_length_outlier` | warning | 44 | 519 |
-| `outlier_values` | warning | 25 | 135 |
+| `clipped_dimension` | warning | 42 | 254 |
+| `outlier_values` | warning | 26 | 188 |
 | `action_jump` | warning | 21 | 82 |
 | `constant_dimension` | warning | 14 | 19 |
 | `stats_feature_missing` | warning | 9 | 9 |
@@ -47,7 +47,7 @@ heuristic worth a look, not a verdict (see [checks.md](checks.md)).
 | `nonstandard_features` | warning | 5 | 9 |
 | `episode_short` | warning | 4 | 9348 |
 | `duplicate_episode` | warning | 4 | 2631 |
-| `stats_mismatch` | warning | 3 | 3 |
+| `stats_mismatch` | warning | 4 | 4 |
 
 The errors fall into a few kinds: `info.json` totals that were never updated (0 episodes) or that disagree after
 episodes were appended, metadata pointing at data files that are not in the repository, columns whose type differs
@@ -63,14 +63,15 @@ A `--decode` run on 15 of the datasets adds 5 `video_frozen` warnings on one dat
 - Video frames are counted by decode time, so videos with B-frames get false `video_frame_count` and
   `video_span_beyond_end` errors (1 dataset, 408 findings): [#159](https://github.com/michele-xilo/leCop/issues/159).
 
-`clipped_dimension` also fires on binary gripper dimensions, which is noise rather than a fault:
-[#160](https://github.com/michele-xilo/leCop/issues/160).
+Dimensions with only two values, such as binary grippers, are not reported as clipped or as outliers
+([#160](https://github.com/michele-xilo/leCop/issues/160)), and camera intrinsics and extrinsics are not reported as
+constant ([#162](https://github.com/michele-xilo/leCop/issues/162)).
 
 ## Per-dataset results and reproducing
 
 Each dataset's record, with its pinned revision and all findings, is in `site/data/runs/` and on the
-[results site](https://michele-xilo.github.io/leCop/). The three datasets affected by #158 and #159 were re-run with
-those fixes. To repeat the scan:
+[results site](https://michele-xilo.github.io/leCop/). All records were re-run at `80ba8f6`, which includes the fixes for #158, #159, #160 and
+#162. To repeat the scan:
 
 ```bash
 scripts/fetch-scan-datasets.sh --yes      # the list in scripts/scan-datasets.tsv, 208 GB

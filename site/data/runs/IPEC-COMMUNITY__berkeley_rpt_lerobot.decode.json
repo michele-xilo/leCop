@@ -10,20 +10,20 @@
     "robot": "franka"
   },
   "run": {
-    "wall_ms": 8869.6,
+    "wall_ms": 9874.8,
     "runs": 5,
     "cache": "warm",
     "threads": 24,
     "lecop_version": "0.3.1",
-    "lecop_commit": "4413e82",
+    "lecop_commit": "80ba8f6",
     "rustc": "1.99.0",
     "machine": "AMD Ryzen 9 7900X 12-Core Processor",
     "os": "Linux 7.0.0-42-generic",
-    "date": "2026-11-17",
+    "date": "2026-11-18",
     "decode": true
   },
   "errors": 0,
-  "warnings": 15,
+  "warnings": 13,
   "issues": [
     {
       "severity": "warning",
@@ -66,18 +66,6 @@
       "episode": null,
       "code": "outlier_values",
       "message": "action: dimension 6 reaches 30 standard deviations from its mean"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "clipped_dimension",
-      "message": "action: dimension 7 is at its minimum (0) in 52.1% of the frames"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "clipped_dimension",
-      "message": "observation.state: dimension 7 is at its minimum (0) in 52.3% of the frames"
     },
     {
       "severity": "warning",

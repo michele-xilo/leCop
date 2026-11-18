@@ -10,12 +10,12 @@
     "robot": "panda"
   },
   "run": {
-    "wall_ms": 52.0,
+    "wall_ms": 55.0,
     "runs": 5,
     "cache": "warm",
     "threads": 24,
     "lecop_version": "0.3.1",
-    "lecop_commit": "5f65942",
+    "lecop_commit": "80ba8f6",
     "rustc": "1.99.0",
     "machine": "AMD Ryzen 9 7900X 12-Core Processor",
     "os": "Linux 7.0.0-42-generic",
@@ -23,7 +23,7 @@
     "decode": false
   },
   "errors": 0,
-  "warnings": 18,
+  "warnings": 8,
   "issues": [
     {
       "severity": "warning",
@@ -36,66 +36,6 @@
       "episode": null,
       "code": "outlier_values",
       "message": "action: dimension 3 reaches 11 standard deviations from its mean"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "clipped_dimension",
-      "message": "action: dimension 6 is at its maximum (1) in 58.5% of the frames"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "constant_dimension",
-      "message": "observation.left_extrinsics: dimension 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "constant_dimension",
-      "message": "observation.left_extrinsicsR: dimension 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "constant_dimension",
-      "message": "observation.left_intrinsics: dimension 0 (= 221.70250336881634), 1 (= 0), 2 (= 128), 3 (= 0), 4 (= 221.70250336881634), 5 (= 128), 6 (= 0), 7 (= 0), 8 (= 1) never changes"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "constant_dimension",
-      "message": "observation.right_extrinsics: dimension 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "constant_dimension",
-      "message": "observation.right_extrinsicsR: dimension 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "constant_dimension",
-      "message": "observation.right_intrinsics: dimension 0 (= 221.70250336881634), 1 (= 0), 2 (= 128), 3 (= 0), 4 (= 221.70250336881634), 5 (= 128), 6 (= 0), 7 (= 0), 8 (= 1) never changes"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "constant_dimension",
-      "message": "observation.wrist_extrinsics: dimension 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "constant_dimension",
-      "message": "observation.wrist_extrinsicsR: dimension 0 (= -1), 1 (= 0), 2 (= -0.00000000000000012246468525851679), 3 (= 0.05), 4 (= 0.00000000000000012246468525851679), 5 (= 0), 6 (= -1), 7 (= 0), 8 (= 0), 9 (= -1), 10 (= 0), 11 (= 0), 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
-    },
-    {
-      "severity": "warning",
-      "episode": null,
-      "code": "constant_dimension",
-      "message": "observation.wrist_intrinsics: dimension 0 (= 166.81284772367434), 1 (= 0), 2 (= 128), 3 (= 0), 4 (= 166.81284772367434), 5 (= 128), 6 (= 0), 7 (= 0), 8 (= 1) never changes"
     },
     {
       "severity": "warning",
