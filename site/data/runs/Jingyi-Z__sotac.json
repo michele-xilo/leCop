@@ -1,0 +1,1307 @@
+{
+  "name": "Jingyi-Z__sotac",
+  "repo": "Jingyi-Z/sotac",
+  "revision": "7d1afea96bfa96290d339690c5440e67baa700fc",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 163,
+    "frames": 55457,
+    "fps": 30,
+    "robot": "so_sensor_follower"
+  },
+  "run": {
+    "wall_ms": 151.2,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "5f65942",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-18",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 213,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 0 is at its minimum (-0.20000000298023224) in 7.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 1 is at its maximum (0.20000000298023224) in 7.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 2 is at its minimum (0) in 91.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 3 is at its minimum (-0.20000000298023224) in 6.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 5 is at its minimum (0) in 93.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 8 is at its minimum (0) in 94.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 9 is at its minimum (-0.20000000298023224) in 6.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 10 is at its maximum (0.20000000298023224) in 5.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 11 is at its minimum (0) in 92.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 13 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 14 is at its minimum (0) in 97.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 15 is at its minimum (-0.20000000298023224) in 12.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 17 is at its minimum (0) in 86.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 20 is at its minimum (0) in 87.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 23 is at its minimum (0) in 94.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 26 is at its minimum (0) in 96.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 29 is at its minimum (0) in 98.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 32 is at its minimum (0) in 98.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 35 is at its minimum (0) in 98.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 36 reaches 22 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 37 reaches 22 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 38 is at its minimum (0) in 99.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 39 reaches 25 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 40 is at its maximum (0) in 99.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 41 is at its minimum (0) in 99.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 42 is at its minimum (-0.20000000298023224) in 12.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 44 is at its minimum (0) in 85.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 45 is at its minimum (-0.20000000298023224) in 10.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 47 is at its minimum (0) in 86.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 50 is at its minimum (0) in 94.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 53 is at its minimum (0) in 96.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 56 is at its minimum (0) in 97.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 58 is at its maximum (0) in 98.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 59 is at its minimum (0) in 98.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 60 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 61 is at its maximum (0) in 99.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 62 is at its minimum (0) in 99.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 63 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 64 is at its maximum (0) in 99.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 65 is at its minimum (0) in 99.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 66 is at its minimum (-0.20000000298023224) in 6.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 68 is at its minimum (0) in 76.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 71 is at its minimum (0) in 76.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 74 is at its minimum (0) in 94.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 77 is at its minimum (0) in 96.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 79 is at its maximum (0) in 98.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 80 is at its minimum (0) in 98.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 81 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 82 is at its maximum (0) in 99.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 83 is at its minimum (0) in 99.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 84 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 85 is at its maximum (0) in 99.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 86 is at its minimum (0) in 99.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 87 reaches 14 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 88 is at its maximum (0) in 99.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 89 is at its minimum (0) in 99.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 92 is at its minimum (0) in 74.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 95 is at its minimum (0) in 98.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 96 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 97 is at its maximum (0) in 99.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 98 is at its minimum (0) in 99.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 99 is at its maximum (0) in 99.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 100 is at its maximum (0) in 99.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 101 is at its minimum (0) in 99.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 103 is at its minimum (0) in 74.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 104 is at its minimum (0) in 74.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 107 is at its minimum (0) in 95.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 109 reaches 14 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 110 is at its minimum (0) in 98.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 111 reaches 14 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 112 is at its maximum (0) in 99.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 113 is at its minimum (0) in 99.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 114 is at its maximum (0) in 99.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 115 reaches 36 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 116 is at its minimum (0) in 99.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 117 reaches 16 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 118 reaches 16 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 119 is at its minimum (0) in 99.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 120 is at its maximum (0) in 99.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 121 reaches 33 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 122 is at its minimum (0) in 99.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 125 is at its minimum (0) in 75.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 128 is at its minimum (0) in 74.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 129 is at its maximum (0.20000000298023224) in 9.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 131 is at its minimum (0) in 89.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 132 is at its maximum (0.20000000298023224) in 5.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 134 is at its minimum (0) in 93.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 135 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 136 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 137 is at its minimum (0) in 99.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 140 is at its minimum (0) in 98.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 141 reaches 16 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 142 reaches 16 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 143 is at its minimum (0) in 99.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 146 is at its minimum (0) in 75.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 147 is at its maximum (0.20000000298023224) in 10.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 148 reaches 14 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 149 is at its minimum (0) in 88.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 152 is at its minimum (0) in 93.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 154 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 155 is at its minimum (0) in 82.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 158 is at its minimum (0) in 86.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 159 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 161 is at its minimum (0) in 82.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 163 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 164 is at its minimum (0) in 84.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 167 is at its minimum (0) in 86.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 169 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 170 is at its minimum (0) in 94.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 173 is at its minimum (0) in 85.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 176 is at its minimum (0) in 83.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 178 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 179 is at its minimum (0) in 88.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 181 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 182 is at its minimum (0) in 91.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 185 is at its minimum (0) in 95.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 188 is at its minimum (0) in 94.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 189 is at its minimum (-0.20000000298023224) in 5.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 190 is at its minimum (-0.20000000298023224) in 6.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 191 is at its minimum (0) in 93.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 192 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 193 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 194 is at its minimum (0) in 99.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 195 reaches 15 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 196 reaches 15 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 197 is at its minimum (0) in 99.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 198 is at its maximum (0.20000000298023224) in 5.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 199 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 200 is at its minimum (0) in 83.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 202 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 203 is at its minimum (0) in 81.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 204 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 205 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 206 is at its minimum (0) in 89.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 208 reaches 16 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 209 is at its minimum (0) in 91.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 210 is at its minimum (-0.20000000298023224) in 7.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 211 is at its minimum (-0.20000000298023224) in 8.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 212 is at its minimum (0) in 91.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 213 is at its minimum (-0.20000000298023224) in 6.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 214 is at its maximum (0) in 93.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 215 is at its minimum (0) in 93.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 216 is at its minimum (0) in 94.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 217 is at its maximum (0) in 94.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 218 is at its minimum (0) in 94.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 219 is at its maximum (0.20000000298023224) in 5.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 220 is at its maximum (0) in 94.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 221 is at its minimum (0) in 94.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 222 is at its minimum (-0.20000000298023224) in 5.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 223 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 224 is at its minimum (0) in 80.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 226 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 227 is at its minimum (0) in 77.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 230 is at its minimum (0) in 82.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 233 is at its minimum (0) in 81.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 234 is at its minimum (-0.20000000298023224) in 7.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 235 is at its minimum (-0.20000000298023224) in 10.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 236 is at its minimum (0) in 89.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 237 is at its minimum (-0.20000000298023224) in 5.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 238 is at its maximum (0) in 93.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 239 is at its minimum (0) in 93.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 240 is at its maximum (0.20000000298023224) in 5.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 241 is at its maximum (0) in 94.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 242 is at its minimum (0) in 94.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 243 is at its maximum (0.20000000298023224) in 5.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 244 is at its maximum (0) in 94.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 245 is at its minimum (0) in 94.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 247 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 248 is at its minimum (0) in 78.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 251 is at its minimum (0) in 84.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 253 is at its maximum (0) in 93.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 254 is at its minimum (0) in 93.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 255 is at its minimum (-0.20000000298023224) in 5.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 256 is at its maximum (0) in 94.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 257 is at its minimum (0) in 94.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 260 is at its minimum (0) in 79.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 261 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 262 reaches 15 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 263 is at its minimum (0) in 82.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 264 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 265 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 266 is at its minimum (0) in 82.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 268 is at its maximum (0) in 94.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 269 is at its minimum (0) in 94.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 270 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 271 is at its maximum (0) in 99.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 272 is at its minimum (0) in 99.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 275 is at its minimum (0) in 96.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 276 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 277 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 278 is at its minimum (0) in 99.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 281 is at its minimum (0) in 83.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 283 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 284 is at its minimum (0) in 79.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 286 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 287 is at its minimum (0) in 82.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 288 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 289 reaches 14 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 290 is at its minimum (0) in 81.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 291 is at its maximum (0.20000000298023224) in 12.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 292 is at its minimum (-0.20000000298023224) in 7.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 293 is at its minimum (0) in 86.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 294 is at its maximum (0.20000000298023224) in 9.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 296 is at its minimum (0) in 89.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 299 is at its minimum (0) in 94.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 301 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 302 is at its minimum (0) in 86.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 304 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 305 is at its minimum (0) in 85.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.sensors.paxini_fingertip: dimension 307 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 308 is at its minimum (0) in 85.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.sensors.paxini_fingertip: dimension 311 is at its minimum (0) in 87.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_mismatch",
+      "message": "observation.sensors.paxini_fingertip: min has 3 values in stats.json but the feature has 312 dimensions (and 3 more differences); stats.json is out of date with the data"
+    }
+  ]
+}
