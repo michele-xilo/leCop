@@ -42,7 +42,7 @@ DESCRIPTIONS = {
     "episode_index": "The episode indices do not run from 0 to n-1.",
     "episode_length_outlier": "An episode is far longer or shorter than the others.",
     "episode_rows_missing": "A data file has no rows for the episode that points to it.",
-    "episode_short": "An episode is shorter than a second.",
+    "episode_short": "An episode is shorter than a second (or 5 frames).",
     "feature_dtype": "A data column does not have the type that info.json declares.",
     "feature_missing": "A feature declared in info.json has no data column.",
     "frame_count": "The frame total in info.json disagrees with the episode lengths.",
@@ -93,7 +93,7 @@ def css():
         ".sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}"
         ".filters{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 20px;padding-bottom:12px;border-bottom:1px solid var(--line)}"
         ".filters button{font:inherit;background:none;border:0;padding:0;color:var(--muted);cursor:pointer}.filters button[aria-pressed=true]{color:var(--text);font-weight:600}"
-        ".filters .median{font-size:12px;color:var(--muted)}.js-only{display:none}.js .js-only{display:inline}"
+        ".filters .median{font-size:12px;color:var(--muted)}.js-only{display:none}.js .js-only{display:inline}.js .search.js-only{display:block}"
         ".row{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}.row[hidden]{display:none}"
         ".row .id{flex:1 1 auto;min-width:0}.row .id span{display:block}.row .name{font-weight:600;overflow-wrap:anywhere}.meta{font-size:12px;color:var(--muted)}"
         ".dot{flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:currentColor}"
@@ -168,7 +168,7 @@ def row(rec):
     codes = sorted({i["code"] for i in rec["issues"]})
     label = {"errors": plural(rec["errors"], "error"), "warnings": plural(rec["warnings"], "warning"), "clean": "Clean"}[s]
     search = " ".join([rec["repo"], rec["name"], *codes]).lower()
-    meta = f"{d['format']} &middot; {d['episodes']:,} episodes &middot; {d['frames']:,} frames"
+    meta = f"{e(d['format'])} &middot; {d['episodes']:,} episodes &middot; {d['frames']:,} frames"
     return (
         f'<a class="row" href="datasets/{e(rec["name"])}.html" data-search="{e(search)}" data-status="{s}">'
         f'<span class="dot {s}" aria-hidden="true"></span>'
@@ -180,7 +180,7 @@ def row(rec):
 SCRIPT = """
 document.documentElement.className+=' js';
 const rows=[...document.querySelectorAll('.row')],q=document.getElementById('q'),tabs=[...document.querySelectorAll('.filters button')],empty=document.getElementById('empty');
-const p=new URLSearchParams(location.search);let status=p.get('status')||'all';q.value=p.get('q')||'';
+const p=new URLSearchParams(location.search);let status=p.get('status');if(!['all','clean','warnings','errors'].includes(status))status='all';q.value=p.get('q')||'';
 function apply(){const t=q.value.trim().toLowerCase();let shown=0;
  rows.forEach(r=>{const ok=(status==='all'||r.dataset.status===status)&&r.dataset.search.includes(t);r.hidden=!ok;shown+=ok;});
  empty.hidden=shown>0;
@@ -206,7 +206,7 @@ def home_page(records):
         '<div><div class="muted" style="margin-bottom:8px">Run it on your own dataset</div>'
         '<div class="cmd mono"><span class="muted">$</span><span>uvx lecop path/to/dataset</span></div>'
         '<div class="meta" style="margin-top:8px">or <code class="mono">pip install lecop</code>, <code class="mono">cargo binstall lecop</code></div></div></div>'
-        f'<div class="search"><label for="q" class="sr">Search datasets</label>{lens}'
+        f'<div class="search js-only"><label for="q" class="sr">Search datasets</label>{lens}'
         f'<input id="q" type="search" placeholder="Search {n} datasets"></div>'
         f'<div class="filters">{tab("all", "All", True)}{tab("clean", "Clean")}{tab("warnings", "Warnings")}{tab("errors", "Errors")}'
         f'<span class="grow"></span><span class="median">Median scan {fmt_ms(times[len(times) // 2])}</span></div>'
@@ -231,7 +231,8 @@ def group_html(g):
     more = ""
     if g["count"] > 1:
         tail = f'<div class="find muted">+ {g["more"]} not shown, run lecop on the dataset to see them all</div>' if g["more"] else ""
-        more = f'<details class="more"><summary>+ {g["count"] - 1} more</summary>{"".join(finding(i) for i in rest)}{tail}</details>'
+        summary = f"+ {len(rest)} more of {g['count'] - 1}" if g["more"] else f"+ {g['count'] - 1} more"
+        more = f'<details class="more"><summary>{summary}</summary>{"".join(finding(i) for i in rest)}{tail}</details>'
     return (
         f'<section class="group"><div class="ghead"><span class="dot {g["severity"]}" aria-hidden="true"></span><strong class="mono" style="font-size:14px">{e(g["code"])}</strong>'
         f'<span class="muted">{g["count"]}</span><span class="grow"></span><a class="link check" href="{DOCS_URL}/checks.md">About this check</a></div>'
@@ -262,8 +263,8 @@ def dataset_page(rec, decode=None):
     if not rec["issues"]:
         counts = '<span class="clean">Clean</span>'
     repro = f"hf download {rec['repo']} \\\n  --repo-type dataset --revision {rec['revision']} \\\n  --local-dir {rec['name']}\nlecop validate {rec['name']}"
-    details = (f"leCop {r['lecop_version']} ({r['lecop_commit']}) &middot; rustc {e(r['rustc'])} &middot; {e(r['machine'])}, {r['threads']} threads "
-               f"&middot; {e(r['cache'])} cache, median of {r['runs']} runs &middot; {e(r['date'])}")
+    details = (f"leCop {e(r['lecop_version'])} ({e(r['lecop_commit'])}) &middot; rustc {e(r['rustc'])} &middot; {e(r['machine'])}, {e(r['threads'])} threads "
+               f"&middot; {e(r['cache'])} cache, median of {e(r['runs'])} runs &middot; {e(r['date'])}")
     desc = f"leCop reported {rec['errors']} errors and {rec['warnings']} warnings on {rec['repo']}, scanned in {fmt_ms(r['wall_ms'])}."
     hub = f"https://huggingface.co/datasets/{rec['repo']}/tree/{rec['revision']}"
     return (

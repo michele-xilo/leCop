@@ -111,6 +111,27 @@ class PageTest(unittest.TestCase):
         for text in ["1 warning<", "Clean<", "1 error<", "v2.1 &middot; 206 episodes &middot; 25,650 frames"]:
             self.assertIn(text, rows)
 
+    def test_unknown_status_in_the_url_falls_back_to_all(self):
+        self.assertIn("['all','clean','warnings','errors']", build_site.SCRIPT.replace(" ", ""))
+
+    def test_search_box_needs_javascript_so_it_is_hidden_without_it(self):
+        self.assertIn('class="search js-only"', build_site.home_page([record()]))
+
+    def test_a_capped_group_summary_counts_what_expands(self):
+        issues = [issue("c", episode=i) for i in range(build_site.CAP + 5)]
+        page = build_site.dataset_page(record(issues=issues))
+        self.assertIn(f"+ {build_site.CAP - 1} more of {build_site.CAP + 4}", page)
+        self.assertIn("+ 5 not shown", page)
+
+    def test_record_fields_are_escaped_in_rows_and_details(self):
+        r = record(fmt="<i>v</i>")
+        r["run"]["lecop_version"] = "<b>1</b>"
+        r["run"]["threads"] = "<u>"
+        r["run"]["runs"] = "<s>"
+        for page in [build_site.home_page([r]), build_site.dataset_page(r)]:
+            for tag in ["<i>", "<b>", "<u>", "<s>"]:
+                self.assertNotIn(tag, page.split("</style>", 1)[1])
+
     def test_search_still_matches_issue_codes(self):
         self.assertIn('data-search="lerobot/pusht pusht action_jump"', build_site.home_page([record()]))
 
@@ -172,7 +193,10 @@ class ContrastTest(unittest.TestCase):
             for fg in ["text", "muted", "link", "ok", "warn", "err"]:
                 self.assertGreaterEqual(self.ratio(p[fg], p["bg"]), 4.5, f"{theme} {fg} on bg")
 
-    def test_the_stylesheet_uses_no_background_other_than_bg(self):
+    def test_the_stylesheet_only_uses_defined_colour_tokens_and_the_only_background_is_bg(self):
+        import re
+        used = set(re.findall(r"var\(--(\w+)\)", build_site.css()))
+        self.assertLessEqual(used, set(build_site.THEMES["light"]))
         self.assertEqual(sorted(k for k in build_site.THEMES["light"] if k not in {"line", "text", "muted", "link", "ok", "warn", "err"}), ["bg"])
 
 
