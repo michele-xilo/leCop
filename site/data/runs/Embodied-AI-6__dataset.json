@@ -1,0 +1,113 @@
+{
+  "name": "Embodied-AI-6__dataset",
+  "repo": "Embodied-AI-6/dataset",
+  "revision": "3d33e927df43b0e1d198130d61df5e93edc42b6b",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 160,
+    "frames": 81786,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 30.3,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 14,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": 0,
+      "code": "episode_length_outlier",
+      "message": "1006 frames, much longer than the other episodes (mean 511, std 86 over 160 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 0,
+      "code": "idle_episode",
+      "message": "56% of frames repeat the previous action; it first changes at frame 477 and last at frame 984 of 1006"
+    },
+    {
+      "severity": "warning",
+      "episode": 23,
+      "code": "idle_episode",
+      "message": "51% of frames repeat the previous action; it first changes at frame 260 and last at frame 591 of 631"
+    },
+    {
+      "severity": "warning",
+      "episode": 26,
+      "code": "idle_episode",
+      "message": "58% of frames repeat the previous action; it first changes at frame 293 and last at frame 637 of 679"
+    },
+    {
+      "severity": "warning",
+      "episode": 95,
+      "code": "idle_episode",
+      "message": "51% of frames repeat the previous action; it first changes at frame 216 and last at frame 500 of 542"
+    },
+    {
+      "severity": "warning",
+      "episode": 100,
+      "code": "idle_episode",
+      "message": "56% of frames repeat the previous action; it first changes at frame 336 and last at frame 679 of 735"
+    },
+    {
+      "severity": "warning",
+      "episode": 103,
+      "code": "idle_episode",
+      "message": "59% of frames repeat the previous action; it first changes at frame 354 and last at frame 666 of 709"
+    },
+    {
+      "severity": "warning",
+      "episode": 116,
+      "code": "idle_episode",
+      "message": "55% of frames repeat the previous action; it first changes at frame 272 and last at frame 562 of 598"
+    },
+    {
+      "severity": "warning",
+      "episode": 119,
+      "code": "idle_episode",
+      "message": "58% of frames repeat the previous action; it first changes at frame 319 and last at frame 692 of 741"
+    },
+    {
+      "severity": "warning",
+      "episode": 123,
+      "code": "episode_length_outlier",
+      "message": "768 frames, much longer than the other episodes (mean 511, std 86 over 160 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 123,
+      "code": "idle_episode",
+      "message": "52% of frames repeat the previous action; it first changes at frame 128 and last at frame 747 of 768"
+    },
+    {
+      "severity": "warning",
+      "episode": 123,
+      "code": "action_frozen",
+      "message": "action is identical for 6.7 s (202 frames) from frame 128"
+    },
+    {
+      "severity": "warning",
+      "episode": 126,
+      "code": "idle_episode",
+      "message": "50% of frames repeat the previous action; it first changes at frame 153 and last at frame 558 of 591"
+    },
+    {
+      "severity": "warning",
+      "episode": 126,
+      "code": "action_frozen",
+      "message": "action is identical for 3.2 s (97 frames) from frame 153"
+    }
+  ]
+}

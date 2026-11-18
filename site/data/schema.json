@@ -26,6 +26,7 @@
         "runs": {"type": "integer"},
         "cache": {"type": "string", "enum": ["warm"]},
         "threads": {"type": "integer"},
+        "decode": {"type": "boolean"},
         "lecop_version": {"type": "string"},
         "lecop_commit": {"type": "string"},
         "rustc": {"type": "string"},

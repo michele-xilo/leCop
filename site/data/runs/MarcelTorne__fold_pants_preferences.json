@@ -1,0 +1,83 @@
+{
+  "name": "MarcelTorne__fold_pants_preferences",
+  "repo": "MarcelTorne/fold_pants_preferences",
+  "revision": "998564b4ea4b790ebf19ea95226266ee07ff3c60",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 536,
+    "frames": 530494,
+    "fps": 15,
+    "robot": "panda"
+  },
+  "run": {
+    "wall_ms": 21.5,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 9,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 0 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 2 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 0 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 2 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 7 is at its maximum (1) in 43.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": 49,
+      "code": "episode_length_outlier",
+      "message": "2962 frames, much longer than the other episodes (mean 990, std 393 over 536 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52,
+      "code": "episode_length_outlier",
+      "message": "2480 frames, much longer than the other episodes (mean 990, std 393 over 536 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 122,
+      "code": "episode_length_outlier",
+      "message": "2185 frames, much longer than the other episodes (mean 990, std 393 over 536 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 131,
+      "code": "episode_length_outlier",
+      "message": "2196 frames, much longer than the other episodes (mean 990, std 393 over 536 episodes)"
+    }
+  ]
+}

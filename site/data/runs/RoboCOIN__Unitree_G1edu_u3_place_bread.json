@@ -1,0 +1,263 @@
+{
+  "name": "RoboCOIN__Unitree_G1edu_u3_place_bread",
+  "repo": "RoboCOIN/Unitree_G1edu_u3_place_bread",
+  "revision": "3c5ab5f9a1e334ecc9566734017d64b8bc899428",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 1464,
+    "frames": 500679,
+    "fps": 30,
+    "robot": "Unitree_G1edu-u3"
+  },
+  "run": {
+    "wall_ms": 84.0,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 2,
+  "warnings": 37,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_feature_missing",
+      "message": "no statistics for gripper_open_scale_action, gripper_open_scale_state"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 14 is at its minimum (-1.0481975078582764) in 8.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 15 is at its maximum (0.9210000038146973) in 34.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 17 is at its minimum (-1.5717962980270386) in 5.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 18 is at its minimum (-1.7463293075561523) in 28.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 20 is at its minimum (-1.7463293075561523) in 11.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 22 is at its minimum (-0.9210000038146973) in 54.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 25 is at its maximum (1.7463293075561523) in 26.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 26 is at its maximum (1.5717962980270386) in 7.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "action: dimension 22 of the last quarter of the episodes is 4.9 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "observation.state: dimension 22 of the last quarter of the episodes is 5.1 standard deviations from the first quarter"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "feature_missing",
+      "message": "`gripper_open_scale_action` is declared in info.json but has no column in the data files"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "feature_missing",
+      "message": "`gripper_open_scale_state` is declared in info.json but has no column in the data files"
+    },
+    {
+      "severity": "warning",
+      "episode": 431,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 486,
+      "code": "action_jump",
+      "message": "2 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 608,
+      "code": "episode_length_outlier",
+      "message": "704 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 613,
+      "code": "episode_length_outlier",
+      "message": "851 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 614,
+      "code": "episode_length_outlier",
+      "message": "2110 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 615,
+      "code": "episode_length_outlier",
+      "message": "1088 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 626,
+      "code": "episode_length_outlier",
+      "message": "1173 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 699,
+      "code": "episode_length_outlier",
+      "message": "822 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 716,
+      "code": "action_jump",
+      "message": "5 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 836,
+      "code": "episode_length_outlier",
+      "message": "742 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 871,
+      "code": "episode_length_outlier",
+      "message": "856 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 871,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 1287,
+      "code": "episode_length_outlier",
+      "message": "706 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1289,
+      "code": "episode_length_outlier",
+      "message": "684 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1294,
+      "code": "episode_length_outlier",
+      "message": "681 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1297,
+      "code": "episode_length_outlier",
+      "message": "877 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1301,
+      "code": "episode_length_outlier",
+      "message": "708 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1302,
+      "code": "episode_length_outlier",
+      "message": "707 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1303,
+      "code": "episode_length_outlier",
+      "message": "699 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1304,
+      "code": "episode_length_outlier",
+      "message": "733 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1305,
+      "code": "episode_length_outlier",
+      "message": "761 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1306,
+      "code": "episode_length_outlier",
+      "message": "752 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1307,
+      "code": "episode_length_outlier",
+      "message": "702 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1440,
+      "code": "episode_length_outlier",
+      "message": "1293 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1446,
+      "code": "episode_length_outlier",
+      "message": "808 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1449,
+      "code": "episode_length_outlier",
+      "message": "747 frames, much longer than the other episodes (mean 342, std 111 over 1464 episodes)"
+    }
+  ]
+}

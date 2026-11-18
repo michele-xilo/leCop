@@ -1,0 +1,53 @@
+{
+  "name": "MarcelTorne__setup_table_preferences",
+  "repo": "MarcelTorne/setup_table_preferences",
+  "revision": "5a4f9ae1d0c9eab65497b26bf71f8c7da94bde5e",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 467,
+    "frames": 197896,
+    "fps": 15,
+    "robot": "panda"
+  },
+  "run": {
+    "wall_ms": 7940.8,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": true
+  },
+  "errors": 0,
+  "warnings": 4,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 7 is at its maximum (1) in 40.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": 6,
+      "code": "episode_length_outlier",
+      "message": "952 frames, much longer than the other episodes (mean 424, std 97 over 467 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 14,
+      "code": "episode_length_outlier",
+      "message": "721 frames, much longer than the other episodes (mean 424, std 97 over 467 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 379,
+      "code": "episode_length_outlier",
+      "message": "790 frames, much longer than the other episodes (mean 424, std 97 over 467 episodes)"
+    }
+  ]
+}

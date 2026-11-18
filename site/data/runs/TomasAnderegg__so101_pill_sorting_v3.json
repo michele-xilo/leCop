@@ -1,0 +1,65 @@
+{
+  "name": "TomasAnderegg__so101_pill_sorting_v3",
+  "repo": "TomasAnderegg/so101_pill_sorting_v3",
+  "revision": "1d5758b230b42598449cf3731f745482d560b03b",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 300,
+    "frames": 242137,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 98.0,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 6,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": 0,
+      "code": "idle_episode",
+      "message": "51% of frames repeat the previous action; it first changes at frame 367 and last at frame 1149 of 1166"
+    },
+    {
+      "severity": "warning",
+      "episode": 76,
+      "code": "episode_length_outlier",
+      "message": "1686 frames, much longer than the other episodes (mean 807, std 248 over 300 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 82,
+      "code": "episode_length_outlier",
+      "message": "1566 frames, much longer than the other episodes (mean 807, std 248 over 300 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 103,
+      "code": "episode_length_outlier",
+      "message": "1584 frames, much longer than the other episodes (mean 807, std 248 over 300 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 165,
+      "code": "episode_length_outlier",
+      "message": "1916 frames, much longer than the other episodes (mean 807, std 248 over 300 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 280,
+      "code": "idle_episode",
+      "message": "62% of frames repeat the previous action; it first changes at frame 378 and last at frame 675 of 678"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "name": "robometer__rbm-1m-ood",
+  "repo": "robometer/rbm-1m-ood",
+  "revision": "3f3ee69ecc0ee0db627684da7d599ec26d08175c",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 571,
+    "frames": 18261,
+    "fps": 10,
+    "robot": "unknown"
+  },
+  "run": {
+    "wall_ms": 510.8,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": true
+  },
+  "errors": 1,
+  "warnings": 3,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `action` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `observation.state` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "video_resolution",
+      "message": "video is 320x240 (width x height) but info.json declares 240x3"
+    },
+    {
+      "severity": "warning",
+      "episode": 426,
+      "code": "episode_length_outlier",
+      "message": "21 frames, much shorter than the other episodes (mean 32, std 0 over 571 episodes)"
+    }
+  ]
+}

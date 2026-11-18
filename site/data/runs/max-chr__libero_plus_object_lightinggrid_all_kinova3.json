@@ -1,0 +1,2669 @@
+{
+  "name": "max-chr__libero_plus_object_lightinggrid_all_kinova3",
+  "repo": "max-chr/libero_plus_object_lightinggrid_all_kinova3",
+  "revision": "93c3491aa719835ed06e4b0a5b6328696092f77b",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 854,
+    "frames": 128592,
+    "fps": 20,
+    "robot": "kinova3"
+  },
+  "run": {
+    "wall_ms": 85.8,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 440,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 6 is at its maximum (1) in 53.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": 23,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 1"
+    },
+    {
+      "severity": "warning",
+      "episode": 28,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 9"
+    },
+    {
+      "severity": "warning",
+      "episode": 33,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 10"
+    },
+    {
+      "severity": "warning",
+      "episode": 34,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 25"
+    },
+    {
+      "severity": "warning",
+      "episode": 35,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 24"
+    },
+    {
+      "severity": "warning",
+      "episode": 37,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 4"
+    },
+    {
+      "severity": "warning",
+      "episode": 41,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 27"
+    },
+    {
+      "severity": "warning",
+      "episode": 42,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38"
+    },
+    {
+      "severity": "warning",
+      "episode": 43,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 18"
+    },
+    {
+      "severity": "warning",
+      "episode": 44,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 22"
+    },
+    {
+      "severity": "warning",
+      "episode": 46,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26"
+    },
+    {
+      "severity": "warning",
+      "episode": 51,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 48"
+    },
+    {
+      "severity": "warning",
+      "episode": 53,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17"
+    },
+    {
+      "severity": "warning",
+      "episode": 54,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 15"
+    },
+    {
+      "severity": "warning",
+      "episode": 55,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 20"
+    },
+    {
+      "severity": "warning",
+      "episode": 56,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 12"
+    },
+    {
+      "severity": "warning",
+      "episode": 57,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 19"
+    },
+    {
+      "severity": "warning",
+      "episode": 61,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 59"
+    },
+    {
+      "severity": "warning",
+      "episode": 63,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 45"
+    },
+    {
+      "severity": "warning",
+      "episode": 65,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 58"
+    },
+    {
+      "severity": "warning",
+      "episode": 66,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 2"
+    },
+    {
+      "severity": "warning",
+      "episode": 67,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 62"
+    },
+    {
+      "severity": "warning",
+      "episode": 69,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 11"
+    },
+    {
+      "severity": "warning",
+      "episode": 70,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 31"
+    },
+    {
+      "severity": "warning",
+      "episode": 71,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 0"
+    },
+    {
+      "severity": "warning",
+      "episode": 72,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 32"
+    },
+    {
+      "severity": "warning",
+      "episode": 73,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 7"
+    },
+    {
+      "severity": "warning",
+      "episode": 74,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 49"
+    },
+    {
+      "severity": "warning",
+      "episode": 75,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 21"
+    },
+    {
+      "severity": "warning",
+      "episode": 76,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 47"
+    },
+    {
+      "severity": "warning",
+      "episode": 77,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 64"
+    },
+    {
+      "severity": "warning",
+      "episode": 78,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 3"
+    },
+    {
+      "severity": "warning",
+      "episode": 79,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 13"
+    },
+    {
+      "severity": "warning",
+      "episode": 80,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52"
+    },
+    {
+      "severity": "warning",
+      "episode": 81,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 39"
+    },
+    {
+      "severity": "warning",
+      "episode": 82,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 8"
+    },
+    {
+      "severity": "warning",
+      "episode": 83,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 50"
+    },
+    {
+      "severity": "warning",
+      "episode": 84,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 68"
+    },
+    {
+      "severity": "warning",
+      "episode": 85,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 16"
+    },
+    {
+      "severity": "warning",
+      "episode": 86,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29"
+    },
+    {
+      "severity": "warning",
+      "episode": 87,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 30"
+    },
+    {
+      "severity": "warning",
+      "episode": 88,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 6"
+    },
+    {
+      "severity": "warning",
+      "episode": 89,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 5"
+    },
+    {
+      "severity": "warning",
+      "episode": 90,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 36"
+    },
+    {
+      "severity": "warning",
+      "episode": 91,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 40"
+    },
+    {
+      "severity": "warning",
+      "episode": 92,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 14"
+    },
+    {
+      "severity": "warning",
+      "episode": 93,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 60"
+    },
+    {
+      "severity": "warning",
+      "episode": 100,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 97"
+    },
+    {
+      "severity": "warning",
+      "episode": 108,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 103"
+    },
+    {
+      "severity": "warning",
+      "episode": 116,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 96"
+    },
+    {
+      "severity": "warning",
+      "episode": 119,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 107"
+    },
+    {
+      "severity": "warning",
+      "episode": 121,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 95"
+    },
+    {
+      "severity": "warning",
+      "episode": 122,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 114"
+    },
+    {
+      "severity": "warning",
+      "episode": 128,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 106"
+    },
+    {
+      "severity": "warning",
+      "episode": 129,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 110"
+    },
+    {
+      "severity": "warning",
+      "episode": 131,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 124"
+    },
+    {
+      "severity": "warning",
+      "episode": 132,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 123"
+    },
+    {
+      "severity": "warning",
+      "episode": 136,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 125"
+    },
+    {
+      "severity": "warning",
+      "episode": 140,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 120"
+    },
+    {
+      "severity": "warning",
+      "episode": 141,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 135"
+    },
+    {
+      "severity": "warning",
+      "episode": 142,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 127"
+    },
+    {
+      "severity": "warning",
+      "episode": 144,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 98"
+    },
+    {
+      "severity": "warning",
+      "episode": 146,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 138"
+    },
+    {
+      "severity": "warning",
+      "episode": 148,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 134"
+    },
+    {
+      "severity": "warning",
+      "episode": 149,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 104"
+    },
+    {
+      "severity": "warning",
+      "episode": 150,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 112"
+    },
+    {
+      "severity": "warning",
+      "episode": 151,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 102"
+    },
+    {
+      "severity": "warning",
+      "episode": 154,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 105"
+    },
+    {
+      "severity": "warning",
+      "episode": 155,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 143"
+    },
+    {
+      "severity": "warning",
+      "episode": 156,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 153"
+    },
+    {
+      "severity": "warning",
+      "episode": 157,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 147"
+    },
+    {
+      "severity": "warning",
+      "episode": 158,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 113"
+    },
+    {
+      "severity": "warning",
+      "episode": 159,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 109"
+    },
+    {
+      "severity": "warning",
+      "episode": 161,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 126"
+    },
+    {
+      "severity": "warning",
+      "episode": 162,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 118"
+    },
+    {
+      "severity": "warning",
+      "episode": 163,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 115"
+    },
+    {
+      "severity": "warning",
+      "episode": 164,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 137"
+    },
+    {
+      "severity": "warning",
+      "episode": 165,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 152"
+    },
+    {
+      "severity": "warning",
+      "episode": 166,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 133"
+    },
+    {
+      "severity": "warning",
+      "episode": 167,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 94"
+    },
+    {
+      "severity": "warning",
+      "episode": 169,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 160"
+    },
+    {
+      "severity": "warning",
+      "episode": 170,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 101"
+    },
+    {
+      "severity": "warning",
+      "episode": 171,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 99"
+    },
+    {
+      "severity": "warning",
+      "episode": 172,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 117"
+    },
+    {
+      "severity": "warning",
+      "episode": 173,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 139"
+    },
+    {
+      "severity": "warning",
+      "episode": 174,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 130"
+    },
+    {
+      "severity": "warning",
+      "episode": 175,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 168"
+    },
+    {
+      "severity": "warning",
+      "episode": 176,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 111"
+    },
+    {
+      "severity": "warning",
+      "episode": 177,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 145"
+    },
+    {
+      "severity": "warning",
+      "episode": 189,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 187"
+    },
+    {
+      "severity": "warning",
+      "episode": 192,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 182"
+    },
+    {
+      "severity": "warning",
+      "episode": 198,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 184"
+    },
+    {
+      "severity": "warning",
+      "episode": 201,
+      "code": "episode_length_outlier",
+      "message": "223 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 204,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 181"
+    },
+    {
+      "severity": "warning",
+      "episode": 205,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 202"
+    },
+    {
+      "severity": "warning",
+      "episode": 210,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 179"
+    },
+    {
+      "severity": "warning",
+      "episode": 212,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 209"
+    },
+    {
+      "severity": "warning",
+      "episode": 214,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 203"
+    },
+    {
+      "severity": "warning",
+      "episode": 216,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 183"
+    },
+    {
+      "severity": "warning",
+      "episode": 218,
+      "code": "episode_length_outlier",
+      "message": "223 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 218,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 201"
+    },
+    {
+      "severity": "warning",
+      "episode": 219,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 190"
+    },
+    {
+      "severity": "warning",
+      "episode": 224,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 213"
+    },
+    {
+      "severity": "warning",
+      "episode": 226,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 200"
+    },
+    {
+      "severity": "warning",
+      "episode": 227,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 188"
+    },
+    {
+      "severity": "warning",
+      "episode": 228,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 178"
+    },
+    {
+      "severity": "warning",
+      "episode": 229,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 215"
+    },
+    {
+      "severity": "warning",
+      "episode": 230,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 208"
+    },
+    {
+      "severity": "warning",
+      "episode": 231,
+      "code": "episode_length_outlier",
+      "message": "215 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 232,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 197"
+    },
+    {
+      "severity": "warning",
+      "episode": 233,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 207"
+    },
+    {
+      "severity": "warning",
+      "episode": 234,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 193"
+    },
+    {
+      "severity": "warning",
+      "episode": 235,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 186"
+    },
+    {
+      "severity": "warning",
+      "episode": 236,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 191"
+    },
+    {
+      "severity": "warning",
+      "episode": 237,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 211"
+    },
+    {
+      "severity": "warning",
+      "episode": 238,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 223"
+    },
+    {
+      "severity": "warning",
+      "episode": 239,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 225"
+    },
+    {
+      "severity": "warning",
+      "episode": 240,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 220"
+    },
+    {
+      "severity": "warning",
+      "episode": 241,
+      "code": "episode_length_outlier",
+      "message": "215 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 241,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 231"
+    },
+    {
+      "severity": "warning",
+      "episode": 242,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 199"
+    },
+    {
+      "severity": "warning",
+      "episode": 243,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 222"
+    },
+    {
+      "severity": "warning",
+      "episode": 244,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 194"
+    },
+    {
+      "severity": "warning",
+      "episode": 245,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 180"
+    },
+    {
+      "severity": "warning",
+      "episode": 246,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 217"
+    },
+    {
+      "severity": "warning",
+      "episode": 247,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 196"
+    },
+    {
+      "severity": "warning",
+      "episode": 248,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 185"
+    },
+    {
+      "severity": "warning",
+      "episode": 249,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 221"
+    },
+    {
+      "severity": "warning",
+      "episode": 250,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 195"
+    },
+    {
+      "severity": "warning",
+      "episode": 251,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 206"
+    },
+    {
+      "severity": "warning",
+      "episode": 259,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 257"
+    },
+    {
+      "severity": "warning",
+      "episode": 267,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 262"
+    },
+    {
+      "severity": "warning",
+      "episode": 268,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 264"
+    },
+    {
+      "severity": "warning",
+      "episode": 273,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 254"
+    },
+    {
+      "severity": "warning",
+      "episode": 275,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 252"
+    },
+    {
+      "severity": "warning",
+      "episode": 282,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 261"
+    },
+    {
+      "severity": "warning",
+      "episode": 286,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 272"
+    },
+    {
+      "severity": "warning",
+      "episode": 289,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 270"
+    },
+    {
+      "severity": "warning",
+      "episode": 291,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 277"
+    },
+    {
+      "severity": "warning",
+      "episode": 292,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 255"
+    },
+    {
+      "severity": "warning",
+      "episode": 295,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 256"
+    },
+    {
+      "severity": "warning",
+      "episode": 296,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 283"
+    },
+    {
+      "severity": "warning",
+      "episode": 297,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 278"
+    },
+    {
+      "severity": "warning",
+      "episode": 299,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 280"
+    },
+    {
+      "severity": "warning",
+      "episode": 301,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 253"
+    },
+    {
+      "severity": "warning",
+      "episode": 303,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 276"
+    },
+    {
+      "severity": "warning",
+      "episode": 304,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 266"
+    },
+    {
+      "severity": "warning",
+      "episode": 306,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 269"
+    },
+    {
+      "severity": "warning",
+      "episode": 308,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 263"
+    },
+    {
+      "severity": "warning",
+      "episode": 310,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 258"
+    },
+    {
+      "severity": "warning",
+      "episode": 311,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 290"
+    },
+    {
+      "severity": "warning",
+      "episode": 312,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 293"
+    },
+    {
+      "severity": "warning",
+      "episode": 313,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 288"
+    },
+    {
+      "severity": "warning",
+      "episode": 315,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 305"
+    },
+    {
+      "severity": "warning",
+      "episode": 316,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 285"
+    },
+    {
+      "severity": "warning",
+      "episode": 317,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 314"
+    },
+    {
+      "severity": "warning",
+      "episode": 318,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 298"
+    },
+    {
+      "severity": "warning",
+      "episode": 319,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 279"
+    },
+    {
+      "severity": "warning",
+      "episode": 320,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 300"
+    },
+    {
+      "severity": "warning",
+      "episode": 321,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 271"
+    },
+    {
+      "severity": "warning",
+      "episode": 322,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 274"
+    },
+    {
+      "severity": "warning",
+      "episode": 323,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 302"
+    },
+    {
+      "severity": "warning",
+      "episode": 324,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 294"
+    },
+    {
+      "severity": "warning",
+      "episode": 325,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 281"
+    },
+    {
+      "severity": "warning",
+      "episode": 326,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 260"
+    },
+    {
+      "severity": "warning",
+      "episode": 327,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 309"
+    },
+    {
+      "severity": "warning",
+      "episode": 328,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 307"
+    },
+    {
+      "severity": "warning",
+      "episode": 329,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 287"
+    },
+    {
+      "severity": "warning",
+      "episode": 330,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 265"
+    },
+    {
+      "severity": "warning",
+      "episode": 331,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 284"
+    },
+    {
+      "severity": "warning",
+      "episode": 333,
+      "code": "episode_length_outlier",
+      "message": "267 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 349,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 341"
+    },
+    {
+      "severity": "warning",
+      "episode": 350,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 338"
+    },
+    {
+      "severity": "warning",
+      "episode": 351,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 337"
+    },
+    {
+      "severity": "warning",
+      "episode": 353,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 342"
+    },
+    {
+      "severity": "warning",
+      "episode": 355,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 335"
+    },
+    {
+      "severity": "warning",
+      "episode": 361,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 354"
+    },
+    {
+      "severity": "warning",
+      "episode": 363,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 352"
+    },
+    {
+      "severity": "warning",
+      "episode": 364,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 362"
+    },
+    {
+      "severity": "warning",
+      "episode": 367,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 365"
+    },
+    {
+      "severity": "warning",
+      "episode": 370,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 344"
+    },
+    {
+      "severity": "warning",
+      "episode": 376,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 375"
+    },
+    {
+      "severity": "warning",
+      "episode": 377,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 369"
+    },
+    {
+      "severity": "warning",
+      "episode": 378,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 336"
+    },
+    {
+      "severity": "warning",
+      "episode": 379,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 357"
+    },
+    {
+      "severity": "warning",
+      "episode": 381,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 366"
+    },
+    {
+      "severity": "warning",
+      "episode": 382,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 356"
+    },
+    {
+      "severity": "warning",
+      "episode": 383,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 372"
+    },
+    {
+      "severity": "warning",
+      "episode": 385,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 345"
+    },
+    {
+      "severity": "warning",
+      "episode": 388,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 380"
+    },
+    {
+      "severity": "warning",
+      "episode": 389,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 384"
+    },
+    {
+      "severity": "warning",
+      "episode": 391,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 347"
+    },
+    {
+      "severity": "warning",
+      "episode": 392,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 340"
+    },
+    {
+      "severity": "warning",
+      "episode": 393,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 386"
+    },
+    {
+      "severity": "warning",
+      "episode": 394,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 334"
+    },
+    {
+      "severity": "warning",
+      "episode": 395,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 358"
+    },
+    {
+      "severity": "warning",
+      "episode": 396,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 339"
+    },
+    {
+      "severity": "warning",
+      "episode": 397,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 368"
+    },
+    {
+      "severity": "warning",
+      "episode": 398,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 360"
+    },
+    {
+      "severity": "warning",
+      "episode": 399,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 390"
+    },
+    {
+      "severity": "warning",
+      "episode": 400,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 373"
+    },
+    {
+      "severity": "warning",
+      "episode": 402,
+      "code": "episode_length_outlier",
+      "message": "267 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 402,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 333"
+    },
+    {
+      "severity": "warning",
+      "episode": 403,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 401"
+    },
+    {
+      "severity": "warning",
+      "episode": 404,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 387"
+    },
+    {
+      "severity": "warning",
+      "episode": 405,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 348"
+    },
+    {
+      "severity": "warning",
+      "episode": 406,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 359"
+    },
+    {
+      "severity": "warning",
+      "episode": 407,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 343"
+    },
+    {
+      "severity": "warning",
+      "episode": 408,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 346"
+    },
+    {
+      "severity": "warning",
+      "episode": 409,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 374"
+    },
+    {
+      "severity": "warning",
+      "episode": 410,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 332"
+    },
+    {
+      "severity": "warning",
+      "episode": 411,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 371"
+    },
+    {
+      "severity": "warning",
+      "episode": 417,
+      "code": "episode_length_outlier",
+      "message": "226 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 424,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 418"
+    },
+    {
+      "severity": "warning",
+      "episode": 429,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 423"
+    },
+    {
+      "severity": "warning",
+      "episode": 430,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 414"
+    },
+    {
+      "severity": "warning",
+      "episode": 433,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 431"
+    },
+    {
+      "severity": "warning",
+      "episode": 434,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 416"
+    },
+    {
+      "severity": "warning",
+      "episode": 437,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 412"
+    },
+    {
+      "severity": "warning",
+      "episode": 439,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 436"
+    },
+    {
+      "severity": "warning",
+      "episode": 443,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 435"
+    },
+    {
+      "severity": "warning",
+      "episode": 445,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 438"
+    },
+    {
+      "severity": "warning",
+      "episode": 447,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 428"
+    },
+    {
+      "severity": "warning",
+      "episode": 450,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 442"
+    },
+    {
+      "severity": "warning",
+      "episode": 451,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 440"
+    },
+    {
+      "severity": "warning",
+      "episode": 455,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 441"
+    },
+    {
+      "severity": "warning",
+      "episode": 457,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 449"
+    },
+    {
+      "severity": "warning",
+      "episode": 458,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 446"
+    },
+    {
+      "severity": "warning",
+      "episode": 460,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 452"
+    },
+    {
+      "severity": "warning",
+      "episode": 463,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 461"
+    },
+    {
+      "severity": "warning",
+      "episode": 465,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 462"
+    },
+    {
+      "severity": "warning",
+      "episode": 466,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 448"
+    },
+    {
+      "severity": "warning",
+      "episode": 468,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 432"
+    },
+    {
+      "severity": "warning",
+      "episode": 469,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 425"
+    },
+    {
+      "severity": "warning",
+      "episode": 470,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 420"
+    },
+    {
+      "severity": "warning",
+      "episode": 471,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 427"
+    },
+    {
+      "severity": "warning",
+      "episode": 473,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 415"
+    },
+    {
+      "severity": "warning",
+      "episode": 477,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 456"
+    },
+    {
+      "severity": "warning",
+      "episode": 480,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 478"
+    },
+    {
+      "severity": "warning",
+      "episode": 481,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 464"
+    },
+    {
+      "severity": "warning",
+      "episode": 484,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 419"
+    },
+    {
+      "severity": "warning",
+      "episode": 487,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 486"
+    },
+    {
+      "severity": "warning",
+      "episode": 488,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 459"
+    },
+    {
+      "severity": "warning",
+      "episode": 489,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 453"
+    },
+    {
+      "severity": "warning",
+      "episode": 491,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 444"
+    },
+    {
+      "severity": "warning",
+      "episode": 492,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 467"
+    },
+    {
+      "severity": "warning",
+      "episode": 493,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 479"
+    },
+    {
+      "severity": "warning",
+      "episode": 494,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 485"
+    },
+    {
+      "severity": "warning",
+      "episode": 495,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 422"
+    },
+    {
+      "severity": "warning",
+      "episode": 496,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 482"
+    },
+    {
+      "severity": "warning",
+      "episode": 497,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 476"
+    },
+    {
+      "severity": "warning",
+      "episode": 498,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 490"
+    },
+    {
+      "severity": "warning",
+      "episode": 499,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 413"
+    },
+    {
+      "severity": "warning",
+      "episode": 501,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 483"
+    },
+    {
+      "severity": "warning",
+      "episode": 503,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 500"
+    },
+    {
+      "severity": "warning",
+      "episode": 504,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 472"
+    },
+    {
+      "severity": "warning",
+      "episode": 505,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 475"
+    },
+    {
+      "severity": "warning",
+      "episode": 506,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 454"
+    },
+    {
+      "severity": "warning",
+      "episode": 507,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 502"
+    },
+    {
+      "severity": "warning",
+      "episode": 508,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 421"
+    },
+    {
+      "severity": "warning",
+      "episode": 509,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 474"
+    },
+    {
+      "severity": "warning",
+      "episode": 510,
+      "code": "episode_length_outlier",
+      "message": "226 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 510,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 417"
+    },
+    {
+      "severity": "warning",
+      "episode": 511,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 426"
+    },
+    {
+      "severity": "warning",
+      "episode": 521,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 516"
+    },
+    {
+      "severity": "warning",
+      "episode": 524,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 517"
+    },
+    {
+      "severity": "warning",
+      "episode": 528,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 523"
+    },
+    {
+      "severity": "warning",
+      "episode": 532,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 518"
+    },
+    {
+      "severity": "warning",
+      "episode": 538,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 534"
+    },
+    {
+      "severity": "warning",
+      "episode": 540,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 533"
+    },
+    {
+      "severity": "warning",
+      "episode": 542,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 535"
+    },
+    {
+      "severity": "warning",
+      "episode": 548,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 527"
+    },
+    {
+      "severity": "warning",
+      "episode": 553,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 543"
+    },
+    {
+      "severity": "warning",
+      "episode": 554,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 550"
+    },
+    {
+      "severity": "warning",
+      "episode": 555,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 512"
+    },
+    {
+      "severity": "warning",
+      "episode": 556,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 522"
+    },
+    {
+      "severity": "warning",
+      "episode": 557,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 531"
+    },
+    {
+      "severity": "warning",
+      "episode": 558,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 551"
+    },
+    {
+      "severity": "warning",
+      "episode": 559,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 515"
+    },
+    {
+      "severity": "warning",
+      "episode": 560,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 536"
+    },
+    {
+      "severity": "warning",
+      "episode": 561,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 519"
+    },
+    {
+      "severity": "warning",
+      "episode": 565,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 530"
+    },
+    {
+      "severity": "warning",
+      "episode": 566,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 526"
+    },
+    {
+      "severity": "warning",
+      "episode": 568,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 567"
+    },
+    {
+      "severity": "warning",
+      "episode": 569,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 529"
+    },
+    {
+      "severity": "warning",
+      "episode": 571,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 549"
+    },
+    {
+      "severity": "warning",
+      "episode": 573,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 563"
+    },
+    {
+      "severity": "warning",
+      "episode": 574,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 572"
+    },
+    {
+      "severity": "warning",
+      "episode": 575,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 562"
+    },
+    {
+      "severity": "warning",
+      "episode": 577,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 537"
+    },
+    {
+      "severity": "warning",
+      "episode": 579,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 520"
+    },
+    {
+      "severity": "warning",
+      "episode": 583,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 576"
+    },
+    {
+      "severity": "warning",
+      "episode": 584,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 545"
+    },
+    {
+      "severity": "warning",
+      "episode": 585,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 552"
+    },
+    {
+      "severity": "warning",
+      "episode": 588,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 513"
+    },
+    {
+      "severity": "warning",
+      "episode": 589,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 586"
+    },
+    {
+      "severity": "warning",
+      "episode": 590,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 514"
+    },
+    {
+      "severity": "warning",
+      "episode": 591,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 581"
+    },
+    {
+      "severity": "warning",
+      "episode": 592,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 547"
+    },
+    {
+      "severity": "warning",
+      "episode": 593,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 564"
+    },
+    {
+      "severity": "warning",
+      "episode": 594,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 541"
+    },
+    {
+      "severity": "warning",
+      "episode": 595,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 570"
+    },
+    {
+      "severity": "warning",
+      "episode": 596,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 546"
+    },
+    {
+      "severity": "warning",
+      "episode": 597,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 587"
+    },
+    {
+      "severity": "warning",
+      "episode": 598,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 544"
+    },
+    {
+      "severity": "warning",
+      "episode": 599,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 525"
+    },
+    {
+      "severity": "warning",
+      "episode": 600,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 582"
+    },
+    {
+      "severity": "warning",
+      "episode": 601,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 539"
+    },
+    {
+      "severity": "warning",
+      "episode": 602,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 580"
+    },
+    {
+      "severity": "warning",
+      "episode": 603,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 578"
+    },
+    {
+      "severity": "warning",
+      "episode": 606,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 604"
+    },
+    {
+      "severity": "warning",
+      "episode": 611,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 607"
+    },
+    {
+      "severity": "warning",
+      "episode": 618,
+      "code": "episode_length_outlier",
+      "message": "251 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 625,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 624"
+    },
+    {
+      "severity": "warning",
+      "episode": 627,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 626"
+    },
+    {
+      "severity": "warning",
+      "episode": 628,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 610"
+    },
+    {
+      "severity": "warning",
+      "episode": 630,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 616"
+    },
+    {
+      "severity": "warning",
+      "episode": 637,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 622"
+    },
+    {
+      "severity": "warning",
+      "episode": 640,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 609"
+    },
+    {
+      "severity": "warning",
+      "episode": 641,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 623"
+    },
+    {
+      "severity": "warning",
+      "episode": 642,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 629"
+    },
+    {
+      "severity": "warning",
+      "episode": 645,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 608"
+    },
+    {
+      "severity": "warning",
+      "episode": 647,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 646"
+    },
+    {
+      "severity": "warning",
+      "episode": 649,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 612"
+    },
+    {
+      "severity": "warning",
+      "episode": 650,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 638"
+    },
+    {
+      "severity": "warning",
+      "episode": 651,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 643"
+    },
+    {
+      "severity": "warning",
+      "episode": 655,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 654"
+    },
+    {
+      "severity": "warning",
+      "episode": 656,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 605"
+    },
+    {
+      "severity": "warning",
+      "episode": 657,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 639"
+    },
+    {
+      "severity": "warning",
+      "episode": 658,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 620"
+    },
+    {
+      "severity": "warning",
+      "episode": 659,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 619"
+    },
+    {
+      "severity": "warning",
+      "episode": 661,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 621"
+    },
+    {
+      "severity": "warning",
+      "episode": 662,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 652"
+    },
+    {
+      "severity": "warning",
+      "episode": 663,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 631"
+    },
+    {
+      "severity": "warning",
+      "episode": 664,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 617"
+    },
+    {
+      "severity": "warning",
+      "episode": 665,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 634"
+    },
+    {
+      "severity": "warning",
+      "episode": 666,
+      "code": "episode_length_outlier",
+      "message": "251 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 666,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 618"
+    },
+    {
+      "severity": "warning",
+      "episode": 668,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 614"
+    },
+    {
+      "severity": "warning",
+      "episode": 669,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 667"
+    },
+    {
+      "severity": "warning",
+      "episode": 670,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 653"
+    },
+    {
+      "severity": "warning",
+      "episode": 672,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 644"
+    },
+    {
+      "severity": "warning",
+      "episode": 673,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 615"
+    },
+    {
+      "severity": "warning",
+      "episode": 674,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 648"
+    },
+    {
+      "severity": "warning",
+      "episode": 675,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 671"
+    },
+    {
+      "severity": "warning",
+      "episode": 676,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 633"
+    },
+    {
+      "severity": "warning",
+      "episode": 677,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 635"
+    },
+    {
+      "severity": "warning",
+      "episode": 678,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 636"
+    },
+    {
+      "severity": "warning",
+      "episode": 679,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 632"
+    },
+    {
+      "severity": "warning",
+      "episode": 680,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 660"
+    },
+    {
+      "severity": "warning",
+      "episode": 681,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 613"
+    },
+    {
+      "severity": "warning",
+      "episode": 684,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 683"
+    },
+    {
+      "severity": "warning",
+      "episode": 700,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 697"
+    },
+    {
+      "severity": "warning",
+      "episode": 702,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 695"
+    },
+    {
+      "severity": "warning",
+      "episode": 707,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 694"
+    },
+    {
+      "severity": "warning",
+      "episode": 709,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 689"
+    },
+    {
+      "severity": "warning",
+      "episode": 711,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 693"
+    },
+    {
+      "severity": "warning",
+      "episode": 714,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 696"
+    },
+    {
+      "severity": "warning",
+      "episode": 717,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 685"
+    },
+    {
+      "severity": "warning",
+      "episode": 719,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 704"
+    },
+    {
+      "severity": "warning",
+      "episode": 721,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 688"
+    },
+    {
+      "severity": "warning",
+      "episode": 722,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 705"
+    },
+    {
+      "severity": "warning",
+      "episode": 726,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 687"
+    },
+    {
+      "severity": "warning",
+      "episode": 727,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 703"
+    },
+    {
+      "severity": "warning",
+      "episode": 728,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 724"
+    },
+    {
+      "severity": "warning",
+      "episode": 730,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 708"
+    },
+    {
+      "severity": "warning",
+      "episode": 732,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 701"
+    },
+    {
+      "severity": "warning",
+      "episode": 734,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 731"
+    },
+    {
+      "severity": "warning",
+      "episode": 737,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 691"
+    },
+    {
+      "severity": "warning",
+      "episode": 739,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 720"
+    },
+    {
+      "severity": "warning",
+      "episode": 740,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 733"
+    },
+    {
+      "severity": "warning",
+      "episode": 741,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 699"
+    },
+    {
+      "severity": "warning",
+      "episode": 743,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 698"
+    },
+    {
+      "severity": "warning",
+      "episode": 744,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 738"
+    },
+    {
+      "severity": "warning",
+      "episode": 746,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 716"
+    },
+    {
+      "severity": "warning",
+      "episode": 747,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 729"
+    },
+    {
+      "severity": "warning",
+      "episode": 749,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 706"
+    },
+    {
+      "severity": "warning",
+      "episode": 750,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 735"
+    },
+    {
+      "severity": "warning",
+      "episode": 751,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 682"
+    },
+    {
+      "severity": "warning",
+      "episode": 752,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 718"
+    },
+    {
+      "severity": "warning",
+      "episode": 753,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 712"
+    },
+    {
+      "severity": "warning",
+      "episode": 754,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 686"
+    },
+    {
+      "severity": "warning",
+      "episode": 755,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 715"
+    },
+    {
+      "severity": "warning",
+      "episode": 756,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 742"
+    },
+    {
+      "severity": "warning",
+      "episode": 757,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 736"
+    },
+    {
+      "severity": "warning",
+      "episode": 758,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 692"
+    },
+    {
+      "severity": "warning",
+      "episode": 759,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 725"
+    },
+    {
+      "severity": "warning",
+      "episode": 760,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 690"
+    },
+    {
+      "severity": "warning",
+      "episode": 761,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 713"
+    },
+    {
+      "severity": "warning",
+      "episode": 762,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 748"
+    },
+    {
+      "severity": "warning",
+      "episode": 763,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 723"
+    },
+    {
+      "severity": "warning",
+      "episode": 765,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 764"
+    },
+    {
+      "severity": "warning",
+      "episode": 766,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 710"
+    },
+    {
+      "severity": "warning",
+      "episode": 767,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 745"
+    },
+    {
+      "severity": "warning",
+      "episode": 773,
+      "code": "episode_length_outlier",
+      "message": "255 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 776,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 770"
+    },
+    {
+      "severity": "warning",
+      "episode": 780,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 768"
+    },
+    {
+      "severity": "warning",
+      "episode": 784,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 778"
+    },
+    {
+      "severity": "warning",
+      "episode": 788,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 771"
+    },
+    {
+      "severity": "warning",
+      "episode": 792,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 769"
+    },
+    {
+      "severity": "warning",
+      "episode": 794,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 772"
+    },
+    {
+      "severity": "warning",
+      "episode": 797,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 775"
+    },
+    {
+      "severity": "warning",
+      "episode": 798,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 783"
+    },
+    {
+      "severity": "warning",
+      "episode": 799,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 793"
+    },
+    {
+      "severity": "warning",
+      "episode": 801,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 781"
+    },
+    {
+      "severity": "warning",
+      "episode": 802,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 796"
+    },
+    {
+      "severity": "warning",
+      "episode": 806,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 779"
+    },
+    {
+      "severity": "warning",
+      "episode": 807,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 777"
+    },
+    {
+      "severity": "warning",
+      "episode": 808,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 795"
+    },
+    {
+      "severity": "warning",
+      "episode": 812,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 789"
+    },
+    {
+      "severity": "warning",
+      "episode": 813,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 800"
+    },
+    {
+      "severity": "warning",
+      "episode": 814,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 786"
+    },
+    {
+      "severity": "warning",
+      "episode": 815,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 787"
+    },
+    {
+      "severity": "warning",
+      "episode": 816,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 803"
+    },
+    {
+      "severity": "warning",
+      "episode": 823,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 820"
+    },
+    {
+      "severity": "warning",
+      "episode": 824,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 774"
+    },
+    {
+      "severity": "warning",
+      "episode": 827,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 811"
+    },
+    {
+      "severity": "warning",
+      "episode": 828,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 825"
+    },
+    {
+      "severity": "warning",
+      "episode": 829,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 819"
+    },
+    {
+      "severity": "warning",
+      "episode": 830,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 817"
+    },
+    {
+      "severity": "warning",
+      "episode": 832,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 810"
+    },
+    {
+      "severity": "warning",
+      "episode": 834,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 782"
+    },
+    {
+      "severity": "warning",
+      "episode": 835,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 821"
+    },
+    {
+      "severity": "warning",
+      "episode": 836,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 826"
+    },
+    {
+      "severity": "warning",
+      "episode": 837,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 809"
+    },
+    {
+      "severity": "warning",
+      "episode": 838,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 790"
+    },
+    {
+      "severity": "warning",
+      "episode": 840,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 785"
+    },
+    {
+      "severity": "warning",
+      "episode": 841,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 833"
+    },
+    {
+      "severity": "warning",
+      "episode": 842,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 822"
+    },
+    {
+      "severity": "warning",
+      "episode": 843,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 818"
+    },
+    {
+      "severity": "warning",
+      "episode": 844,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 839"
+    },
+    {
+      "severity": "warning",
+      "episode": 846,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 831"
+    },
+    {
+      "severity": "warning",
+      "episode": 847,
+      "code": "episode_length_outlier",
+      "message": "255 frames, much longer than the other episodes (mean 151, std 19 over 854 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 847,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 773"
+    },
+    {
+      "severity": "warning",
+      "episode": 849,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 805"
+    },
+    {
+      "severity": "warning",
+      "episode": 850,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 848"
+    },
+    {
+      "severity": "warning",
+      "episode": 851,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 845"
+    },
+    {
+      "severity": "warning",
+      "episode": 852,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 791"
+    },
+    {
+      "severity": "warning",
+      "episode": 853,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 804"
+    }
+  ]
+}

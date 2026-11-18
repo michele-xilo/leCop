@@ -1,0 +1,28 @@
+{
+  "name": "shilpitha-03__so101_cube_in_box_20261030_164459",
+  "repo": "shilpitha-03/so101_cube_in_box_20261030_164459",
+  "revision": "f556b197fe5bd51e4ed7a35205e757e1c401f73e",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 50,
+    "frames": 55257,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 18.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 0,
+  "issues": []
+}

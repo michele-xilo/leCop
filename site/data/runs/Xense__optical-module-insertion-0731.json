@@ -1,0 +1,89 @@
+{
+  "name": "Xense__optical-module-insertion-0731",
+  "repo": "Xense/optical-module-insertion-0731",
+  "revision": "a8ca83c4c0c8e675ea19d222bda1ebf39c4eccf2",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 175,
+    "frames": 662280,
+    "fps": 30,
+    "robot": "bi_flexiv_rizon4_rt"
+  },
+  "run": {
+    "wall_ms": 168.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 10,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 18 is at its maximum (1) in 68.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 19 is at its maximum (1) in 52.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 18 is at its maximum (1) in 66.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 19 is at its maximum (1) in 48.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": 4,
+      "code": "episode_length_outlier",
+      "message": "7291 frames, much longer than the other episodes (mean 3784, std 973 over 175 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 6,
+      "code": "episode_length_outlier",
+      "message": "7389 frames, much longer than the other episodes (mean 3784, std 973 over 175 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 13,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 14,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 42,
+      "code": "action_frozen",
+      "message": "action is identical for 4.2 s (128 frames) from frame 5238"
+    },
+    {
+      "severity": "warning",
+      "episode": 162,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    }
+  ]
+}

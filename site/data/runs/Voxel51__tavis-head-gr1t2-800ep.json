@@ -1,0 +1,137 @@
+{
+  "name": "Voxel51__tavis-head-gr1t2-800ep",
+  "repo": "Voxel51/tavis-head-gr1t2-800ep",
+  "revision": "90f055680b14f61f994ef977a7ec8e5ecf886ac9",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 800,
+    "frames": 267046,
+    "fps": 60,
+    "robot": "unknown"
+  },
+  "run": {
+    "wall_ms": 400.8,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 18,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_zero_std",
+      "message": "action: dimension 14 has zero std in stats.json, normalising divides by zero"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_zero_std",
+      "message": "observation.state: dimension 0, dimension 1, dimension 3, dimension 4, dimension 6, dimension 7, dimension 9, dimension 10, dimension 14, dimension 15, dimension 19, dimension 20 has zero std in stats.json, normalising divides by zero"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "action: dimension 14 (= 0) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 17 is at its minimum (-1) in 85.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 18 is at its minimum (-1) in 86.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.state: dimension 0 (= 0), 1 (= 0), 3 (= 0), 4 (= 0), 6 (= 0), 7 (= 0), 9 (= 0), 10 (= 0), 14 (= 0), 15 (= 0), 19 (= 0), 20 (= 0) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 2 reaches 16 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 5 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "action_jump",
+      "message": "and 47 more episodes with action jumps"
+    },
+    {
+      "severity": "warning",
+      "episode": 11,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 16,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 22,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 23,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 27,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 708,
+      "code": "episode_length_outlier",
+      "message": "605 frames, much longer than the other episodes (mean 334, std 86 over 800 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 717,
+      "code": "episode_length_outlier",
+      "message": "605 frames, much longer than the other episodes (mean 334, std 86 over 800 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 741,
+      "code": "episode_length_outlier",
+      "message": "598 frames, much longer than the other episodes (mean 334, std 86 over 800 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 761,
+      "code": "episode_length_outlier",
+      "message": "604 frames, much longer than the other episodes (mean 334, std 86 over 800 episodes)"
+    }
+  ]
+}

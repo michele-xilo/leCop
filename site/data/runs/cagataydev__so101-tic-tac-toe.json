@@ -1,0 +1,53 @@
+{
+  "name": "cagataydev__so101-tic-tac-toe",
+  "repo": "cagataydev/so101-tic-tac-toe",
+  "revision": "b9a751f9641e42294fb57222bbf8f25c8fa3250f",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 210,
+    "frames": 57092,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 35.3,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 4,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": 0,
+      "code": "episode_length_outlier",
+      "message": "890 frames, much longer than the other episodes (mean 272, std 78 over 210 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1,
+      "code": "episode_length_outlier",
+      "message": "519 frames, much longer than the other episodes (mean 272, std 78 over 210 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 30,
+      "code": "episode_length_outlier",
+      "message": "569 frames, much longer than the other episodes (mean 272, std 78 over 210 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 39,
+      "code": "episode_length_outlier",
+      "message": "583 frames, much longer than the other episodes (mean 272, std 78 over 210 episodes)"
+    }
+  ]
+}

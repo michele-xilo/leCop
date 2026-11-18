@@ -1,0 +1,53 @@
+{
+  "name": "aopolin-lv__libero_spatial_no_noops_lerobot_v21",
+  "repo": "aopolin-lv/libero_spatial_no_noops_lerobot_v21",
+  "revision": "bfe55b41cc3103d672ad7204257c9bdc547410cb",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 432,
+    "frames": 52970,
+    "fps": 20,
+    "robot": "franka"
+  },
+  "run": {
+    "wall_ms": 1837.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": true
+  },
+  "errors": 0,
+  "warnings": 4,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 2 is at its minimum (-0.9375) in 6.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 6 is at its minimum (0) in 54.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": 327,
+      "code": "episode_length_outlier",
+      "message": "189 frames, much longer than the other episodes (mean 123, std 21 over 432 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 372,
+      "code": "episode_length_outlier",
+      "message": "193 frames, much longer than the other episodes (mean 123, std 21 over 432 episodes)"
+    }
+  ]
+}

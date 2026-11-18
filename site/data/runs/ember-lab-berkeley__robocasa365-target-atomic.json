@@ -1,0 +1,527 @@
+{
+  "name": "ember-lab-berkeley__robocasa365-target-atomic",
+  "repo": "ember-lab-berkeley/robocasa365-target-atomic",
+  "revision": "ee95cbe19134b1762b2d50fba87f5406d4d59143",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 9126,
+    "frames": 2231347,
+    "fps": 20,
+    "robot": "PandaOmron"
+  },
+  "run": {
+    "wall_ms": 402.2,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 83,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_feature_missing",
+      "message": "no statistics for action, annotation.human.task_description, annotation.human.task_name, episode_index, frame_index, index, next.done, next.reward, observation.images.robot0_agentview_left, observation.images.robot0_agentview_right, observation.images.robot0_eye_in_hand, observation.state, task_index, timestamp"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "action: dimension 3 (= 0) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 2 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 4 is at its minimum (-1) in 96.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 11 is at its minimum (-1) in 68.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.state: dimension 3 (= 0), 4 (= 0) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 2 reaches 23 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 5 is at its minimum (-1) in 9.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 6 is at its maximum (1) in 19.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "action_jump",
+      "message": "and 358 more episodes with action jumps"
+    },
+    {
+      "severity": "warning",
+      "episode": 107,
+      "code": "action_jump",
+      "message": "2 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 120,
+      "code": "episode_length_outlier",
+      "message": "576 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 142,
+      "code": "episode_length_outlier",
+      "message": "583 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 169,
+      "code": "action_jump",
+      "message": "2 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 214,
+      "code": "episode_length_outlier",
+      "message": "601 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 224,
+      "code": "episode_length_outlier",
+      "message": "634 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 283,
+      "code": "episode_length_outlier",
+      "message": "558 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 344,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 352,
+      "code": "episode_length_outlier",
+      "message": "638 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 409,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 413,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 424,
+      "code": "episode_length_outlier",
+      "message": "555 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 444,
+      "code": "episode_length_outlier",
+      "message": "609 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 457,
+      "code": "episode_length_outlier",
+      "message": "713 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 466,
+      "code": "episode_length_outlier",
+      "message": "573 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 564,
+      "code": "episode_length_outlier",
+      "message": "570 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 618,
+      "code": "episode_length_outlier",
+      "message": "591 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 679,
+      "code": "episode_length_outlier",
+      "message": "615 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 698,
+      "code": "episode_length_outlier",
+      "message": "610 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 775,
+      "code": "episode_length_outlier",
+      "message": "558 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2033,
+      "code": "action_frozen",
+      "message": "action is identical for 3.3 s (67 frames) from frame 1"
+    },
+    {
+      "severity": "warning",
+      "episode": 2526,
+      "code": "episode_length_outlier",
+      "message": "572 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2580,
+      "code": "episode_length_outlier",
+      "message": "596 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2588,
+      "code": "episode_length_outlier",
+      "message": "585 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2631,
+      "code": "episode_length_outlier",
+      "message": "633 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2637,
+      "code": "episode_length_outlier",
+      "message": "619 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2650,
+      "code": "episode_length_outlier",
+      "message": "579 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2654,
+      "code": "episode_length_outlier",
+      "message": "646 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2679,
+      "code": "episode_length_outlier",
+      "message": "580 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2711,
+      "code": "episode_length_outlier",
+      "message": "600 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2736,
+      "code": "episode_length_outlier",
+      "message": "572 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2757,
+      "code": "episode_length_outlier",
+      "message": "589 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2777,
+      "code": "episode_length_outlier",
+      "message": "575 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2790,
+      "code": "episode_length_outlier",
+      "message": "632 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2794,
+      "code": "episode_length_outlier",
+      "message": "565 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2796,
+      "code": "episode_length_outlier",
+      "message": "616 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2802,
+      "code": "episode_length_outlier",
+      "message": "638 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2840,
+      "code": "episode_length_outlier",
+      "message": "571 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2871,
+      "code": "episode_length_outlier",
+      "message": "557 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2877,
+      "code": "episode_length_outlier",
+      "message": "617 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2902,
+      "code": "episode_length_outlier",
+      "message": "585 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2914,
+      "code": "episode_length_outlier",
+      "message": "592 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2933,
+      "code": "episode_length_outlier",
+      "message": "555 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2945,
+      "code": "episode_length_outlier",
+      "message": "644 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2950,
+      "code": "episode_length_outlier",
+      "message": "575 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2959,
+      "code": "episode_length_outlier",
+      "message": "556 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2992,
+      "code": "episode_length_outlier",
+      "message": "557 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2994,
+      "code": "episode_length_outlier",
+      "message": "664 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 3001,
+      "code": "episode_length_outlier",
+      "message": "568 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 3061,
+      "code": "episode_length_outlier",
+      "message": "603 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 3508,
+      "code": "action_frozen",
+      "message": "action is identical for 3.0 s (61 frames) from frame 7"
+    },
+    {
+      "severity": "warning",
+      "episode": 4190,
+      "code": "episode_length_outlier",
+      "message": "592 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 4303,
+      "code": "episode_length_outlier",
+      "message": "578 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 4533,
+      "code": "episode_length_outlier",
+      "message": "638 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5109,
+      "code": "episode_length_outlier",
+      "message": "583 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5213,
+      "code": "episode_length_outlier",
+      "message": "565 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5561,
+      "code": "episode_length_outlier",
+      "message": "593 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5586,
+      "code": "episode_length_outlier",
+      "message": "636 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5617,
+      "code": "episode_length_outlier",
+      "message": "585 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5681,
+      "code": "episode_length_outlier",
+      "message": "571 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5718,
+      "code": "episode_length_outlier",
+      "message": "587 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5734,
+      "code": "episode_length_outlier",
+      "message": "588 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5738,
+      "code": "episode_length_outlier",
+      "message": "584 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5796,
+      "code": "episode_length_outlier",
+      "message": "712 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5799,
+      "code": "episode_length_outlier",
+      "message": "631 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5812,
+      "code": "episode_length_outlier",
+      "message": "569 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5850,
+      "code": "episode_length_outlier",
+      "message": "557 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5923,
+      "code": "episode_length_outlier",
+      "message": "568 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5935,
+      "code": "episode_length_outlier",
+      "message": "641 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5981,
+      "code": "episode_length_outlier",
+      "message": "634 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 7089,
+      "code": "episode_length_outlier",
+      "message": "629 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 7385,
+      "code": "episode_length_outlier",
+      "message": "627 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 7387,
+      "code": "episode_length_outlier",
+      "message": "614 frames, much longer than the other episodes (mean 245, std 103 over 9126 episodes)"
+    }
+  ]
+}

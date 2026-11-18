@@ -1,0 +1,149 @@
+{
+  "name": "ukachyuthan__imitation_learning_v2",
+  "repo": "ukachyuthan/imitation_learning_v2",
+  "revision": "0db0d227b69305042586a5898266b77b9e4b57dc",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 94,
+    "frames": 49574,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 25.2,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 20,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 2 is at its maximum (100) in 35.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 2 is at its maximum (100) in 29.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": 9,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 11,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 16,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 24,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 33,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 34,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 43,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 44,
+      "code": "episode_length_outlier",
+      "message": "1772 frames, much longer than the other episodes (mean 527, std 309 over 94 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 44,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 47,
+      "code": "episode_length_outlier",
+      "message": "1772 frames, much longer than the other episodes (mean 527, std 309 over 94 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 47,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 51,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 57,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 61,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 67,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 71,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 77,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 88,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    }
+  ]
+}

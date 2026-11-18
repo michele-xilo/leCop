@@ -1,0 +1,179 @@
+{
+  "name": "unitreerobotics__G1_Dex1_Put_Pens_In_Box",
+  "repo": "unitreerobotics/G1_Dex1_Put_Pens_In_Box",
+  "revision": "490ee5237d9705c1e506af2c56a512955011288a",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 250,
+    "frames": 104076,
+    "fps": 30,
+    "robot": "unitree_g1"
+  },
+  "run": {
+    "wall_ms": 334.1,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 25,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `action` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `observation.state` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_zero_std",
+      "message": "action.pivot: dimension 3, dimension 5 has zero std in stats.json, normalising divides by zero"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_zero_std",
+      "message": "observation.infrared_valid: dimension 0 has zero std in stats.json, normalising divides by zero"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_zero_std",
+      "message": "observation.state.recomputed_ee_valid: dimension 0 has zero std in stats.json, normalising divides by zero"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.lower_body: dimension 14 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.right_ee_pose_gripper_base: dimension 5 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.state_d435: dimension 0 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.state_d435: dimension 4 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.state.state_torso: dimension 2 (= 0.04399999976158142) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.state_torso: dimension 0 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.state_torso: dimension 4 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.waist_state_joint: dimension 2 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_mismatch",
+      "message": "observation.state.state_torso: dimension 2 std is 0.000068 in stats.json but 0 in the data; stats.json is out of date with the data"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "action.action_d435: dimension 2 of the last quarter of the episodes is 3.1 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "action.left_leg: dimension 4 of the last quarter of the episodes is 6.5 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "action.lower_body: dimension 4 of the last quarter of the episodes is 6.5 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "action.right_leg: dimension 5 of the last quarter of the episodes is 5.2 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "observation.state.left_leg: dimension 4 of the last quarter of the episodes is 6.5 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "observation.state.lower_body: dimension 4 of the last quarter of the episodes is 6.5 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "observation.state.right_leg: dimension 5 of the last quarter of the episodes is 5.2 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "observation.state.state_d435: dimension 2 of the last quarter of the episodes is 3.1 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": 63,
+      "code": "episode_length_outlier",
+      "message": "1201 frames, much longer than the other episodes (mean 416, std 135 over 250 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 65,
+      "code": "episode_length_outlier",
+      "message": "831 frames, much longer than the other episodes (mean 416, std 135 over 250 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 87,
+      "code": "episode_length_outlier",
+      "message": "843 frames, much longer than the other episodes (mean 416, std 135 over 250 episodes)"
+    }
+  ]
+}

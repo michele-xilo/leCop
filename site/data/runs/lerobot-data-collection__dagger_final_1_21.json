@@ -1,0 +1,28 @@
+{
+  "name": "lerobot-data-collection__dagger_final_1_21",
+  "repo": "lerobot-data-collection/dagger_final_1_21",
+  "revision": "6af4f6031bac1af47c7fd8aca678ea60dcbe93d9",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 1,
+    "frames": 841,
+    "fps": 30,
+    "robot": "openarms_follower"
+  },
+  "run": {
+    "wall_ms": 5.5,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 0,
+  "issues": []
+}

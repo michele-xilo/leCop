@@ -95,6 +95,28 @@ class BuildTest(unittest.TestCase):
                 self.assertEqual([d["name"] for d in json.load(f)], ["pusht", "v3_pusht"])
 
 
+    def test_a_decode_record_joins_its_dataset_page_and_is_not_a_second_dataset(self):
+        default = record(wall_ms=10.0)
+        decode = record(issues=[issue("action_jump", episode=54), issue("video_frozen", message="frozen camera")], wall_ms=4321.0)
+        decode["run"]["decode"] = True
+        with tempfile.TemporaryDirectory() as tmp:
+            runs, dist = os.path.join(tmp, "runs"), os.path.join(tmp, "dist")
+            os.makedirs(runs)
+            for name, r in [("pusht.json", default), ("pusht.decode.json", decode)]:
+                with open(os.path.join(runs, name), "w") as f:
+                    json.dump(r, f)
+            self.assertEqual(build_site.build(runs, dist), 1)
+            with open(os.path.join(dist, "index.json")) as f:
+                (entry,) = json.load(f)
+            self.assertEqual(entry["wall_ms"], 10.0)
+            with open(os.path.join(dist, "index.html")) as f:
+                self.assertEqual(f.read().count('class="row"'), 1)
+            with open(os.path.join(dist, "datasets", "pusht.html")) as f:
+                page = f.read()
+            for text in ["10 ms", "--decode", "4.32 s", "video_frozen", "frozen camera"]:
+                self.assertIn(text, page)
+
+
 class ContrastTest(unittest.TestCase):
     def luminance(self, hex_color):
         c = [int(hex_color[i : i + 2], 16) / 255 for i in (1, 3, 5)]

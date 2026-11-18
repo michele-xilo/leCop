@@ -1,0 +1,971 @@
+{
+  "name": "kmg0620__so101_bomb_pick_place_v1",
+  "repo": "kmg0620/so101_bomb_pick_place_v1",
+  "revision": "309fb9563024bbf6da9c86418f90016c60ebe865",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 103,
+    "frames": 57211,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 74.1,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 153,
+  "warnings": 4,
+  "issues": [
+    {
+      "severity": "error",
+      "episode": null,
+      "code": "episode_count",
+      "message": "info.json says 103 episodes, metadata has 172"
+    },
+    {
+      "severity": "error",
+      "episode": null,
+      "code": "frame_count",
+      "message": "info.json says 57211 frames, episode lengths sum to 88782"
+    },
+    {
+      "severity": "warning",
+      "episode": 12,
+      "code": "action_frozen",
+      "message": "action is identical for 3.1 s (94 frames) from frame 3"
+    },
+    {
+      "severity": "error",
+      "episode": 19,
+      "code": "video_span_length",
+      "message": "observation.images.overhead: span [391.467, 416.967) s is 25.500 s, 469 frames are 15.633 s"
+    },
+    {
+      "severity": "error",
+      "episode": 19,
+      "code": "video_span_length",
+      "message": "observation.images.wrist: span [391.467, 416.967) s is 25.500 s, 469 frames are 15.633 s"
+    },
+    {
+      "severity": "error",
+      "episode": 23,
+      "code": "video_span_length",
+      "message": "observation.images.overhead: span [0.000, 20.200) s is 20.200 s, 573 frames are 19.100 s"
+    },
+    {
+      "severity": "error",
+      "episode": 23,
+      "code": "video_span_length",
+      "message": "observation.images.wrist: span [0.000, 20.200) s is 20.200 s, 573 frames are 19.100 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 32,
+      "code": "episode_length_outlier",
+      "message": "854 frames, much longer than the other episodes (mean 516, std 95 over 172 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 44,
+      "code": "action_frozen",
+      "message": "action is identical for 3.1 s (93 frames) from frame 7"
+    },
+    {
+      "severity": "error",
+      "episode": 47,
+      "code": "video_span_length",
+      "message": "observation.images.overhead: span [444.033, 461.900) s is 17.867 s, 449 frames are 14.967 s"
+    },
+    {
+      "severity": "error",
+      "episode": 47,
+      "code": "video_span_length",
+      "message": "observation.images.wrist: span [444.033, 461.900) s is 17.867 s, 449 frames are 14.967 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 66,
+      "code": "action_frozen",
+      "message": "action is identical for 3.8 s (114 frames) from frame 22"
+    },
+    {
+      "severity": "error",
+      "episode": 68,
+      "code": "video_span_length",
+      "message": "observation.images.overhead: span [273.600, 294.633) s is 21.033 s, 563 frames are 18.767 s"
+    },
+    {
+      "severity": "error",
+      "episode": 68,
+      "code": "video_span_length",
+      "message": "observation.images.wrist: span [273.600, 294.633) s is 21.033 s, 563 frames are 18.767 s"
+    },
+    {
+      "severity": "error",
+      "episode": 69,
+      "code": "video_span_length",
+      "message": "observation.images.overhead: span [294.633, 310.800) s is 16.167 s, 465 frames are 15.500 s"
+    },
+    {
+      "severity": "error",
+      "episode": 69,
+      "code": "video_span_length",
+      "message": "observation.images.wrist: span [294.633, 310.800) s is 16.167 s, 465 frames are 15.500 s"
+    },
+    {
+      "severity": "error",
+      "episode": 81,
+      "code": "episode_index",
+      "message": "episode at position 82 has index 81"
+    },
+    {
+      "severity": "error",
+      "episode": 81,
+      "code": "range_gap",
+      "message": "starts at 39630, previous episode ended at 45361"
+    },
+    {
+      "severity": "error",
+      "episode": 82,
+      "code": "episode_index",
+      "message": "episode at position 83 has index 82"
+    },
+    {
+      "severity": "error",
+      "episode": 82,
+      "code": "range_gap",
+      "message": "starts at 45361, previous episode ended at 40010"
+    },
+    {
+      "severity": "error",
+      "episode": 82,
+      "code": "episode_index",
+      "message": "episode at position 84 has index 82"
+    },
+    {
+      "severity": "error",
+      "episode": 82,
+      "code": "range_gap",
+      "message": "starts at 40010, previous episode ended at 46071"
+    },
+    {
+      "severity": "error",
+      "episode": 83,
+      "code": "episode_index",
+      "message": "episode at position 85 has index 83"
+    },
+    {
+      "severity": "error",
+      "episode": 83,
+      "code": "range_gap",
+      "message": "starts at 46071, previous episode ended at 40424"
+    },
+    {
+      "severity": "error",
+      "episode": 83,
+      "code": "episode_index",
+      "message": "episode at position 86 has index 83"
+    },
+    {
+      "severity": "error",
+      "episode": 83,
+      "code": "range_gap",
+      "message": "starts at 40424, previous episode ended at 46649"
+    },
+    {
+      "severity": "error",
+      "episode": 84,
+      "code": "episode_index",
+      "message": "episode at position 87 has index 84"
+    },
+    {
+      "severity": "error",
+      "episode": 84,
+      "code": "range_gap",
+      "message": "starts at 46649, previous episode ended at 40805"
+    },
+    {
+      "severity": "error",
+      "episode": 84,
+      "code": "video_span_length",
+      "message": "observation.images.overhead: span [122.900, 144.600) s is 21.700 s, 564 frames are 18.800 s"
+    },
+    {
+      "severity": "error",
+      "episode": 84,
+      "code": "video_span_length",
+      "message": "observation.images.wrist: span [122.900, 144.600) s is 21.700 s, 564 frames are 18.800 s"
+    },
+    {
+      "severity": "error",
+      "episode": 84,
+      "code": "episode_index",
+      "message": "episode at position 88 has index 84"
+    },
+    {
+      "severity": "error",
+      "episode": 84,
+      "code": "range_gap",
+      "message": "starts at 40805, previous episode ended at 47213"
+    },
+    {
+      "severity": "error",
+      "episode": 85,
+      "code": "episode_index",
+      "message": "episode at position 89 has index 85"
+    },
+    {
+      "severity": "error",
+      "episode": 85,
+      "code": "range_gap",
+      "message": "starts at 47213, previous episode ended at 41198"
+    },
+    {
+      "severity": "error",
+      "episode": 85,
+      "code": "episode_index",
+      "message": "episode at position 90 has index 85"
+    },
+    {
+      "severity": "error",
+      "episode": 85,
+      "code": "range_gap",
+      "message": "starts at 41198, previous episode ended at 47774"
+    },
+    {
+      "severity": "error",
+      "episode": 86,
+      "code": "episode_index",
+      "message": "episode at position 91 has index 86"
+    },
+    {
+      "severity": "error",
+      "episode": 86,
+      "code": "range_gap",
+      "message": "starts at 47774, previous episode ended at 41527"
+    },
+    {
+      "severity": "error",
+      "episode": 86,
+      "code": "episode_index",
+      "message": "episode at position 92 has index 86"
+    },
+    {
+      "severity": "error",
+      "episode": 86,
+      "code": "range_gap",
+      "message": "starts at 41527, previous episode ended at 48341"
+    },
+    {
+      "severity": "error",
+      "episode": 87,
+      "code": "episode_index",
+      "message": "episode at position 93 has index 87"
+    },
+    {
+      "severity": "error",
+      "episode": 87,
+      "code": "range_gap",
+      "message": "starts at 48341, previous episode ended at 41918"
+    },
+    {
+      "severity": "error",
+      "episode": 87,
+      "code": "episode_index",
+      "message": "episode at position 94 has index 87"
+    },
+    {
+      "severity": "error",
+      "episode": 87,
+      "code": "range_gap",
+      "message": "starts at 41918, previous episode ended at 48815"
+    },
+    {
+      "severity": "error",
+      "episode": 88,
+      "code": "episode_index",
+      "message": "episode at position 95 has index 88"
+    },
+    {
+      "severity": "error",
+      "episode": 88,
+      "code": "range_gap",
+      "message": "starts at 48815, previous episode ended at 42364"
+    },
+    {
+      "severity": "error",
+      "episode": 88,
+      "code": "episode_index",
+      "message": "episode at position 96 has index 88"
+    },
+    {
+      "severity": "error",
+      "episode": 88,
+      "code": "range_gap",
+      "message": "starts at 42364, previous episode ended at 49271"
+    },
+    {
+      "severity": "error",
+      "episode": 89,
+      "code": "episode_index",
+      "message": "episode at position 97 has index 89"
+    },
+    {
+      "severity": "error",
+      "episode": 89,
+      "code": "range_gap",
+      "message": "starts at 49271, previous episode ended at 42762"
+    },
+    {
+      "severity": "error",
+      "episode": 89,
+      "code": "episode_index",
+      "message": "episode at position 98 has index 89"
+    },
+    {
+      "severity": "error",
+      "episode": 89,
+      "code": "range_gap",
+      "message": "starts at 42762, previous episode ended at 49726"
+    },
+    {
+      "severity": "error",
+      "episode": 90,
+      "code": "episode_index",
+      "message": "episode at position 99 has index 90"
+    },
+    {
+      "severity": "error",
+      "episode": 90,
+      "code": "range_gap",
+      "message": "starts at 49726, previous episode ended at 43139"
+    },
+    {
+      "severity": "error",
+      "episode": 90,
+      "code": "episode_index",
+      "message": "episode at position 100 has index 90"
+    },
+    {
+      "severity": "error",
+      "episode": 90,
+      "code": "range_gap",
+      "message": "starts at 43139, previous episode ended at 50439"
+    },
+    {
+      "severity": "error",
+      "episode": 91,
+      "code": "episode_index",
+      "message": "episode at position 101 has index 91"
+    },
+    {
+      "severity": "error",
+      "episode": 91,
+      "code": "range_gap",
+      "message": "starts at 50439, previous episode ended at 43651"
+    },
+    {
+      "severity": "error",
+      "episode": 91,
+      "code": "episode_index",
+      "message": "episode at position 102 has index 91"
+    },
+    {
+      "severity": "error",
+      "episode": 91,
+      "code": "range_gap",
+      "message": "starts at 43651, previous episode ended at 51168"
+    },
+    {
+      "severity": "error",
+      "episode": 92,
+      "code": "episode_index",
+      "message": "episode at position 103 has index 92"
+    },
+    {
+      "severity": "error",
+      "episode": 92,
+      "code": "range_gap",
+      "message": "starts at 51168, previous episode ended at 44119"
+    },
+    {
+      "severity": "error",
+      "episode": 92,
+      "code": "episode_index",
+      "message": "episode at position 104 has index 92"
+    },
+    {
+      "severity": "error",
+      "episode": 92,
+      "code": "range_gap",
+      "message": "starts at 44119, previous episode ended at 51596"
+    },
+    {
+      "severity": "error",
+      "episode": 93,
+      "code": "episode_index",
+      "message": "episode at position 105 has index 93"
+    },
+    {
+      "severity": "error",
+      "episode": 93,
+      "code": "range_gap",
+      "message": "starts at 51596, previous episode ended at 44584"
+    },
+    {
+      "severity": "error",
+      "episode": 93,
+      "code": "episode_index",
+      "message": "episode at position 106 has index 93"
+    },
+    {
+      "severity": "error",
+      "episode": 93,
+      "code": "range_gap",
+      "message": "starts at 44584, previous episode ended at 52261"
+    },
+    {
+      "severity": "error",
+      "episode": 94,
+      "code": "episode_index",
+      "message": "episode at position 107 has index 94"
+    },
+    {
+      "severity": "error",
+      "episode": 94,
+      "code": "range_gap",
+      "message": "starts at 52261, previous episode ended at 45106"
+    },
+    {
+      "severity": "error",
+      "episode": 94,
+      "code": "episode_index",
+      "message": "episode at position 108 has index 94"
+    },
+    {
+      "severity": "error",
+      "episode": 94,
+      "code": "range_gap",
+      "message": "starts at 45106, previous episode ended at 52787"
+    },
+    {
+      "severity": "error",
+      "episode": 95,
+      "code": "episode_index",
+      "message": "episode at position 109 has index 95"
+    },
+    {
+      "severity": "error",
+      "episode": 95,
+      "code": "range_gap",
+      "message": "starts at 52787, previous episode ended at 45524"
+    },
+    {
+      "severity": "error",
+      "episode": 95,
+      "code": "episode_index",
+      "message": "episode at position 110 has index 95"
+    },
+    {
+      "severity": "error",
+      "episode": 95,
+      "code": "range_gap",
+      "message": "starts at 45524, previous episode ended at 53295"
+    },
+    {
+      "severity": "error",
+      "episode": 96,
+      "code": "episode_index",
+      "message": "episode at position 111 has index 96"
+    },
+    {
+      "severity": "error",
+      "episode": 96,
+      "code": "range_gap",
+      "message": "starts at 53295, previous episode ended at 45940"
+    },
+    {
+      "severity": "error",
+      "episode": 96,
+      "code": "episode_index",
+      "message": "episode at position 112 has index 96"
+    },
+    {
+      "severity": "error",
+      "episode": 96,
+      "code": "range_gap",
+      "message": "starts at 45940, previous episode ended at 53923"
+    },
+    {
+      "severity": "error",
+      "episode": 97,
+      "code": "episode_index",
+      "message": "episode at position 113 has index 97"
+    },
+    {
+      "severity": "error",
+      "episode": 97,
+      "code": "range_gap",
+      "message": "starts at 53923, previous episode ended at 46331"
+    },
+    {
+      "severity": "error",
+      "episode": 97,
+      "code": "episode_index",
+      "message": "episode at position 114 has index 97"
+    },
+    {
+      "severity": "error",
+      "episode": 97,
+      "code": "range_gap",
+      "message": "starts at 46331, previous episode ended at 54630"
+    },
+    {
+      "severity": "error",
+      "episode": 98,
+      "code": "episode_index",
+      "message": "episode at position 115 has index 98"
+    },
+    {
+      "severity": "error",
+      "episode": 98,
+      "code": "range_gap",
+      "message": "starts at 54630, previous episode ended at 46857"
+    },
+    {
+      "severity": "error",
+      "episode": 98,
+      "code": "video_span_length",
+      "message": "observation.images.overhead: span [209.633, 231.900) s is 22.267 s, 420 frames are 14.000 s"
+    },
+    {
+      "severity": "error",
+      "episode": 98,
+      "code": "video_span_length",
+      "message": "observation.images.wrist: span [209.633, 231.900) s is 22.267 s, 420 frames are 14.000 s"
+    },
+    {
+      "severity": "error",
+      "episode": 98,
+      "code": "episode_index",
+      "message": "episode at position 116 has index 98"
+    },
+    {
+      "severity": "error",
+      "episode": 98,
+      "code": "range_gap",
+      "message": "starts at 46857, previous episode ended at 55050"
+    },
+    {
+      "severity": "error",
+      "episode": 99,
+      "code": "episode_index",
+      "message": "episode at position 117 has index 99"
+    },
+    {
+      "severity": "error",
+      "episode": 99,
+      "code": "range_gap",
+      "message": "starts at 55050, previous episode ended at 47382"
+    },
+    {
+      "severity": "error",
+      "episode": 99,
+      "code": "episode_index",
+      "message": "episode at position 118 has index 99"
+    },
+    {
+      "severity": "error",
+      "episode": 99,
+      "code": "range_gap",
+      "message": "starts at 47382, previous episode ended at 55564"
+    },
+    {
+      "severity": "error",
+      "episode": 100,
+      "code": "episode_index",
+      "message": "episode at position 119 has index 100"
+    },
+    {
+      "severity": "error",
+      "episode": 100,
+      "code": "range_gap",
+      "message": "starts at 55564, previous episode ended at 47913"
+    },
+    {
+      "severity": "error",
+      "episode": 100,
+      "code": "episode_index",
+      "message": "episode at position 120 has index 100"
+    },
+    {
+      "severity": "error",
+      "episode": 100,
+      "code": "range_gap",
+      "message": "starts at 47913, previous episode ended at 56316"
+    },
+    {
+      "severity": "error",
+      "episode": 101,
+      "code": "episode_index",
+      "message": "episode at position 121 has index 101"
+    },
+    {
+      "severity": "error",
+      "episode": 101,
+      "code": "range_gap",
+      "message": "starts at 56316, previous episode ended at 48511"
+    },
+    {
+      "severity": "error",
+      "episode": 101,
+      "code": "episode_index",
+      "message": "episode at position 122 has index 101"
+    },
+    {
+      "severity": "error",
+      "episode": 101,
+      "code": "range_gap",
+      "message": "starts at 48511, previous episode ended at 56718"
+    },
+    {
+      "severity": "error",
+      "episode": 102,
+      "code": "episode_index",
+      "message": "episode at position 123 has index 102"
+    },
+    {
+      "severity": "error",
+      "episode": 102,
+      "code": "range_gap",
+      "message": "starts at 56718, previous episode ended at 49038"
+    },
+    {
+      "severity": "error",
+      "episode": 102,
+      "code": "episode_index",
+      "message": "episode at position 124 has index 102"
+    },
+    {
+      "severity": "error",
+      "episode": 102,
+      "code": "range_gap",
+      "message": "starts at 49038, previous episode ended at 57211"
+    },
+    {
+      "severity": "error",
+      "episode": 103,
+      "code": "episode_index",
+      "message": "episode at position 125 has index 103"
+    },
+    {
+      "severity": "error",
+      "episode": 104,
+      "code": "episode_index",
+      "message": "episode at position 126 has index 104"
+    },
+    {
+      "severity": "error",
+      "episode": 105,
+      "code": "episode_index",
+      "message": "episode at position 127 has index 105"
+    },
+    {
+      "severity": "error",
+      "episode": 106,
+      "code": "episode_index",
+      "message": "episode at position 128 has index 106"
+    },
+    {
+      "severity": "error",
+      "episode": 107,
+      "code": "episode_index",
+      "message": "episode at position 129 has index 107"
+    },
+    {
+      "severity": "error",
+      "episode": 108,
+      "code": "episode_index",
+      "message": "episode at position 130 has index 108"
+    },
+    {
+      "severity": "error",
+      "episode": 109,
+      "code": "episode_index",
+      "message": "episode at position 131 has index 109"
+    },
+    {
+      "severity": "error",
+      "episode": 110,
+      "code": "episode_index",
+      "message": "episode at position 132 has index 110"
+    },
+    {
+      "severity": "error",
+      "episode": 111,
+      "code": "episode_index",
+      "message": "episode at position 133 has index 111"
+    },
+    {
+      "severity": "error",
+      "episode": 112,
+      "code": "episode_index",
+      "message": "episode at position 134 has index 112"
+    },
+    {
+      "severity": "error",
+      "episode": 113,
+      "code": "episode_index",
+      "message": "episode at position 135 has index 113"
+    },
+    {
+      "severity": "error",
+      "episode": 114,
+      "code": "episode_index",
+      "message": "episode at position 136 has index 114"
+    },
+    {
+      "severity": "error",
+      "episode": 115,
+      "code": "episode_index",
+      "message": "episode at position 137 has index 115"
+    },
+    {
+      "severity": "error",
+      "episode": 116,
+      "code": "episode_index",
+      "message": "episode at position 138 has index 116"
+    },
+    {
+      "severity": "error",
+      "episode": 117,
+      "code": "episode_index",
+      "message": "episode at position 139 has index 117"
+    },
+    {
+      "severity": "error",
+      "episode": 118,
+      "code": "episode_index",
+      "message": "episode at position 140 has index 118"
+    },
+    {
+      "severity": "error",
+      "episode": 119,
+      "code": "episode_index",
+      "message": "episode at position 141 has index 119"
+    },
+    {
+      "severity": "error",
+      "episode": 120,
+      "code": "episode_index",
+      "message": "episode at position 142 has index 120"
+    },
+    {
+      "severity": "error",
+      "episode": 120,
+      "code": "video_span_length",
+      "message": "observation.images.overhead: span [140.033, 154.867) s is 14.833 s, 384 frames are 12.800 s"
+    },
+    {
+      "severity": "error",
+      "episode": 120,
+      "code": "video_span_length",
+      "message": "observation.images.wrist: span [140.033, 154.867) s is 14.833 s, 384 frames are 12.800 s"
+    },
+    {
+      "severity": "error",
+      "episode": 121,
+      "code": "episode_index",
+      "message": "episode at position 143 has index 121"
+    },
+    {
+      "severity": "error",
+      "episode": 122,
+      "code": "episode_index",
+      "message": "episode at position 144 has index 122"
+    },
+    {
+      "severity": "error",
+      "episode": 123,
+      "code": "episode_index",
+      "message": "episode at position 145 has index 123"
+    },
+    {
+      "severity": "error",
+      "episode": 124,
+      "code": "episode_index",
+      "message": "episode at position 146 has index 124"
+    },
+    {
+      "severity": "error",
+      "episode": 125,
+      "code": "episode_index",
+      "message": "episode at position 147 has index 125"
+    },
+    {
+      "severity": "error",
+      "episode": 126,
+      "code": "episode_index",
+      "message": "episode at position 148 has index 126"
+    },
+    {
+      "severity": "error",
+      "episode": 126,
+      "code": "video_span_length",
+      "message": "observation.images.overhead: span [222.933, 236.567) s is 13.633 s, 384 frames are 12.800 s"
+    },
+    {
+      "severity": "error",
+      "episode": 126,
+      "code": "video_span_length",
+      "message": "observation.images.wrist: span [222.933, 236.567) s is 13.633 s, 384 frames are 12.800 s"
+    },
+    {
+      "severity": "error",
+      "episode": 127,
+      "code": "episode_index",
+      "message": "episode at position 149 has index 127"
+    },
+    {
+      "severity": "error",
+      "episode": 128,
+      "code": "episode_index",
+      "message": "episode at position 150 has index 128"
+    },
+    {
+      "severity": "error",
+      "episode": 129,
+      "code": "episode_index",
+      "message": "episode at position 151 has index 129"
+    },
+    {
+      "severity": "error",
+      "episode": 130,
+      "code": "episode_index",
+      "message": "episode at position 152 has index 130"
+    },
+    {
+      "severity": "error",
+      "episode": 131,
+      "code": "episode_index",
+      "message": "episode at position 153 has index 131"
+    },
+    {
+      "severity": "error",
+      "episode": 132,
+      "code": "episode_index",
+      "message": "episode at position 154 has index 132"
+    },
+    {
+      "severity": "error",
+      "episode": 133,
+      "code": "episode_index",
+      "message": "episode at position 155 has index 133"
+    },
+    {
+      "severity": "error",
+      "episode": 134,
+      "code": "episode_index",
+      "message": "episode at position 156 has index 134"
+    },
+    {
+      "severity": "error",
+      "episode": 135,
+      "code": "episode_index",
+      "message": "episode at position 157 has index 135"
+    },
+    {
+      "severity": "error",
+      "episode": 136,
+      "code": "episode_index",
+      "message": "episode at position 158 has index 136"
+    },
+    {
+      "severity": "error",
+      "episode": 137,
+      "code": "episode_index",
+      "message": "episode at position 159 has index 137"
+    },
+    {
+      "severity": "error",
+      "episode": 138,
+      "code": "episode_index",
+      "message": "episode at position 160 has index 138"
+    },
+    {
+      "severity": "error",
+      "episode": 139,
+      "code": "episode_index",
+      "message": "episode at position 161 has index 139"
+    },
+    {
+      "severity": "error",
+      "episode": 140,
+      "code": "episode_index",
+      "message": "episode at position 162 has index 140"
+    },
+    {
+      "severity": "error",
+      "episode": 141,
+      "code": "episode_index",
+      "message": "episode at position 163 has index 141"
+    },
+    {
+      "severity": "error",
+      "episode": 142,
+      "code": "episode_index",
+      "message": "episode at position 164 has index 142"
+    },
+    {
+      "severity": "error",
+      "episode": 143,
+      "code": "episode_index",
+      "message": "episode at position 165 has index 143"
+    },
+    {
+      "severity": "error",
+      "episode": 144,
+      "code": "episode_index",
+      "message": "episode at position 166 has index 144"
+    },
+    {
+      "severity": "error",
+      "episode": 145,
+      "code": "episode_index",
+      "message": "episode at position 167 has index 145"
+    },
+    {
+      "severity": "error",
+      "episode": 146,
+      "code": "episode_index",
+      "message": "episode at position 168 has index 146"
+    },
+    {
+      "severity": "error",
+      "episode": 147,
+      "code": "episode_index",
+      "message": "episode at position 169 has index 147"
+    },
+    {
+      "severity": "error",
+      "episode": 148,
+      "code": "episode_index",
+      "message": "episode at position 170 has index 148"
+    },
+    {
+      "severity": "error",
+      "episode": 149,
+      "code": "episode_index",
+      "message": "episode at position 171 has index 149"
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "name": "ases200q2__UR5_RTDE_SpaceMouse_EE_pick_and_place_object_Difficult",
+  "repo": "ases200q2/UR5_RTDE_SpaceMouse_EE_pick_and_place_object_Difficult",
+  "revision": "57f264f9e47ba6ef5e7b559ae34f098e9c07fbca",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 140,
+    "frames": 43568,
+    "fps": 15,
+    "robot": "ur5_rtde"
+  },
+  "run": {
+    "wall_ms": 36.2,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 28,
+  "warnings": 9,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 6 is at its minimum (0) in 53.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 12 is at its minimum (0) in 53.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 13 is at its minimum (0) in 53.9% of the frames"
+    },
+    {
+      "severity": "error",
+      "episode": 6,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [166.800, 202.933) s is 36.133 s, 391 frames are 26.067 s"
+    },
+    {
+      "severity": "error",
+      "episode": 6,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [166.800, 202.933) s is 36.133 s, 391 frames are 26.067 s"
+    },
+    {
+      "severity": "error",
+      "episode": 8,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [228.333, 258.533) s is 30.200 s, 415 frames are 27.667 s"
+    },
+    {
+      "severity": "error",
+      "episode": 8,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [228.333, 258.533) s is 30.200 s, 415 frames are 27.667 s"
+    },
+    {
+      "severity": "error",
+      "episode": 18,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [501.333, 522.867) s is 21.533 s, 251 frames are 16.733 s"
+    },
+    {
+      "severity": "error",
+      "episode": 18,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [501.333, 522.867) s is 21.533 s, 251 frames are 16.733 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 27,
+      "code": "episode_length_outlier",
+      "message": "610 frames, much longer than the other episodes (mean 311, std 79 over 140 episodes)"
+    },
+    {
+      "severity": "error",
+      "episode": 28,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [86.733, 115.600) s is 28.867 s, 313 frames are 20.867 s"
+    },
+    {
+      "severity": "error",
+      "episode": 28,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [86.733, 115.600) s is 28.867 s, 313 frames are 20.867 s"
+    },
+    {
+      "severity": "error",
+      "episode": 32,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [177.267, 357.800) s is 180.533 s, 350 frames are 23.333 s"
+    },
+    {
+      "severity": "error",
+      "episode": 32,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [177.267, 357.800) s is 180.533 s, 350 frames are 23.333 s"
+    },
+    {
+      "severity": "error",
+      "episode": 38,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [118.267, 147.400) s is 29.133 s, 329 frames are 21.933 s"
+    },
+    {
+      "severity": "error",
+      "episode": 38,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [118.267, 147.400) s is 29.133 s, 329 frames are 21.933 s"
+    },
+    {
+      "severity": "error",
+      "episode": 43,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [233.200, 255.867) s is 22.667 s, 289 frames are 19.267 s"
+    },
+    {
+      "severity": "error",
+      "episode": 43,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [233.200, 255.867) s is 22.667 s, 289 frames are 19.267 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 45,
+      "code": "episode_length_outlier",
+      "message": "66 frames, much shorter than the other episodes (mean 311, std 79 over 140 episodes)"
+    },
+    {
+      "severity": "error",
+      "episode": 45,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [0.000, 26.200) s is 26.200 s, 66 frames are 4.400 s"
+    },
+    {
+      "severity": "error",
+      "episode": 45,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [0.000, 26.200) s is 26.200 s, 66 frames are 4.400 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 45,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "error",
+      "episode": 58,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [268.333, 299.800) s is 31.467 s, 400 frames are 26.667 s"
+    },
+    {
+      "severity": "error",
+      "episode": 58,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [268.333, 299.800) s is 31.467 s, 400 frames are 26.667 s"
+    },
+    {
+      "severity": "error",
+      "episode": 66,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [0.000, 21.533) s is 21.533 s, 308 frames are 20.533 s"
+    },
+    {
+      "severity": "error",
+      "episode": 66,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [0.000, 21.533) s is 21.533 s, 308 frames are 20.533 s"
+    },
+    {
+      "severity": "error",
+      "episode": 70,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [0.000, 25.200) s is 25.200 s, 347 frames are 23.133 s"
+    },
+    {
+      "severity": "error",
+      "episode": 70,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [0.000, 25.200) s is 25.200 s, 347 frames are 23.133 s"
+    },
+    {
+      "severity": "error",
+      "episode": 88,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [366.400, 392.867) s is 26.467 s, 390 frames are 26.000 s"
+    },
+    {
+      "severity": "error",
+      "episode": 88,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [366.400, 392.867) s is 26.467 s, 390 frames are 26.000 s"
+    },
+    {
+      "severity": "error",
+      "episode": 117,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [522.533, 544.067) s is 21.533 s, 288 frames are 19.200 s"
+    },
+    {
+      "severity": "error",
+      "episode": 117,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [522.533, 544.067) s is 21.533 s, 288 frames are 19.200 s"
+    },
+    {
+      "severity": "error",
+      "episode": 120,
+      "code": "video_span_length",
+      "message": "observation.images.camera_1: span [574.533, 593.667) s is 19.133 s, 75 frames are 5.000 s"
+    },
+    {
+      "severity": "error",
+      "episode": 120,
+      "code": "video_span_length",
+      "message": "observation.images.camera_2: span [574.533, 593.667) s is 19.133 s, 75 frames are 5.000 s"
+    },
+    {
+      "severity": "warning",
+      "episode": 120,
+      "code": "idle_episode",
+      "message": "53% of frames repeat the previous action; it first changes at frame 11 and last at frame 68 of 75"
+    },
+    {
+      "severity": "warning",
+      "episode": 121,
+      "code": "episode_length_outlier",
+      "message": "18 frames, much shorter than the other episodes (mean 311, std 79 over 140 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 121,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    }
+  ]
+}

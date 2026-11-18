@@ -1,0 +1,107 @@
+{
+  "name": "RoboCOIN__Galbot_G1_use_dryer",
+  "repo": "RoboCOIN/Galbot_G1_use_dryer",
+  "revision": "ca118a6124a46a770b3e1cbb45502ede3513f86e",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 952,
+    "frames": 450316,
+    "fps": 30,
+    "robot": "Galbot_G1"
+  },
+  "run": {
+    "wall_ms": 57.1,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 2,
+  "warnings": 11,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 8 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 14 is at its maximum (0.9068743586540222) in 97.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 15 is at its maximum (0.9068743586540222) in 99.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 2 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 12 is at its maximum (0.9068743586540222) in 97.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 14 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 20 is at its maximum (0.9068743586540222) in 99.9% of the frames"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "feature_dtype",
+      "message": "`gripper_open_scale_action` is Float32 in the data but info.json declares float64"
+    },
+    {
+      "severity": "error",
+      "episode": 0,
+      "code": "feature_dtype",
+      "message": "`gripper_open_scale_state` is Float32 in the data but info.json declares float64"
+    },
+    {
+      "severity": "warning",
+      "episode": 232,
+      "code": "episode_length_outlier",
+      "message": "842 frames, much longer than the other episodes (mean 473, std 112 over 952 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 560,
+      "code": "action_jump",
+      "message": "2 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 920,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 945,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    }
+  ]
+}

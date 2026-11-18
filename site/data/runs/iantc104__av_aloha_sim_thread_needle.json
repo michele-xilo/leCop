@@ -1,0 +1,89 @@
+{
+  "name": "iantc104__av_aloha_sim_thread_needle",
+  "repo": "iantc104/av_aloha_sim_thread_needle",
+  "revision": "3f025db251df9d849e4def56e54b92f086030cda",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 200,
+    "frames": 50000,
+    "fps": 25,
+    "robot": "unknown"
+  },
+  "run": {
+    "wall_ms": 17.4,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 10,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 6 is at its maximum (1) in 67.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 13 is at its maximum (1) in 51.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.environment_state: dimension 10 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.environment_state: dimension 3 is at its maximum (1) in 21.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.environment_state: dimension 9 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.environment_state: dimension 13 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.qpos: dimension 3 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.qpos: dimension 2 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.qpos: dimension 6 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.qpos: dimension 10 is at its maximum (1) in 21.8% of the frames"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "name": "jccj__test_multiview_3d_reconstruction",
+  "repo": "jccj/test_multiview_3d_reconstruction",
+  "revision": "fa8e69989b2bb02cb12d5f7bcf4d14887810706f",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 1,
+    "frames": 757,
+    "fps": 30,
+    "robot": "so100_follower"
+  },
+  "run": {
+    "wall_ms": 2.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 4,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 2 is at its maximum (94.3533706665039) in 9.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 5 is at its maximum (100) in 12.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 2 is at its maximum (94.72913360595703) in 10.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 5 is at its maximum (98.69706726074219) in 9.8% of the frames"
+    }
+  ]
+}

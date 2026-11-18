@@ -1,0 +1,233 @@
+{
+  "name": "unitreerobotics__G1_WBT_Brainco_Pickup_Pillow",
+  "repo": "unitreerobotics/G1_WBT_Brainco_Pickup_Pillow",
+  "revision": "6849d285d713b57176fac8f717d073a8c3025290",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 300,
+    "frames": 177811,
+    "fps": 30,
+    "robot": "unitree_g1_brainco"
+  },
+  "run": {
+    "wall_ms": 425.3,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 34,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `action` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `observation.state` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_zero_std",
+      "message": "observation.state.recomputed_ee_valid: dimension 0 has zero std in stats.json, normalising divides by zero"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.hand_state: dimension 0 is at its minimum (0) in 62.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.hand_state: dimension 1 reaches 16 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.hand_state: dimension 2 is at its minimum (0) in 63.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.hand_state: dimension 3 is at its minimum (0) in 63.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.hand_state: dimension 4 is at its minimum (0) in 63.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.hand_state: dimension 5 is at its minimum (0) in 62.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.hand_state: dimension 6 is at its minimum (0) in 61.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.hand_state: dimension 8 is at its minimum (0) in 61.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.hand_state: dimension 9 is at its minimum (0) in 62.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.hand_state: dimension 10 is at its minimum (0) in 61.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.hand_state: dimension 11 is at its minimum (0) in 61.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.left_fig6d: dimension 0 is at its maximum (1) in 62.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.left_fig6d: dimension 1 reaches 16 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.left_fig6d: dimension 2 is at its maximum (1) in 63.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.left_fig6d: dimension 3 is at its maximum (1) in 63.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.left_fig6d: dimension 4 is at its maximum (1) in 63.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.left_fig6d: dimension 5 is at its maximum (1) in 62.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.right_fig6d: dimension 0 is at its maximum (1) in 61.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.right_fig6d: dimension 2 is at its maximum (1) in 61.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.right_fig6d: dimension 3 is at its maximum (1) in 62.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.right_fig6d: dimension 4 is at its maximum (1) in 61.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.right_fig6d: dimension 5 is at its maximum (1) in 61.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.state_base_rot: dimension 3 reaches 17 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.state_base_rot: dimension 4 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.state.state_torso: dimension 2 (= 0.04399999976158142) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.state_torso: dimension 0 reaches 14 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": 31,
+      "code": "episode_length_outlier",
+      "message": "1042 frames, much longer than the other episodes (mean 593, std 136 over 300 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 106,
+      "code": "episode_length_outlier",
+      "message": "1037 frames, much longer than the other episodes (mean 593, std 136 over 300 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 177,
+      "code": "episode_length_outlier",
+      "message": "1117 frames, much longer than the other episodes (mean 593, std 136 over 300 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 187,
+      "code": "episode_length_outlier",
+      "message": "1026 frames, much longer than the other episodes (mean 593, std 136 over 300 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 207,
+      "code": "episode_length_outlier",
+      "message": "1012 frames, much longer than the other episodes (mean 593, std 136 over 300 episodes)"
+    }
+  ]
+}

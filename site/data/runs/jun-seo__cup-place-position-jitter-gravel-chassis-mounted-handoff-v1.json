@@ -1,0 +1,65 @@
+{
+  "name": "jun-seo__cup-place-position-jitter-gravel-chassis-mounted-handoff-v1",
+  "repo": "jun-seo/cup-place-position-jitter-gravel-chassis-mounted-handoff-v1",
+  "revision": "562f06eb9fcfafe5aa6608ee94cea51fdd46ec54",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 60,
+    "frames": 46281,
+    "fps": 30,
+    "robot": "bi_so_follower"
+  },
+  "run": {
+    "wall_ms": 14.3,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 6,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 11 is at its minimum (0.15948963165283203) in 11.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "action: dimension 11 of the last quarter of the episodes is 3.4 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "observation.state: dimension 11 of the last quarter of the episodes is 9.1 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": 26,
+      "code": "action_frozen",
+      "message": "action is identical for 3.2 s (96 frames) from frame 643"
+    },
+    {
+      "severity": "warning",
+      "episode": 39,
+      "code": "action_frozen",
+      "message": "action is identical for 4.8 s (144 frames) from frame 683"
+    },
+    {
+      "severity": "warning",
+      "episode": 47,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    }
+  ]
+}

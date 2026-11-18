@@ -1,0 +1,47 @@
+{
+  "name": "SO-101-robot-learning__so101_pick_place",
+  "repo": "SO-101-robot-learning/so101_pick_place",
+  "revision": "c56fed5bc39d966c25120293b2f6dc3eb5ead5c7",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 0,
+    "frames": 0,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 16.8,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 2,
+  "warnings": 1,
+  "issues": [
+    {
+      "severity": "error",
+      "episode": null,
+      "code": "episode_count",
+      "message": "info.json says 0 episodes, metadata has 50"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_feature_missing",
+      "message": "no statistics for observation.images.side"
+    },
+    {
+      "severity": "error",
+      "episode": null,
+      "code": "frame_count",
+      "message": "info.json says 0 frames, episode lengths sum to 17870"
+    }
+  ]
+}

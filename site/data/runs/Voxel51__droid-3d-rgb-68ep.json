@@ -1,0 +1,65 @@
+{
+  "name": "Voxel51__droid-3d-rgb-68ep",
+  "repo": "Voxel51/droid-3d-rgb-68ep",
+  "revision": "cd9d059978f3a286d10baab83c22bfb9bbd45f52",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 68,
+    "frames": 19745,
+    "fps": 15,
+    "robot": "unknown"
+  },
+  "run": {
+    "wall_ms": 11.9,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 6,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `observation.state` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 7 is at its minimum (0) in 50.8% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": 22,
+      "code": "action_jump",
+      "message": "5 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 39,
+      "code": "episode_length_outlier",
+      "message": "953 frames, much longer than the other episodes (mean 290, std 202 over 68 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 47,
+      "code": "episode_length_outlier",
+      "message": "1047 frames, much longer than the other episodes (mean 290, std 202 over 68 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 59,
+      "code": "action_jump",
+      "message": "2 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    }
+  ]
+}

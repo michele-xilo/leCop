@@ -1,0 +1,65 @@
+{
+  "name": "wendyz123__LIR_Lab3_Imitation_Learning_20261012_135253",
+  "repo": "wendyz123/LIR_Lab3_Imitation_Learning_20261012_135253",
+  "revision": "6f014104b35eb645db67656e8e8d367721ebe830",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 1,
+    "frames": 539,
+    "fps": 30,
+    "robot": "so_follower"
+  },
+  "run": {
+    "wall_ms": 4.5,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 6,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 4 is at its maximum (-3.296703338623047) in 6.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 0 is at its maximum (1.3626374006271362) in 7.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 1 is at its minimum (-104.17582702636719) in 21.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 2 is at its maximum (96.3956069946289) in 14.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 3 is at its minimum (-101.75823974609375) in 11.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 4 is at its maximum (-3.5604395866394043) in 18.6% of the frames"
+    }
+  ]
+}

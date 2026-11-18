@@ -1,0 +1,65 @@
+{
+  "name": "jccj__test_multiview_3d_reconstruction_3cams",
+  "repo": "jccj/test_multiview_3d_reconstruction_3cams",
+  "revision": "c3ee825be2da4e7443b1bc1e07742c746cfb28c9",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 1,
+    "frames": 375,
+    "fps": 30,
+    "robot": "so100_follower"
+  },
+  "run": {
+    "wall_ms": 2.5,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 6,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 2 is at its maximum (93.80692291259766) in 17.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 3 is at its minimum (45.10787582397461) in 5.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 1 is at its maximum (-10.655372619628906) in 14.4% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 2 is at its maximum (94.82674407958984) in 18.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 3 is at its minimum (45.58680725097656) in 5.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 4 is at its minimum (-25.714284896850586) in 6.1% of the frames"
+    }
+  ]
+}

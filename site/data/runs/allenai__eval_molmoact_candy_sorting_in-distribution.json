@@ -1,0 +1,89 @@
+{
+  "name": "allenai__eval_molmoact_candy_sorting_in-distribution",
+  "repo": "allenai/eval_molmoact_candy_sorting_in-distribution",
+  "revision": "b68b2df889134d23751ee09f3abc00b2cb94be71",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 50,
+    "frames": 59645,
+    "fps": 30,
+    "robot": "bi_yam_follower"
+  },
+  "run": {
+    "wall_ms": 46.8,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "4413e82",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-17",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 10,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 0 is at its minimum (-0.8353087306022644) in 15.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 1 is at its maximum (2.448659896850586) in 23.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 2 is at its minimum (0.004582792986184359) in 11.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 3 is at its minimum (-0.9696626663208008) in 7.7% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 8 is at its minimum (0.0025724871084094048) in 49.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 9 is at its minimum (0.007276484277099371) in 48.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 12 is at its minimum (0.007783941924571991) in 20.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 13 is at its maximum (1) in 15.6% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "action: dimension 8 of the last quarter of the episodes is 232.8 standard deviations from the first quarter"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "distribution_shift",
+      "message": "observation.state: dimension 9 of the last quarter of the episodes is 527.0 standard deviations from the first quarter"
+    }
+  ]
+}
