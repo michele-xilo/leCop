@@ -198,7 +198,7 @@ class LoadFits(unittest.TestCase):
 
 
 class OrderedChoices(unittest.TestCase):
-    def test_fitting_first_then_unknown_then_the_rest_labelled_keeping_order_within(self):
+    def test_fitting_first_then_unknown_then_the_rest_labelled_and_non_lerobot_left_out(self):
         repos = ["a/big", "b/ok", "c/new", "d/many", "e/ok", "f/notlr"]
         status = {"a/big": "too_big", "b/ok": "fits", "d/many": "too_many_files", "e/ok": "fits", "f/notlr": "not_lerobot"}
         self.assertEqual(
@@ -209,7 +209,6 @@ class OrderedChoices(unittest.TestCase):
                 ("c/new", "c/new"),
                 ("a/big: over 2.0 GB", "a/big"),
                 ("d/many: over 2,000 files", "d/many"),
-                ("f/notlr: no meta/info.json", "f/notlr"),
             ],
         )
 

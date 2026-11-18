@@ -77,6 +77,7 @@ STATUS = load_fits(os.path.join(os.path.dirname(os.path.abspath(__file__)), "fit
 def current_choices():
     done = sum(1 for r in CHOICES if r in STATUS)
     fits = sum(1 for r in CHOICES if STATUS.get(r) == "fits")
+    listed = sum(1 for r in CHOICES if STATUS.get(r) != "not_lerobot")
     progress = (
         f"the {fits:,} that fit this Space come first"
         if done
@@ -84,7 +85,7 @@ def current_choices():
     )
     return gr.update(
         choices=ordered_choices(CHOICES, STATUS, CAP_BYTES, CAP_FILES),
-        info=f"Type to filter {len(CHOICES):,} LeRobot datasets on the Hub ({progress}). Any other owner/name works too.",
+        info=f"Type to filter {listed:,} LeRobot datasets on the Hub ({progress}). Any other owner/name works too.",
     )
 
 
@@ -223,7 +224,7 @@ with gr.Blocks(title="leCop: check a LeRobot dataset") as demo:
     gr.HTML(HEADER)
     with gr.Row(equal_height=True):
         repo_box = gr.Dropdown(
-            choices=CHOICES,
+            choices=ordered_choices(CHOICES, STATUS, CAP_BYTES, CAP_FILES),
             value=None,
             label="Dataset",
             info=f"Type to filter {len(CHOICES):,} LeRobot datasets on the Hub, most downloaded first. Any other owner/name works too.",

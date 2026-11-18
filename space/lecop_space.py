@@ -127,16 +127,18 @@ def load_fits(path: str, cap_bytes: int, cap_files: int) -> Dict[str, str]:
 def ordered_choices(
     repos: Iterable[str], status: Dict[str, str], cap_bytes: int, cap_files: int
 ) -> List[Tuple[str, str]]:
-    """Dropdown (label, value) pairs: datasets that fit first, then those not classified yet, then the rest with the
-    reason in the label. The given order is kept within each group."""
+    """Dropdown (label, value) pairs: datasets that fit first, then those not classified yet, then the ones over a cap
+    with the reason in the label. Repos with no `meta/info.json` are left out: the Hub tags them LeRobot, but leCop
+    cannot read them. The given order is kept within each group."""
     why = {
         "too_big": f"over {human_size(cap_bytes)}",
         "too_many_files": f"over {cap_files:,} files",
-        "not_lerobot": "no meta/info.json",
     }
     fits, unknown, refused = [], [], []
     for repo in repos:
         state = status.get(repo)
+        if state == "not_lerobot":
+            continue
         if state == "fits":
             fits.append((repo, repo))
         elif state in why:

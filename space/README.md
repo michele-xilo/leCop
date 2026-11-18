@@ -18,10 +18,10 @@ issue code in the look of the [results site](https://michele-xilo.github.io/leCo
 most downloaded datasets the Hub tags LeRobot (gated ones left out) plus those on the results site; any other
 `owner/name`, `owner/name@revision` or Hub URL can be typed in full.
 
-The datasets that fit the Space's limits are listed first, the others last with the reason. That order comes from
-`fits.json`, built offline by `build_fits.py` (it needs a Hugging Face login: the anonymous rate limit is too low for
-the few thousand requests), and every check run on the Space updates it in memory. Rebuild it before uploading when the
-limits change; a `fits.json` built for other limits is ignored.
+The datasets that fit the Space's limits are listed first, the ones over a limit last with the reason, and repos with
+no `meta/info.json` are left out. That order comes from `fits.json`, built by `build_fits.py` at each deploy (it needs a
+Hugging Face login: the anonymous rate limit is too low for the few thousand requests), and every check run on the
+Space updates it in memory. A `fits.json` built for other limits is ignored.
 
 - The Space downloads `meta/` and `data/` only, so the video checks are skipped. Run `lecop validate` locally on a
   full download to check the videos too.
@@ -31,9 +31,18 @@ limits change; a `fits.json` built for other limits is ignored.
   is the one most datasets meet first: v2.x stores one parquet file per episode, and the Hub serves anonymous downloads at
   about 13 files a second.
 
-The Space runs the `lecop` wheel pinned in `requirements.txt`. Its logic outside the UI is in `lecop_space.py`, tested by
-`python3 -m unittest discover -s space`, and its Hub queries are in `hub.py`. Upload it with:
+## Deploying
+
+`.github/workflows/space.yml` deploys this folder after every PyPI release of a stable version, on pushes to `main` that
+change `space/`, and by hand (Actions, Space, Run workflow). It pins the newest `lecop` on PyPI in `requirements.txt`,
+runs the unit tests, rebuilds `fits.json`, checks `lerobot/pusht` with the app, uploads, and waits until the Space runs
+the new commit. It needs an `HF_TOKEN` secret on the `huggingface` environment: a Hugging Face token with write access to
+the Space.
+
+The logic outside the UI is in `lecop_space.py`, tested by `python3 -m unittest discover -s space`, and the Hub queries
+are in `hub.py`. To deploy by hand, from the repository root, with a Hugging Face login:
 
 ```bash
-hf upload michele-xilo/lecop space . --repo-type space --exclude "__pycache__/*" --exclude "test_*.py" --exclude build_fits.py
+cd space && uv run --with-requirements requirements.txt python build_fits.py
+hf upload michele-xilo/lecop . --repo-type space --exclude "__pycache__/*" --exclude "test_*.py" --exclude build_fits.py
 ```

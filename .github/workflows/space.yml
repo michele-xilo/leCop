@@ -1,0 +1,118 @@
+name: Space
+
+# Deploys space/ to the Hugging Face Space (huggingface.co/spaces/michele-xilo/lecop) with the newest lecop on PyPI.
+# Runs after each successful PyPI publish of a stable tag, on pushes to main that change space/, and by hand. The
+# PyPI workflow publishes with the workflow token, which does not trigger a `release` event, so this follows it with
+# `workflow_run`, like the Action tag workflow. It always checks out main, never the tag or a pull request.
+on:
+  workflow_run:
+    workflows: [PyPI]
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - "space/**"
+      - ".github/workflows/space.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: space
+  cancel-in-progress: false
+
+env:
+  SPACE: michele-xilo/lecop
+
+jobs:
+  deploy:
+    name: Deploy the Space
+    # After PyPI: only a successful run for a stable version tag (v1.2.3, not v1.2.3-rc.1).
+    if: >-
+      github.event_name != 'workflow_run' || (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'push' &&
+        startsWith(github.event.workflow_run.head_branch, 'v') &&
+        !contains(github.event.workflow_run.head_branch, '-')
+      )
+    runs-on: ubuntu-latest
+    environment: huggingface
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      RELEASE_TAG: ${{ github.event.workflow_run.head_branch }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+
+      - name: Check the token
+        run: |
+          if [ -z "$HF_TOKEN" ]; then
+            echo "::error::Set the HF_TOKEN secret on the huggingface environment: a Hugging Face token with write access to $SPACE."
+            exit 1
+          fi
+
+      - name: Pin the newest lecop on PyPI
+        run: |
+          # Right after a publish, PyPI's JSON can lag behind the upload for a minute or two.
+          want="${RELEASE_TAG#v}"
+          for _ in $(seq 20); do
+            version=$(curl -fsS https://pypi.org/pypi/lecop/json | python3 -c "import json,sys; print(json.load(sys.stdin)['info']['version'])")
+            if [ -z "$want" ] || [ "$version" = "$want" ]; then break; fi
+            echo "PyPI has lecop $version, waiting for $want"
+            sleep 30
+          done
+          if [ -n "$want" ] && [ "$version" != "$want" ]; then
+            echo "::error::lecop $want is not on PyPI after 10 minutes"
+            exit 1
+          fi
+          sed -i "s/^lecop==.*/lecop==$version/" space/requirements.txt
+          grep -q "^lecop==$version$" space/requirements.txt
+          echo "LECOP_VERSION=$version" >> "$GITHUB_ENV"
+          echo "Deploying with lecop $version"
+
+      - name: Unit tests
+        run: python3 -m unittest discover -s space -p 'test_*.py'
+
+      - name: Rank the listed datasets by whether they fit (fits.json)
+        working-directory: space
+        run: uv run --no-project --with-requirements requirements.txt python build_fits.py
+
+      - name: Smoke test the app on lerobot/pusht
+        working-directory: space
+        run: |
+          gradio=$(sed -n 's/^sdk_version: //p' README.md)
+          uv run --no-project --with "gradio==$gradio" --with-requirements requirements.txt python - <<'EOF'
+          import app
+          page, report = app.check("lerobot/pusht", "7628202a2180972f291ba1bc6723834921e72c19")
+          assert report is not None, page
+          print(f"lecop {app.VERSION} on lerobot/pusht: {report['errors']} errors, {report['warnings']} warnings")
+          EOF
+
+      - name: Upload to the Space
+        working-directory: space
+        run: |
+          uvx --from huggingface_hub==2.4.0 hf upload "$SPACE" . --repo-type space \
+            --exclude "__pycache__/*" --exclude "test_*.py" --exclude build_fits.py \
+            --commit-message "lecop $LECOP_VERSION, leCop ${GITHUB_SHA::7}" | tee "$RUNNER_TEMP/upload.log"
+          sha=$(sed -n 's#.*/commit/\([0-9a-f]*\).*#\1#p' "$RUNNER_TEMP/upload.log" | tail -1)
+          echo "SPACE_SHA=$sha" >> "$GITHUB_ENV"
+
+      - name: Wait for the Space to run the new version
+        run: |
+          # An upload with nothing changed makes no commit; then there is nothing to wait for.
+          if [ -z "$SPACE_SHA" ]; then echo "No change to upload"; exit 0; fi
+          for _ in $(seq 60); do
+            read -r stage sha < <(curl -fsS "https://huggingface.co/api/spaces/$SPACE/runtime" \
+              | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('stage'), d.get('sha', ''))")
+            echo "$stage ${sha::7}"
+            case "$stage" in
+              RUNNING) [ "$sha" = "$SPACE_SHA" ] && exit 0 ;;
+              *ERROR*) echo "::error::The Space failed to start: $stage. See https://huggingface.co/spaces/$SPACE"; exit 1 ;;
+            esac
+            sleep 15
+          done
+          echo "::error::The Space did not reach RUNNING on ${SPACE_SHA::7} within 15 minutes"
+          exit 1
