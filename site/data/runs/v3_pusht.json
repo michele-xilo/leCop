@@ -10,17 +10,18 @@
     "robot": "unknown"
   },
   "run": {
-    "wall_ms": 11.3,
+    "wall_ms": 10.8,
     "runs": 5,
     "cache": "warm",
     "threads": 24,
     "lecop_version": "0.3.1",
-    "lecop_commit": "80ba8f6",
+    "lecop_commit": "af06c52",
     "rustc": "1.99.0",
     "machine": "AMD Ryzen 9 7900X 12-Core Processor",
     "os": "Linux 7.0.0-42-generic",
     "date": "2026-11-18",
-    "decode": false
+    "decode": false,
+    "video": "container"
   },
   "errors": 0,
   "warnings": 3,
