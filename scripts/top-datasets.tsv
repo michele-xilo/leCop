@@ -1,0 +1,57 @@
+# repo	revision	version	total_gb	meta_gb	files_meta_data	episodes	downloads_30d
+lerobot/FineART	15746b76ddc21ffd38d73888fefe2e7a1496385b	v3.0	1855.97	25.18	220	40543	1153939
+IPEC-COMMUNITY/language_table_lerobot	634ac1e50023777c21b299d95aaf2bfdc8514ae9	v2.0	80.99	1.95	442230	442226	245983
+IPEC-COMMUNITY/droid_lerobot	96dd57f36d85a542a874e73aea5d9e0843caea58	v2.0	392.08	2.57	92237	92233	195922
+IPEC-COMMUNITY/fractal20220817_data_lerobot	91bf7d7f7ce50770a1ba5c6db14b8d1c0815122e	v2.0	21.95	0.64	87216	87212	178772
+cadene/droid_1.0.1	56b622ac23335c2bb5909e1e3c72416033c65acf	v2.1	399.34	12.66	95604	95600	175562
+# skipped configinc/HABIT: no readable meta/info.json (RemoteEntryNotFoundError)
+IPEC-COMMUNITY/bridge_orig_lerobot	0e9d76d07e9df3ea3eba257b2520d4913833fad2	v2.0	21.69	0.35	53196	53192	170637
+cadene/droid	c8fbc029c9786fd4377ea20d9535e86d88199c0f	v2.1	400.73	3.03	92237	92233	134905
+behavior-1k/2025-challenge-demos	33639692425296185f245aaa648530178c7b3d2b	v2.1	1945.53	183.9	20004	10000	125914
+allenai/MolmoAct2-BimanualYAM-Dataset	e9f21ae15074330839f2ac25ed4b49d76dfa1f9c	v3.0	2346.29	3.36	3581	32246	105143
+IPEC-COMMUNITY/kuka_lerobot	e17b0de50bf8711222d957aac2b21245ef33af75	v2.0	35.33	0.94	209884	209880	88886
+yaak-ai/L2D	cc09487951af469a14ea22108b64c3b9e6cb717d	v3.0	4759.6	1.26	24	100000	87203
+zekaiwang/trex_dataset	8b478400a9167d59ede0fdbfea616cb5e9791885	v3.0	1529.27	3.73	52	5464	83525
+cadene/agibot_alpha_v30	2aa4e5de3fc91421a7a8a76bef617f94d0e5be28	v3.0	1876.45	21.2	472	6	73396
+BitRobot/HIW-500-LeRobot	2d32431d3be3b0621c462759b02f7b378e53c2cc	v3.0	2150.17	13.35	170	23743	72360
+# skipped TacVerse/TacVerse: gated (auto)
+physical-intelligence/libero	a4336d589d589045d1c56423ffdf3b88a0e19b1f	v2.0	34.94	34.94	1697	1693	51349
+EgoSteer/EgoSteer-RealWorld	92e2fe18d547ab8755a03b26c7642cd5ed334ea4	v3.0	3174.53	17.25	1778	54454	49234
+IPEC-COMMUNITY/fmb_dataset_lerobot	e2c90a49ee640a23d4f7440c7a5d000e62cf7192	v2.1	13.34	0.14	8616	8612	46489
+lerobot/droid_1.0.1	71da9dcba338f53889907ac5762a2ebc6c2e55ff	v3.0	414.71	15.05	166	95658	37107
+lerobot/libero	a1aaacb7f6cd6ee5fb43120f673cebb0cfea7dd4	v3.0	1.94	0.02	381	1693	35320
+lerobot/abc_130k_v3_train	68651e4929d9fb00f798937b2d62617cab5c771d	v3.0	3428.25	50.05	749	129225	31533
+jchandru08/so100_press_red_button	b8544ee7cb9075efbf5f4d2c49f7a6aa93fe0e09	v2.1	1.34	0.0	33	29	29606
+# skipped LingYu-Robotics/lingyu-realworld-robotics-dataset: no readable meta/info.json (RemoteEntryNotFoundError)
+# skipped Crobotia/iUMI: no readable meta/info.json (RemoteEntryNotFoundError)
+lerobot/pusht	7628202a2180972f291ba1bc6723834921e72c19	v3.0	0.01	0.0	5	206	26380
+lerobot/svla_so101_pickplace	f641879e22172be7e8161d5e6c1503c2d2feb657	v3.0	0.09	0.0	5	50	26222
+albertwilcox/mesa-all-train-lerobot	3fb0095613c4b638e20b2278375491b5a45d2642	v3.0	131.58	7.63	97	81091	25031
+lerobot/aloha_sim_transfer_cube_human	6a43d500f101255823a9d2b9dc244eeb01a2cd31	v3.0	0.07	0.0	7	50	24567
+recast-robotics/rollout_dagger_r1_s2_b0_20260915_121327	3f1b8f7fa8b7f342843df533a09a383d530fdf3a	v3.0	0.17	0.0	5	10	23698
+imstevenpmwork/omx_sentry_1	78fa3774ed70057809444195a68d31320cf125e5	v3.0	0.04	0.0	5	7	23655
+EPITECH-LILLE/eval_training	aac018d6559add8fbb18aa60575d4420ac3c6d8d	v3.0	0.54	0.0	15	0	23563
+jesbu1/bridge_v2_lerobot	3899a5d24770fa593ad09f6f6e22cd417a227431	v2.0	23.01	0.39	53196	53192	22474
+IPEC-COMMUNITY/libero_90_no_noops_lerobot	70696aef03def70c17917f43c5e79276b7e5fbe7	v2.1	3.43	0.14	3925	3921	20128
+# skipped LeCAR-Lab/Wanda: no readable meta/info.json (RemoteEntryNotFoundError)
+lerobot/svla_so100_pickplace	728583b5eaf9e739a7f119e2def466fa1d552402	v3.0	0.47	0.0	5	50	18284
+IPEC-COMMUNITY/bc_z_lerobot	ddc4da6f3baa0196e42d22a177d038274b0ba8ae	v2.0	15.39	0.69	39355	39350	18222
+lerobot/high_quality_folding	c9eb858d4b84e520edecbda84a3534c3c1e78436	v3.0	90.17	0.2	8	1200	17956
+ember-lab-berkeley/robocasa365-pretrain-mg	91e741f7b603d75cb17b3caae617a37927842b0c	v3.0	315.39	17.94	325	536030	17062
+kmg0620/so101_bomb_pick_place_v1	309fb9563024bbf6da9c86418f90016c60ebe865	v3.0	1.6	0.01	27	103	16941
+lerobot/abc_130k_v3_smoke	b342a0ff262195d49bae3eece6e3f40c6e1dbe15	v3.0	2.97	0.04	5	85	16841
+lerobot/aloha_sim_insertion_human	cc571a3c661df81b566dbfde3d5c1e85fcdf7884	v3.0	0.09	0.0	8	50	16586
+IPEC-COMMUNITY/furniture_bench_dataset_lerobot	00ce24057a680b7e8f10aab3e6203edf21499384	v2.0	19.63	0.34	5104	5100	15789
+# skipped truetracedata/factory-stereo-egocentric: gated (auto)
+lerobot/svla_so100_sorting	13870ca969084d8ce4d8a0391b06cead78e804ba	v3.0	0.83	0.0	5	52	15375
+flex-pi/self_repair_gripper_dagger	8cbf8c28a5e6d215fe68cb7414459cc4f036e69f	v2.1	89.36	0.17	2159	2154	15139
+lerobot/svla_so100_stacking	933bcc61148b1b560d1a13753b47eac54a085561	v3.0	0.59	0.0	5	56	15063
+lerobot/LIBERO-Cosmos3	c28343a22d01ac8cd798042b2d82932cd43a21ae	v3.0	4.39	0.03	15	1693	14281
+HuggingFaceVLA/libero	86958911c0f959db2bbbdb107eb3e17c5f9c798e	v3.0	34.93	34.93	381	1693	14247
+adityx23/pi-atlas-pi0.5-baseline-dataset	57b443a11a8fdc4936feada1578b6671589f39dc	v2.1	132.68	0.77	3127	3167	14073
+lerobot/LIBERO_10-Cosmos3	0abcc8158612d5cd8c4caa9206c833ea6a43bc4e	v3.0	0.64	0.01	7	379	13830
+lerobot/aloha_sim_insertion_scripted	8ab660912970111cbb26738b11458e6fc4a4aed1	v3.0	0.07	0.0	7	50	13535
+lerobot/aloha_sim_transfer_cube_scripted	c5467ba9059e4c65f27775ced212076980a173fb	v3.0	0.07	0.0	5	50	12514
+RoboCOIN/Agilex_Cobot_Magic_heat_burger	844e1a0d73c7a1ab2e59f7424f2ec7342533b249	v2.1	141.04	0.35	823	819	12078
+RoboCOIN/Unitree_G1edu_u3_place_bread_1	38b3ecdd700f9ff131c1a9458f62b8d54ae1ea3b	v2.1	5.13	0.17	1046	1042	11467
+Embodied-AI-6/dataset	3d33e927df43b0e1d198130d61df5e93edc42b6b	v3.0	1.26	0.0	13	160	11188
