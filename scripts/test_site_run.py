@@ -88,6 +88,33 @@ class DecodeRecordTest(unittest.TestCase):
         self.assertTrue(any("decode" in e for e in site_run.validate(r, site_run.load_schema())))
 
 
+
+class VideoTest(unittest.TestCase):
+    CAM = {"observation.images.top": {"dtype": "video", "shape": [96, 96, 3]}, "action": {"dtype": "float32", "shape": [2]}}
+
+    def video(self, features, decode=False):
+        r = site_run.build_record(ENTRY, {**INFO, "features": features}, REPORT, [10.0], {**META, "decode": decode})
+        self.assertEqual(site_run.validate(r, site_run.load_schema()), [])
+        return r["run"]["video"]
+
+    def test_a_default_run_checks_video_from_the_container_metadata(self):
+        self.assertEqual(self.video(self.CAM), "container")
+
+    def test_a_decode_run_decodes_the_video(self):
+        self.assertEqual(self.video(self.CAM, decode=True), "decoded")
+
+    def test_a_dataset_without_video_features_has_no_video(self):
+        self.assertEqual(self.video({"action": {"dtype": "float32", "shape": [2]}}, decode=True), "none")
+
+    def test_a_record_without_video_or_with_an_unknown_value_is_rejected(self):
+        r = record()
+        for value in [None, "frames"]:
+            run = {k: v for k, v in r["run"].items() if k != "video"}
+            if value:
+                run["video"] = value
+            self.assertTrue(any("video" in e for e in site_run.validate({**r, "run": run}, site_run.load_schema())), value)
+
+
 class RecordTest(unittest.TestCase):
     def test_wall_time_is_the_median_of_the_samples(self):
         self.assertEqual(record()["run"]["wall_ms"], 10.0)

@@ -87,7 +87,7 @@ jobs:
       - run: python3 -m unittest discover -s scripts -p 'test_*.py'
       - run: python3 -m unittest discover -s space -p 'test_*.py'
       - run: python3 scripts/site_run.py --check
-      - run: python3 scripts/build_site.py
+      - run: python3 scripts/build_site.py --offline
 
   secrets:
     name: Secret scan
