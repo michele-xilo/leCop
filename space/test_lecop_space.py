@@ -44,35 +44,56 @@ class Access(unittest.TestCase):
                 refuse_access(private, gated)
 
 
-class PlanDownload(unittest.TestCase):
-    FILES = [
-        ("README.md", 10),
-        ("meta/info.json", 100),
-        ("meta/episodes.jsonl", 200),
-        ("data/chunk-000/episode_000000.parquet", 1000),
-        ("videos/chunk-000/observation.image/episode_000000.mp4", 10**9),
-        ("database/x.parquet", 5),
-    ]
+def lister(tree):
+    """A stand-in for the Hub's tree listing: `tree` maps a folder to its (path, size) entries."""
+    return lambda folder: iter(tree.get(folder, []))
 
-    def test_fetches_meta_and_data_only(self):
-        files, total = plan_download(self.FILES, 10_000)
-        self.assertEqual(
-            files, ["data/chunk-000/episode_000000.parquet", "meta/episodes.jsonl", "meta/info.json"]
-        )
+
+META = [("meta/info.json", 100), ("meta/episodes.jsonl", 200)]
+DATA = [("data/chunk-000/episode_000000.parquet", 1000)]
+
+
+class PlanDownload(unittest.TestCase):
+    def test_fetches_meta_and_data_listed_by_folder(self):
+        files, total = plan_download(lister({"meta": META, "data": DATA}), 10_000, 100)
+        self.assertEqual(files, ["data/chunk-000/episode_000000.parquet", "meta/episodes.jsonl", "meta/info.json"])
         self.assertEqual(total, 1300)
 
-    def test_over_the_cap_is_refused_with_the_sizes(self):
+    def test_finds_info_json_in_a_repo_with_more_files_than_one_listing_returns(self):
+        # The Hub's dataset info stops at 100,000 file names, in sorted order, so a repo with more files than that
+        # loses meta/ after data/. Listing meta/ on its own finds it whatever data/ holds.
+        data = (("data/chunk-%03d/episode_%06d.parquet" % (n // 1000, n), 1) for n in range(100_001))
         with self.assertRaises(Refused) as e:
-            plan_download(self.FILES, 1000)
-        self.assertIn("1.3 KB", str(e.exception))
-        self.assertIn("1.0 KB", str(e.exception))
+            plan_download(lister({"meta": META, "data": data}), 10**9, 5_000)
+        self.assertNotIn("info.json", str(e.exception))
+        self.assertIn("more than 5,000 files", str(e.exception))
 
-    def test_without_info_json_is_refused(self):
+    def test_stops_reading_the_listing_once_over_the_file_cap(self):
+        def endless():
+            n = 0
+            while True:
+                yield f"data/{n}.parquet", 1
+                n += 1
+
         with self.assertRaises(Refused):
-            plan_download([("data/a.parquet", 1)], 10)
+            plan_download(lister({"meta": META, "data": endless()}), 10**9, 50)
+
+    def test_over_the_byte_cap_is_refused_with_the_sizes(self):
+        with self.assertRaises(Refused) as e:
+            plan_download(lister({"meta": META, "data": DATA}), 1000, 100)
+        self.assertIn("over this Space's limit of 1.0 KB", str(e.exception))
+
+    def test_without_info_json_is_refused_before_listing_data(self):
+        def data():
+            raise AssertionError("data/ listed although meta/ has no info.json")
+            yield
+
+        with self.assertRaises(Refused) as e:
+            plan_download(lister({"meta": [("meta/stats.json", 1)], "data": data()}), 10, 10)
+        self.assertIn("no `meta/info.json`", str(e.exception))
 
     def test_unknown_sizes_count_as_zero(self):
-        self.assertEqual(plan_download([("meta/info.json", None)], 0), (["meta/info.json"], 0))
+        self.assertEqual(plan_download(lister({"meta": [("meta/info.json", None)]}), 0, 1), (["meta/info.json"], 0))
 
 
 ISSUES = [

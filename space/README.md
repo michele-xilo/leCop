@@ -21,8 +21,10 @@ most downloaded datasets the Hub tags LeRobot (gated ones left out) plus those o
 - The Space downloads `meta/` and `data/` only, so the video checks are skipped. Run `lecop validate` locally on a
   full download to check the videos too.
 - Public, ungated datasets only. The Space uses no token.
-- `meta/` and `data/` together must fit in 2 GB (`LECOP_SPACE_MAX_BYTES`), and leCop gets 300 s
-  (`LECOP_SPACE_TIMEOUT_S`). Over the limit, the page says so.
+- `meta/` and `data/` together must hold at most 2,000 files (`LECOP_SPACE_MAX_FILES`) and 2 GB
+  (`LECOP_SPACE_MAX_BYTES`), and leCop gets 300 s (`LECOP_SPACE_TIMEOUT_S`). Over a limit, the page says so. The file cap
+  is the one most datasets meet first: v2.x stores one parquet file per episode, and the Hub serves anonymous downloads at
+  about 13 files a second.
 
 The Space runs the `lecop` wheel pinned in `requirements.txt`. Its logic outside the UI is in `lecop_space.py`, tested by
 `python3 -m unittest discover -s space`.

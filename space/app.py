@@ -7,11 +7,19 @@ import os
 import subprocess
 import tempfile
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from typing import List, Optional, Tuple
 
 import gradio as gr
-from huggingface_hub import HfApi, snapshot_download
-from huggingface_hub.utils import GatedRepoError, HfHubHTTPError, RepositoryNotFoundError, RevisionNotFoundError
+from huggingface_hub import HfApi, hf_hub_download
+from huggingface_hub.hf_api import RepoFile
+from huggingface_hub.utils import (
+    EntryNotFoundError,
+    GatedRepoError,
+    HfHubHTTPError,
+    RepositoryNotFoundError,
+    RevisionNotFoundError,
+)
 
 import lecop
 from lecop_space import (
@@ -30,6 +38,10 @@ from lecop_space import (
 )
 
 CAP_BYTES = int(os.environ.get("LECOP_SPACE_MAX_BYTES", 2_000_000_000))
+# Anonymous downloads from the Hub run at about 13 files/s whether 16, 32 or 64 at a time (lerobot/pusht v2.1, 210
+# files: 16.3, 16.8 and 15.8 s), so 2,000 files is a wait of about 2.5 minutes.
+CAP_FILES = int(os.environ.get("LECOP_SPACE_MAX_FILES", 2_000))
+DOWNLOAD_WORKERS = 16
 VALIDATE_TIMEOUT_S = int(os.environ.get("LECOP_SPACE_TIMEOUT_S", 300))
 REPO_URL = "https://github.com/michele-xilo/lecop"
 LOGO_URL = "https://raw.githubusercontent.com/michele-xilo/leCop/main/assets/logo.png"
@@ -71,6 +83,26 @@ SITE_INDEX = site_index()
 CHOICES = dataset_choices(lerobot_datasets(2000), SITE_INDEX)
 
 
+def list_folder(repo: str, sha: str, folder: str):
+    """(path, size) of every file under `folder` at `sha`; nothing when the folder does not exist."""
+    try:
+        for entry in api.list_repo_tree(repo, path_in_repo=folder, recursive=True, revision=sha, repo_type="dataset"):
+            if isinstance(entry, RepoFile):
+                yield entry.path, entry.size
+    except EntryNotFoundError:
+        return
+
+
+def download(repo: str, sha: str, files: List[str], root: str) -> None:
+    # One request per file either way; `snapshot_download` would first list the whole repo, videos included, which
+    # on a large dataset takes longer than fetching meta/ and data/.
+    def one(path: str) -> None:
+        hf_hub_download(repo, path, repo_type="dataset", revision=sha, local_dir=root, token=False)
+
+    with ThreadPoolExecutor(DOWNLOAD_WORKERS) as pool:
+        list(pool.map(one, files))
+
+
 def check(text: Optional[str], revision_text: str = "", progress=gr.Progress()) -> Tuple[str, Optional[dict]]:
     """Validate a Hub dataset; return the report page and the raw report (None when there is none)."""
     try:
@@ -78,7 +110,7 @@ def check(text: Optional[str], revision_text: str = "", progress=gr.Progress()) 
         revision = (revision_text or "").strip() or revision or "main"
         progress(0, desc="Reading the file list from the Hub")
         try:
-            info = api.dataset_info(repo, revision=revision, files_metadata=True)
+            info = api.dataset_info(repo, revision=revision, expand=["sha", "private", "gated"])
         except GatedRepoError:
             raise Refused("This dataset is gated. The Space checks public, ungated datasets only.")
         except RevisionNotFoundError:
@@ -86,12 +118,10 @@ def check(text: Optional[str], revision_text: str = "", progress=gr.Progress()) 
         except RepositoryNotFoundError:
             raise Refused(f"No public dataset `{repo}` on the Hub (it may be private).")
         refuse_access(info.private, info.gated)
-        files, total = plan_download(((s.rfilename, s.size) for s in info.siblings or []), CAP_BYTES)
+        files, total = plan_download(lambda folder: list_folder(repo, info.sha, folder), CAP_BYTES, CAP_FILES)
         progress(0.2, desc=f"Downloading meta/ and data/: {len(files):,} files, {human_size(total)}")
         with tempfile.TemporaryDirectory() as root:
-            snapshot_download(
-                repo, repo_type="dataset", revision=info.sha, local_dir=root, allow_patterns=files, token=False
-            )
+            download(repo, info.sha, files, root)
             progress(0.9, desc="Running leCop")
             run = subprocess.run(
                 [lecop._binary(), "validate", "--format", "json", "--isolated", "--ignore", ",".join(VIDEO_CODES), root],
@@ -131,7 +161,7 @@ HEADER = (
 FOOTER = (
     '<p class="lc-fine">On your own machine, with the video checks: <code>uvx lecop path/to/dataset</code>. '
     "Public, ungated datasets only, up to "
-    f"{human_size(CAP_BYTES)} of <code>meta/</code> and <code>data/</code>. leCop is unofficial and not affiliated with "
+    f"{CAP_FILES:,} files and {human_size(CAP_BYTES)} in <code>meta/</code> and <code>data/</code>. leCop is unofficial and not affiliated with "
     f'Hugging Face or LeRobot. <a class="lc-link" href="{REPO_URL}/issues/new?template=wrong-finding.yml" '
     'target="_blank">Report a wrong finding</a></p>'
 )

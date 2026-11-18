@@ -6,7 +6,7 @@ from __future__ import annotations
 import re
 from collections import OrderedDict
 from html import escape
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
 CHECKS_URL = "https://github.com/michele-xilo/lecop/blob/main/docs/checks.md"
 SITE_URL = "https://michele-xilo.github.io/leCop"
@@ -25,8 +25,6 @@ VIDEO_CODES = (
     "video_span_length",
     "video_span_beyond_end",
 )
-
-FETCHED_DIRS = ("meta/", "data/")
 
 _REPO = re.compile(r"^[A-Za-z0-9][\w.-]*/[\w.-]+$")
 _URL_PREFIX = re.compile(r"^(https?://)?(www\.)?huggingface\.co/datasets/")
@@ -61,21 +59,35 @@ def refuse_access(private: Optional[bool], gated) -> None:
         raise Refused("This dataset is gated. The Space checks public, ungated datasets only; run `lecop` locally instead.")
 
 
-def plan_download(files: Iterable[Tuple[str, Optional[int]]], cap_bytes: int) -> Tuple[List[str], int]:
+def plan_download(
+    list_folder: Callable[[str], Iterable[Tuple[str, Optional[int]]]], cap_bytes: int, cap_files: int
+) -> Tuple[List[str], int]:
     """Choose the files under `meta/` and `data/` and return them with their total size.
 
-    Raises `Refused` when there is no `meta/info.json` or the files add up to more than `cap_bytes`.
+    `list_folder("meta")` yields the (path, size) of every file under that folder. The Hub's whole-repo file list
+    stops at 100,000 names, which loses `meta/` in large repos, so each folder is listed on its own. The listing is
+    read lazily and abandoned as soon as a cap is passed. Raises `Refused` when there is no `meta/info.json` or the
+    files are more than `cap_files` or `cap_bytes`.
     """
-    chosen = [(path, size or 0) for path, size in files if path.startswith(FETCHED_DIRS)]
-    if not any(path == "meta/info.json" for path, _ in chosen):
-        raise Refused("This repository has no `meta/info.json`, so it is not a LeRobot dataset leCop can read.")
-    total = sum(size for _, size in chosen)
-    if total > cap_bytes:
-        raise Refused(
-            f"`meta/` and `data/` hold {human_size(total)}, over this Space's limit of {human_size(cap_bytes)}. "
-            "Run leCop locally on this one: `pip install lecop`, then `lecop validate <path>`."
-        )
-    return sorted(path for path, _ in chosen), total
+    chosen: List[str] = []
+    total = 0
+    for folder in ("meta", "data"):
+        for path, size in list_folder(folder):
+            chosen.append(path)
+            total += size or 0
+            if len(chosen) > cap_files:
+                raise Refused(
+                    f"`meta/` and `data/` hold more than {cap_files:,} files, too many to download here. "
+                    "Run leCop locally on this one: `pip install lecop`, then `lecop validate <path>`."
+                )
+            if total > cap_bytes:
+                raise Refused(
+                    f"`meta/` and `data/` are over this Space's limit of {human_size(cap_bytes)}. "
+                    "Run leCop locally on this one: `pip install lecop`, then `lecop validate <path>`."
+                )
+        if folder == "meta" and "meta/info.json" not in chosen:
+            raise Refused("This repository has no `meta/info.json`, so it is not a LeRobot dataset leCop can read.")
+    return sorted(chosen), total
 
 
 def human_size(n: int) -> str:
