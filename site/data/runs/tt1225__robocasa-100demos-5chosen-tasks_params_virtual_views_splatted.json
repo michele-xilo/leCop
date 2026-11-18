@@ -1,0 +1,137 @@
+{
+  "name": "tt1225__robocasa-100demos-5chosen-tasks_params_virtual_views_splatted",
+  "repo": "tt1225/robocasa-100demos-5chosen-tasks_params_virtual_views_splatted",
+  "revision": "29cfb57b7aed0dd8d7ab33279cf396cb2da0bdcd",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 364,
+    "frames": 92882,
+    "fps": 20,
+    "robot": "panda"
+  },
+  "run": {
+    "wall_ms": 52.0,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "5f65942",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-18",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 18,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "action: dimension 7 (= 0), 8 (= 0), 9 (= 0), 10 (= 0), 11 (= -1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 3 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 6 is at its maximum (1) in 58.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.left_extrinsics: dimension 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.left_extrinsicsR: dimension 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.left_intrinsics: dimension 0 (= 221.70250336881634), 1 (= 0), 2 (= 128), 3 (= 0), 4 (= 221.70250336881634), 5 (= 128), 6 (= 0), 7 (= 0), 8 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.right_extrinsics: dimension 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.right_extrinsicsR: dimension 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.right_intrinsics: dimension 0 (= 221.70250336881634), 1 (= 0), 2 (= 128), 3 (= 0), 4 (= 221.70250336881634), 5 (= 128), 6 (= 0), 7 (= 0), 8 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.wrist_extrinsics: dimension 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.wrist_extrinsicsR: dimension 0 (= -1), 1 (= 0), 2 (= -0.00000000000000012246468525851679), 3 (= 0.05), 4 (= 0.00000000000000012246468525851679), 5 (= 0), 6 (= -1), 7 (= 0), 8 (= 0), 9 (= -1), 10 (= 0), 11 (= 0), 12 (= 0), 13 (= 0), 14 (= 0), 15 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.wrist_intrinsics: dimension 0 (= 166.81284772367434), 1 (= 0), 2 (= 128), 3 (= 0), 4 (= 166.81284772367434), 5 (= 128), 6 (= 0), 7 (= 0), 8 (= 1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": 287,
+      "code": "episode_length_outlier",
+      "message": "489 frames, much longer than the other episodes (mean 255, std 66 over 364 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 292,
+      "code": "episode_length_outlier",
+      "message": "473 frames, much longer than the other episodes (mean 255, std 66 over 364 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 294,
+      "code": "episode_length_outlier",
+      "message": "473 frames, much longer than the other episodes (mean 255, std 66 over 364 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 321,
+      "code": "episode_length_outlier",
+      "message": "473 frames, much longer than the other episodes (mean 255, std 66 over 364 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 340,
+      "code": "episode_length_outlier",
+      "message": "473 frames, much longer than the other episodes (mean 255, std 66 over 364 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 358,
+      "code": "episode_length_outlier",
+      "message": "473 frames, much longer than the other episodes (mean 255, std 66 over 364 episodes)"
+    }
+  ]
+}
