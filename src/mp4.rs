@@ -513,6 +513,63 @@ mod tests {
         x.to_be_bytes().to_vec()
     }
 
+    fn ctts(runs: &[(u32, u32)]) -> Vec<u8> {
+        let mut v = vec![0u8; 4];
+        v.extend(be(runs.len() as u32));
+        for (c, o) in runs {
+            v.extend(be(*c));
+            v.extend(be(*o));
+        }
+        bx(b"ctts", &v)
+    }
+
+    /// A trak holding only an edit list with these (segment duration, media time) entries.
+    fn edits(version: u8, entries: &[i64]) -> Vec<u8> {
+        let mut v = vec![version, 0, 0, 0];
+        v.extend(be(entries.len() as u32));
+        for &t in entries {
+            if version == 1 {
+                v.extend(0u64.to_be_bytes());
+                v.extend(t.to_be_bytes());
+            } else {
+                v.extend(be(0));
+                v.extend((t as i32).to_be_bytes());
+            }
+            v.extend(be(1 << 16));
+        }
+        bx(b"edts", &bx(b"elst", &v))
+    }
+
+    #[test]
+    fn the_edit_list_start_skips_empty_edits_in_both_versions() {
+        assert_eq!(edit_start(&edits(0, &[-1, 512])).unwrap(), 512);
+        assert_eq!(edit_start(&edits(1, &[-1, 2048])).unwrap(), 2048);
+        assert_eq!(edit_start(&edits(0, &[-1])).unwrap(), 0);
+        assert_eq!(edit_start(&[]).unwrap(), 0);
+    }
+
+    #[test]
+    fn presentation_times_add_offsets_and_subtract_the_edit_start() {
+        let pts =
+            presentation_times(&edits(0, &[10]), &ctts(&[(1, 30), (2, 0)]), &[(3, 10)], 3).unwrap();
+        assert_eq!(pts, Some(vec![0, 10, 20]));
+        assert_eq!(presentation_times(&[], &[], &[(3, 10)], 3).unwrap(), None);
+    }
+
+    #[test]
+    fn rejects_composition_offsets_for_more_or_fewer_samples_than_the_track_has() {
+        for runs in [vec![(4, 0)], vec![(2, 0)]] {
+            let err = presentation_times(&[], &ctts(&runs), &[(3, 10)], 3).unwrap_err();
+            assert!(err.to_string().contains("ctts"), "{err}");
+        }
+    }
+
+    #[test]
+    fn a_single_frame_has_no_spacing() {
+        assert_eq!(frame_ticks(&[5]), 0.0);
+        assert_eq!(frame_ticks(&[0, 10, 20]), 10.0);
+    }
+
     #[test]
     fn reads_the_av1_configuration() {
         let mut entry = vec![0u8; 78];
