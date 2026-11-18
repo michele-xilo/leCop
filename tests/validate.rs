@@ -1316,6 +1316,7 @@ fn warns_on_a_dimension_stuck_at_its_maximum() {
     let v = action_column_run(|row, d| match (d, row) {
         (0, _) => row as f32 * 0.01,
         (_, 3) => 4.0,
+        (_, 4) => 4.5,
         _ => 5.0,
     });
     assert!(codes(&v).contains(&"clipped_dimension"), "{v:?}");

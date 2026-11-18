@@ -104,8 +104,12 @@ pub fn numeric_findings(
         return out;
     }
     let constant: Vec<usize> = (0..st.len()).filter(|&j| st[j].min == st[j].max).collect();
-    // A fully constant action is already reported as `action_constant`.
-    if !constant.is_empty() && !(is_action && constant.len() == st.len()) {
+    // A fully constant action is already reported as `action_constant`, and a fixed camera's parameters never
+    // change by design.
+    if !constant.is_empty()
+        && !(is_action && constant.len() == st.len())
+        && !is_camera_parameters(feature)
+    {
         let dims: Vec<String> = constant
             .iter()
             .map(|j| format!("{j} (= {})", st[*j].min))
@@ -122,6 +126,11 @@ pub fn numeric_findings(
         } else {
             (s.at_min, s.min, "minimum")
         };
+        // A dimension with only two values (every value on its minimum or maximum), such as a binary gripper,
+        // lives on its extremes by design, and its rarer value is not an outlier either.
+        if s.at_min + s.at_max == s.n {
+            continue;
+        }
         if at as f64 / nf >= clipped_fraction {
             out.push((
                 "clipped_dimension",
@@ -148,6 +157,12 @@ pub fn numeric_findings(
         }
     }
     out
+}
+
+/// Camera intrinsics and extrinsics, such as `observation.left_intrinsics`.
+fn is_camera_parameters(feature: &str) -> bool {
+    let f = feature.to_ascii_lowercase();
+    f.contains("intrinsic") || f.contains("extrinsic")
 }
 
 /// The action and the observation vectors; ids, timestamps and `next.*` flags are legitimately constant or binary.
@@ -196,5 +211,60 @@ mod tests {
     #[test]
     fn zero_width_columns_have_no_dimensions() {
         assert!(dim_stats(&[1.0, 2.0], 0).is_empty());
+    }
+
+    fn dim(min: f64, max: f64, at_min: u64, at_max: u64) -> DimStats {
+        DimStats {
+            n: 200,
+            min,
+            max,
+            sum: 0.0,
+            sumsq: 0.0,
+            at_min,
+            at_max,
+        }
+    }
+
+    fn codes(feature: &str, st: &[DimStats]) -> Vec<&'static str> {
+        numeric_findings(feature, st, false, DEFAULT_CLIPPED_FRACTION)
+            .into_iter()
+            .map(|(c, _)| c)
+            .collect()
+    }
+
+    #[test]
+    fn a_binary_gripper_dimension_is_not_clipped() {
+        assert!(codes("action", &[dim(-1.0, 1.0, 105, 95)]).is_empty());
+    }
+
+    #[test]
+    fn a_binary_dimension_with_a_rare_value_is_not_an_outlier() {
+        let mut d = dim(0.0, 1.0, 199, 1);
+        (d.sum, d.sumsq) = (1.0, 1.0);
+        assert!(codes("observation.contact", &[d]).is_empty());
+    }
+
+    #[test]
+    fn a_continuous_dimension_that_saturates_is_still_clipped() {
+        assert_eq!(
+            codes("action", &[dim(0.0, 1.0, 40, 1)]),
+            ["clipped_dimension"]
+        );
+    }
+
+    #[test]
+    fn constant_camera_parameters_are_not_reported() {
+        for f in [
+            "observation.left_intrinsics",
+            "observation.wrist_extrinsicsR",
+        ] {
+            assert!(codes(f, &[dim(0.0, 0.0, 200, 200)]).is_empty(), "{f}");
+        }
+    }
+
+    #[test]
+    fn a_constant_state_dimension_is_still_reported() {
+        let st = [dim(0.0, 0.0, 200, 200), dim(0.0, 1.0, 1, 1)];
+        assert_eq!(codes("observation.state", &st), ["constant_dimension"]);
     }
 }
