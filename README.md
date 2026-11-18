@@ -130,11 +130,11 @@ version. Several datasets, `--decode` and the other options are in the [crate do
 
 ## Why leCop
 
-- **Fast.** 8 to 28 ms per dataset without video decoding, 15x to 54x faster than lerobot-doctor on the same datasets.
+- **Fast.** 5 to 32 ms per dataset without video decoding, 14x to 107x faster than lerobot-doctor on the same datasets.
   On [RoboTwin](docs/comparison.md#a-large-dataset-robotwin) (27,500 episodes, 75 GB), leCop takes 0.7 s, lerobot-doctor
   50 minutes and physlint 4 h 42 min.
   Video is checked from the container, not by decoding frames, unless you ask for `--decode`.
-- **Fast when it decodes, too.** With `--decode` every frame is decoded, 3.5x to 114x faster than physlint
+- **Fast when it decodes, too.** With `--decode` every frame is decoded, 7.9x to 178x faster than physlint
   ([comparison](docs/comparison.md#with-video-decoding)). Videos are split at keyframes and decoded on every core, and
   AV1, the LeRobot default codec, goes through rav1d's hand-written assembly: 3 to 14 times faster than without it (ARM and x86_64 figures in [usage](docs/usage.md#decoding-frames)), and
   included in every install on ARM and on x86_64 Linux, Windows and macOS, with no ffmpeg and no assembler to set up.
