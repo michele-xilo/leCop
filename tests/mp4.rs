@@ -103,6 +103,48 @@ fn counts_samples_across_runs_with_different_frame_durations() {
     assert_eq!(i.samples_in(1.0, 3.0), 10);
 }
 
+/// 1 + 4 * groups frames at 30 fps (512 ticks at timescale 15360) with B-frames, tables as ffmpeg writes them
+/// (from a real H.264 LeRobot video): irregular decode times, and composition offsets that put every frame's
+/// presentation time on a multiple of 512. `shift` is added to every offset and cancelled by an edit list.
+fn b_frames(groups: u32, shift: u32) -> Mp4 {
+    let mut m = Mp4::constant_fps(0, 30);
+    m.timescale = 15360;
+    m.stts = vec![(1, 510)];
+    m.ctts = vec![(1, shift)];
+    for g in 0..groups {
+        m.stts.extend([
+            (2, 1),
+            (1, 1024),
+            (1, if g + 1 == groups { 512 } else { 1022 }),
+        ]);
+        m.ctts
+            .extend([(1, 1538 + shift), (1, 513 + shift), (2, shift)]);
+    }
+    m.edit_media_time = (shift > 0).then_some(shift);
+    m
+}
+
+#[test]
+fn counts_b_frame_videos_by_presentation_time() {
+    for shift in [0, 1024] {
+        let n = 1 + 4 * 50;
+        let i = read(b_frames(50, shift).bytes()).unwrap();
+        assert_eq!(i.sample_count, n as u64);
+        for m in 1..=n {
+            assert_eq!(
+                i.samples_in(0.0, m as f64 / 30.0),
+                m as u64,
+                "shift {shift}, span of {m} frames"
+            );
+        }
+        assert!(
+            (i.duration_s() - n as f64 / 30.0).abs() < 1e-9,
+            "shift {shift}: {}",
+            i.duration_s()
+        );
+    }
+}
+
 #[test]
 fn reads_the_frame_size_from_the_sample_description() {
     let mut m = Mp4::constant_fps(10, 10);

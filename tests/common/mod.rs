@@ -61,6 +61,8 @@ fn trak(
     stts: &[(u32, u32)],
     samples: u32,
     size: Option<(u16, u16)>,
+    ctts: &[(u32, u32)],
+    edit_media_time: Option<u32>,
 ) -> Vec<u8> {
     let mut mdhd = vec![0u8; 4]; // version + flags
     mdhd.extend([0u8; 8]); // creation, modification
@@ -92,13 +94,30 @@ fn trak(
     if let Some((w, h)) = size {
         tables.insert(0, bx(b"stsd", &stsd(w, h)));
     }
+    if !ctts.is_empty() {
+        let mut ct = vec![0u8; 4];
+        ct.extend(be(ctts.len() as u32));
+        for (c, o) in ctts {
+            ct.extend(be(*c));
+            ct.extend(be(*o));
+        }
+        tables.push(bx(b"ctts", &ct));
+    }
     let stbl = bx(b"stbl", &tables.concat());
     let minf = bx(b"minf", &stbl);
     let mdia = bx(
         b"mdia",
         &[bx(b"mdhd", &mdhd), bx(b"hdlr", &hdlr), minf].concat(),
     );
-    bx(b"trak", &mdia)
+    let edts = edit_media_time.map_or(vec![], |t| {
+        let mut el = vec![0u8; 4];
+        el.extend(be(1));
+        el.extend(be(0)); // segment duration: the whole media
+        el.extend(be(t));
+        el.extend(be(1 << 16)); // media rate 1.0
+        bx(b"edts", &bx(b"elst", &el))
+    });
+    bx(b"trak", &[edts, mdia].concat())
 }
 
 pub struct Mp4 {
@@ -113,6 +132,10 @@ pub struct Mp4 {
     pub large_mdat: bool,
     /// Size of the (zero-filled) frame data box.
     pub mdat_len: usize,
+    /// (sample_count, composition offset) runs, like the `ctts` box of a video with B-frames; none when empty.
+    pub ctts: Vec<(u32, u32)>,
+    /// Media time of a one-entry edit list (`elst`); no edit list when None.
+    pub edit_media_time: Option<u32>,
 }
 
 impl Mp4 {
@@ -127,6 +150,8 @@ impl Mp4 {
             size: None,
             large_mdat: false,
             mdat_len: 64,
+            ctts: vec![],
+            edit_media_time: None,
         }
     }
 
@@ -134,10 +159,18 @@ impl Mp4 {
         let frames: u32 = self.stts.iter().map(|(c, _)| c).sum();
         let mut tracks = Vec::new();
         if self.audio_track_first {
-            tracks.push(trak(b"soun", 48000, &[(50, 1024)], 50, None));
+            tracks.push(trak(b"soun", 48000, &[(50, 1024)], 50, None, &[], None));
         }
         if self.video_track {
-            tracks.push(trak(b"vide", self.timescale, &self.stts, frames, self.size));
+            tracks.push(trak(
+                b"vide",
+                self.timescale,
+                &self.stts,
+                frames,
+                self.size,
+                &self.ctts,
+                self.edit_media_time,
+            ));
         }
         let moov = bx(b"moov", &tracks.concat());
 

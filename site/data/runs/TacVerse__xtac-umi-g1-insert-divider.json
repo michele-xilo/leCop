@@ -1,0 +1,95 @@
+{
+  "name": "TacVerse__xtac-umi-g1-insert-divider",
+  "repo": "TacVerse/xtac-umi-g1-insert-divider",
+  "revision": "4ce5bf702a85bd3ab2e29b80ef74f27d38e1dd6a",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 235,
+    "frames": 550820,
+    "fps": 30,
+    "robot": "xtac_umi_g1"
+  },
+  "run": {
+    "wall_ms": 232.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "c3df23e",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-18",
+    "decode": false
+  },
+  "errors": 0,
+  "warnings": 11,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_zero_std",
+      "message": "observation.tracker_confidence: dimension 0, dimension 1 has zero std in stats.json, normalising divides by zero"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 9 is at its maximum (1) in 15.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 19 is at its maximum (1) in 5.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 27 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 9 is at its maximum (1) in 15.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 19 is at its maximum (1) in 5.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 27 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "constant_dimension",
+      "message": "observation.tracker_confidence: dimension 0 (= -1), 1 (= -1) never changes"
+    },
+    {
+      "severity": "warning",
+      "episode": 115,
+      "code": "episode_length_outlier",
+      "message": "2947 frames, much longer than the other episodes (mean 2344, std 195 over 235 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 121,
+      "code": "episode_length_outlier",
+      "message": "3023 frames, much longer than the other episodes (mean 2344, std 195 over 235 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 126,
+      "code": "episode_length_outlier",
+      "message": "2939 frames, much longer than the other episodes (mean 2344, std 195 over 235 episodes)"
+    }
+  ]
+}

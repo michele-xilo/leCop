@@ -69,9 +69,8 @@ A `--decode` run on 15 of the datasets adds 5 `video_frozen` warnings on one dat
 ## Per-dataset results and reproducing
 
 Each dataset's record, with its pinned revision and all findings, is in `site/data/runs/` and on the
-[results site](https://michele-xilo.github.io/leCop/). The record of the dataset affected by #159 is added once that
-bug is fixed and the dataset is re-run; the two datasets affected by #158 were re-run with its fix. To repeat the
-scan:
+[results site](https://michele-xilo.github.io/leCop/). The three datasets affected by #158 and #159 were re-run with
+those fixes. To repeat the scan:
 
 ```bash
 scripts/fetch-scan-datasets.sh --yes      # the list in scripts/scan-datasets.tsv, 208 GB
