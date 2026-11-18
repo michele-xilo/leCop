@@ -22,6 +22,9 @@ pub struct VideoInfo {
     pub size: Option<(u32, u32)>,
     /// `stts` runs: (sample count, ticks per sample). One run for a constant frame rate.
     runs: Vec<(u64, u64)>,
+    /// Sorted presentation times in ticks, when the track reorders frames (B-frames, a `ctts` box). Decode times
+    /// then say nothing about which frames a span shows.
+    pts: Option<Vec<i64>>,
 }
 
 impl VideoInfo {
@@ -33,12 +36,15 @@ impl VideoInfo {
         self.sample_count as f64 / self.duration_s()
     }
 
-    /// Samples whose decode time lies in `[from_s, to_s)`, with the span shifted back by half a frame so a
+    /// Samples whose presentation time lies in `[from_s, to_s)`, with the span shifted back by half a frame so a
     /// frame stamped a hair after the boundary still belongs to its episode.
-    // ponytail: decode time, not presentation time; B-frame reordering (ctts) moves a frame by at most a
-    // few ticks but could in theory move one across a boundary. Read ctts if real data shows it.
     pub fn samples_in(&self, from_s: f64, to_s: f64) -> u64 {
         let ts = self.timescale as f64;
+        if let Some(pts) = &self.pts {
+            let half = frame_ticks(pts) / 2.0;
+            let at = |t: f64| pts.partition_point(|&p| (p as f64) < t * ts - half);
+            return at(to_s).saturating_sub(at(from_s)) as u64;
+        }
         let (mut start, mut n) = (0u64, 0u64);
         for &(count, delta) in &self.runs {
             let half = delta as f64 / 2.0;
@@ -53,6 +59,83 @@ impl VideoInfo {
         }
         n
     }
+}
+
+/// The spacing of presentation times, assumed even: the frame rate of a reordered track.
+fn frame_ticks(pts: &[i64]) -> f64 {
+    match (pts.first(), pts.last()) {
+        (Some(a), Some(b)) if pts.len() > 1 => (b - a) as f64 / (pts.len() - 1) as f64,
+        _ => 0.0,
+    }
+}
+
+/// Presentation times of every sample, sorted: decode time plus the `ctts` offset, less the edit list's start.
+/// None when the track has no `ctts`, so presentation and decode order agree.
+fn presentation_times(
+    trak: &[u8],
+    stbl: &[u8],
+    runs: &[(u64, u64)],
+    n: u64,
+) -> Result<Option<Vec<i64>>> {
+    let Some(ctts) = child(stbl, b"ctts")? else {
+        return Ok(None);
+    };
+    let mut offsets = Vec::with_capacity(n as usize);
+    for i in 0..be32(ctts, 4)? as usize {
+        // Version 0 offsets are unsigned in the spec, but writers store negative ones there too.
+        let (count, off) = (be32(ctts, 8 + i * 8)?, be32(ctts, 12 + i * 8)? as i32);
+        if offsets.len() as u64 + count as u64 > n {
+            bail!("inconsistent sample tables: ctts has more samples than stsz's {n}");
+        }
+        offsets.extend(std::iter::repeat_n(off as i64, count as usize));
+    }
+    if offsets.len() as u64 != n {
+        bail!(
+            "inconsistent sample tables: ctts has {} samples, stsz has {n}",
+            offsets.len()
+        );
+    }
+    let mut pts = Vec::with_capacity(n as usize);
+    let mut dts = 0i64;
+    for &(count, delta) in runs {
+        for _ in 0..count {
+            pts.push(dts + offsets[pts.len()]);
+            dts += delta as i64;
+        }
+    }
+    let start = edit_start(trak)?;
+    pts.iter_mut().for_each(|p| *p -= start);
+    pts.sort_unstable();
+    Ok(Some(pts))
+}
+
+/// Media time where presentation starts, from the first non-empty entry of the edit list; 0 without one.
+fn edit_start(trak: &[u8]) -> Result<i64> {
+    let Some(elst) = child(trak, b"edts")?
+        .map(|e| child(e, b"elst"))
+        .transpose()?
+        .flatten()
+    else {
+        return Ok(0);
+    };
+    let v1 = elst.first() == Some(&1);
+    let entry = if v1 { 20 } else { 12 };
+    for i in 0..be32(elst, 4)? as usize {
+        let at = 8 + i * entry;
+        let media_time = if v1 {
+            i64::from_be_bytes(
+                elst.get(at + 8..at + 16)
+                    .context("elst entry")?
+                    .try_into()?,
+            )
+        } else {
+            be32(elst, at + 4)? as i32 as i64
+        };
+        if media_time >= 0 {
+            return Ok(media_time);
+        }
+    }
+    Ok(0)
 }
 
 pub fn read_video_info(path: &Path) -> Result<VideoInfo> {
@@ -198,12 +281,21 @@ fn parse_moov(moov: &[u8]) -> Result<VideoInfo> {
                 "inconsistent sample tables: stsz has {sample_count} samples, stts has {stts_samples}"
             );
         }
+        let pts = presentation_times(trak, stbl, &runs, sample_count)?;
+        // A reordered track's decode times can end frames before its last frame is shown.
+        let duration_ticks = match &pts {
+            Some(p) => p
+                .last()
+                .map_or(0, |l| (*l as f64 + frame_ticks(p)).max(0.0).round() as u64),
+            None => ticks,
+        };
         return Ok(VideoInfo {
             timescale,
             sample_count,
-            duration_ticks: ticks,
+            duration_ticks,
             size: child(stbl, b"stsd")?.and_then(visual_size),
             runs,
+            pts,
         });
     }
     bail!("no video track in moov")
