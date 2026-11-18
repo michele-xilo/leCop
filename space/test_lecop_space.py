@@ -1,8 +1,14 @@
+import json
+import os
+import tempfile
 import unittest
 
 from lecop_space import (
     Refused,
     dataset_choices,
+    fit_status,
+    load_fits,
+    ordered_choices,
     group_by_code,
     notice_html,
     parse_repo,
@@ -151,6 +157,64 @@ class Render(unittest.TestCase):
         page = notice_html("`<b>` is not a Hub dataset name")
         self.assertIn("Not checked.", page)
         self.assertIn("<code>&lt;b&gt;</code>", page)
+
+
+class FitStatus(unittest.TestCase):
+    def test_refusals_from_the_caps_carry_their_reason(self):
+        cases = [
+            (lister({"meta": META, "data": DATA}), 10_000, 2, "too_many_files"),
+            (lister({"meta": META, "data": DATA}), 1000, 100, "too_big"),
+            (lister({"meta": [("meta/stats.json", 1)]}), 10, 10, "not_lerobot"),
+        ]
+        for folders, cap_bytes, cap_files, reason in cases:
+            with self.subTest(reason=reason), self.assertRaises(Refused) as e:
+                plan_download(folders, cap_bytes, cap_files)
+            self.assertEqual(e.exception.reason, reason)
+
+    def test_status_is_fits_or_the_reason(self):
+        self.assertEqual(fit_status(lister({"meta": META, "data": DATA}), 10_000, 100), "fits")
+        self.assertEqual(fit_status(lister({"meta": META, "data": DATA}), 10_000, 2), "too_many_files")
+
+
+class LoadFits(unittest.TestCase):
+    def write(self, content):
+        f = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
+        f.write(content)
+        f.close()
+        self.addCleanup(os.remove, f.name)
+        return f.name
+
+    def test_reads_the_status_built_for_the_same_caps(self):
+        path = self.write(json.dumps({"cap_bytes": 10, "cap_files": 2, "status": {"a/b": "fits"}}))
+        self.assertEqual(load_fits(path, 10, 2), {"a/b": "fits"})
+
+    def test_ignores_a_file_built_for_other_caps(self):
+        path = self.write(json.dumps({"cap_bytes": 10, "cap_files": 2, "status": {"a/b": "fits"}}))
+        self.assertEqual(load_fits(path, 10, 3), {})
+
+    def test_missing_or_broken_file_is_empty(self):
+        self.assertEqual(load_fits("/nonexistent/fits.json", 1, 1), {})
+        self.assertEqual(load_fits(self.write("{"), 1, 1), {})
+
+
+class OrderedChoices(unittest.TestCase):
+    def test_fitting_first_then_unknown_then_the_rest_labelled_keeping_order_within(self):
+        repos = ["a/big", "b/ok", "c/new", "d/many", "e/ok", "f/notlr"]
+        status = {"a/big": "too_big", "b/ok": "fits", "d/many": "too_many_files", "e/ok": "fits", "f/notlr": "not_lerobot"}
+        self.assertEqual(
+            ordered_choices(repos, status, 2_000_000_000, 2000),
+            [
+                ("b/ok", "b/ok"),
+                ("e/ok", "e/ok"),
+                ("c/new", "c/new"),
+                ("a/big: over 2.0 GB", "a/big"),
+                ("d/many: over 2,000 files", "d/many"),
+                ("f/notlr: no meta/info.json", "f/notlr"),
+            ],
+        )
+
+    def test_an_unknown_status_counts_as_not_classified(self):
+        self.assertEqual(ordered_choices(["a/b"], {"a/b": "error"}, 1, 1), [("a/b", "a/b")])
 
 
 class DatasetChoices(unittest.TestCase):

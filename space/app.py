@@ -6,15 +6,12 @@ import json
 import os
 import subprocess
 import tempfile
-import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Optional, Tuple
 
 import gradio as gr
 from huggingface_hub import HfApi, hf_hub_download
-from huggingface_hub.hf_api import RepoFile
 from huggingface_hub.utils import (
-    EntryNotFoundError,
     GatedRepoError,
     HfHubHTTPError,
     RepositoryNotFoundError,
@@ -22,25 +19,23 @@ from huggingface_hub.utils import (
 )
 
 import lecop
+from hub import CAP_BYTES, CAP_FILES, list_folder, listed_datasets, site_index
 from lecop_space import (
     CHECKS_URL,
     SITE_URL,
     VIDEO_CODES,
     Refused,
     human_size,
+    load_fits,
     notice_html,
     parse_repo,
     plan_download,
     refuse_access,
-    dataset_choices,
+    ordered_choices,
     render_html,
     site_page,
 )
 
-CAP_BYTES = int(os.environ.get("LECOP_SPACE_MAX_BYTES", 2_000_000_000))
-# Anonymous downloads from the Hub run at about 13 files/s whether 16, 32 or 64 at a time (lerobot/pusht v2.1, 210
-# files: 16.3, 16.8 and 15.8 s), so 2,000 files is a wait of about 2.5 minutes.
-CAP_FILES = int(os.environ.get("LECOP_SPACE_MAX_FILES", 2_000))
 DOWNLOAD_WORKERS = 16
 VALIDATE_TIMEOUT_S = int(os.environ.get("LECOP_SPACE_TIMEOUT_S", 300))
 REPO_URL = "https://github.com/michele-xilo/lecop"
@@ -57,22 +52,6 @@ def lecop_version() -> str:
     return run.stdout.strip().split()[-1] if run.returncode == 0 else "?"
 
 
-def site_index() -> list:
-    """The results site's list of datasets, or an empty list when the site cannot be reached."""
-    try:
-        with urllib.request.urlopen(f"{SITE_URL}/index.json", timeout=5) as r:
-            return json.load(r)
-    except (OSError, ValueError):
-        return []
-
-
-def lerobot_datasets(limit: int) -> List[str]:
-    """Public, ungated datasets the Hub tags as LeRobot, most downloaded first."""
-    try:
-        found = api.list_datasets(filter="LeRobot", sort="downloads", limit=limit)
-        return [d.id for d in found if not d.private and not d.gated]
-    except HfHubHTTPError:
-        return []
 
 
 VERSION = lecop_version()
@@ -80,17 +59,33 @@ SITE_INDEX = site_index()
 # The dropdown filters its choices in the browser as you type, so it gets one list loaded at startup rather than a
 # Hub search per keystroke (which Gradio shows a keystroke late). 2,000 names load in about 1.5 s; any other dataset
 # can still be typed in full.
-CHOICES = dataset_choices(lerobot_datasets(2000), SITE_INDEX)
+CHOICES = listed_datasets(api, SITE_INDEX)
 
 
-def list_folder(repo: str, sha: str, folder: str):
-    """(path, size) of every file under `folder` at `sha`; nothing when the folder does not exist."""
-    try:
-        for entry in api.list_repo_tree(repo, path_in_repo=folder, recursive=True, revision=sha, repo_type="dataset"):
-            if isinstance(entry, RepoFile):
-                yield entry.path, entry.size
-    except EntryNotFoundError:
-        return
+
+
+
+
+
+
+# Built offline: classifying 2,000 datasets from the Space would take a few thousand anonymous Hub requests, which the
+# Hub rate-limits after a few hundred (waits of 100 to 280 s), and would slow down the checks people run here. Every
+# check run here updates it.
+STATUS = load_fits(os.path.join(os.path.dirname(os.path.abspath(__file__)), "fits.json"), CAP_BYTES, CAP_FILES)
+
+
+def current_choices():
+    done = sum(1 for r in CHOICES if r in STATUS)
+    fits = sum(1 for r in CHOICES if STATUS.get(r) == "fits")
+    progress = (
+        f"the {fits:,} that fit this Space come first"
+        if done
+        else "most downloaded first"
+    )
+    return gr.update(
+        choices=ordered_choices(CHOICES, STATUS, CAP_BYTES, CAP_FILES),
+        info=f"Type to filter {len(CHOICES):,} LeRobot datasets on the Hub ({progress}). Any other owner/name works too.",
+    )
 
 
 def download(repo: str, sha: str, files: List[str], root: str) -> None:
@@ -118,7 +113,14 @@ def check(text: Optional[str], revision_text: str = "", progress=gr.Progress()) 
         except RepositoryNotFoundError:
             raise Refused(f"No public dataset `{repo}` on the Hub (it may be private).")
         refuse_access(info.private, info.gated)
-        files, total = plan_download(lambda folder: list_folder(repo, info.sha, folder), CAP_BYTES, CAP_FILES)
+        try:
+            files, total = plan_download(lambda folder: list_folder(api, repo, info.sha, folder), CAP_BYTES, CAP_FILES)
+        except Refused as e:
+            if revision == "main" and e.reason:
+                STATUS[repo] = e.reason
+            raise
+        if revision == "main":
+            STATUS[repo] = "fits"
         progress(0.2, desc=f"Downloading meta/ and data/: {len(files):,} files, {human_size(total)}")
         with tempfile.TemporaryDirectory() as root:
             download(repo, info.sha, files, root)
@@ -238,6 +240,7 @@ with gr.Blocks(title="leCop: check a LeRobot dataset") as demo:
     gr.HTML(FOOTER)
     button.click(check, inputs=[repo_box, rev_box], outputs=[page, raw], concurrency_limit=2)
     examples.load_input_event.then(check, inputs=[repo_box, rev_box], outputs=[page, raw], concurrency_limit=2)
+    demo.load(current_choices, outputs=repo_box, show_progress="hidden")
 
 if __name__ == "__main__":
     demo.launch(theme=THEME, css=CSS)

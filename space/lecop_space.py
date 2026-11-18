@@ -3,6 +3,7 @@ and turning leCop's JSON report into the page."""
 
 from __future__ import annotations
 
+import json
 import re
 from collections import OrderedDict
 from html import escape
@@ -31,7 +32,12 @@ _URL_PREFIX = re.compile(r"^(https?://)?(www\.)?huggingface\.co/datasets/")
 
 
 class Refused(ValueError):
-    """The request is not checked; the message says why and is shown to the user."""
+    """The request is not checked; the message says why and is shown to the user. `reason` names a cap or format
+    refusal (`too_many_files`, `too_big`, `not_lerobot`) so the dataset list can say which ones will not fit."""
+
+    def __init__(self, message: str, reason: Optional[str] = None):
+        super().__init__(message)
+        self.reason = reason
 
 
 def parse_repo(text: str) -> Tuple[str, Optional[str]]:
@@ -78,16 +84,66 @@ def plan_download(
             if len(chosen) > cap_files:
                 raise Refused(
                     f"`meta/` and `data/` hold more than {cap_files:,} files, too many to download here. "
-                    "Run leCop locally on this one: `pip install lecop`, then `lecop validate <path>`."
+                    "Run leCop locally on this one: `pip install lecop`, then `lecop validate <path>`.",
+                    "too_many_files",
                 )
             if total > cap_bytes:
                 raise Refused(
                     f"`meta/` and `data/` are over this Space's limit of {human_size(cap_bytes)}. "
-                    "Run leCop locally on this one: `pip install lecop`, then `lecop validate <path>`."
+                    "Run leCop locally on this one: `pip install lecop`, then `lecop validate <path>`.",
+                    "too_big",
                 )
         if folder == "meta" and "meta/info.json" not in chosen:
-            raise Refused("This repository has no `meta/info.json`, so it is not a LeRobot dataset leCop can read.")
+            raise Refused(
+                "This repository has no `meta/info.json`, so it is not a LeRobot dataset leCop can read.", "not_lerobot"
+            )
     return sorted(chosen), total
+
+
+def fit_status(
+    list_folder: Callable[[str], Iterable[Tuple[str, Optional[int]]]], cap_bytes: int, cap_files: int
+) -> str:
+    """`fits` when the check would download the dataset, else the reason it would refuse it."""
+    try:
+        plan_download(list_folder, cap_bytes, cap_files)
+        return "fits"
+    except Refused as e:
+        return e.reason or "refused"
+
+
+def load_fits(path: str, cap_bytes: int, cap_files: int) -> Dict[str, str]:
+    """Which listed datasets fit the caps, as `build_fits.py` wrote them; empty when the file is missing, unreadable or
+    was built for other caps."""
+    try:
+        with open(path) as f:
+            fits = json.load(f)
+    except (OSError, ValueError):
+        return {}
+    if fits.get("cap_bytes") != cap_bytes or fits.get("cap_files") != cap_files:
+        return {}
+    return dict(fits.get("status", {}))
+
+
+def ordered_choices(
+    repos: Iterable[str], status: Dict[str, str], cap_bytes: int, cap_files: int
+) -> List[Tuple[str, str]]:
+    """Dropdown (label, value) pairs: datasets that fit first, then those not classified yet, then the rest with the
+    reason in the label. The given order is kept within each group."""
+    why = {
+        "too_big": f"over {human_size(cap_bytes)}",
+        "too_many_files": f"over {cap_files:,} files",
+        "not_lerobot": "no meta/info.json",
+    }
+    fits, unknown, refused = [], [], []
+    for repo in repos:
+        state = status.get(repo)
+        if state == "fits":
+            fits.append((repo, repo))
+        elif state in why:
+            refused.append((f"{repo}: {why[state]}", repo))
+        else:
+            unknown.append((repo, repo))
+    return fits + unknown + sorted(refused, key=lambda c: list(why).index(status[c[1]]))
 
 
 def human_size(n: int) -> str:

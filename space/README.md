@@ -18,6 +18,11 @@ issue code in the look of the [results site](https://michele-xilo.github.io/leCo
 most downloaded datasets the Hub tags LeRobot (gated ones left out) plus those on the results site; any other
 `owner/name`, `owner/name@revision` or Hub URL can be typed in full.
 
+The datasets that fit the Space's limits are listed first, the others last with the reason. That order comes from
+`fits.json`, built offline by `build_fits.py` (it needs a Hugging Face login: the anonymous rate limit is too low for
+the few thousand requests), and every check run on the Space updates it in memory. Rebuild it before uploading when the
+limits change; a `fits.json` built for other limits is ignored.
+
 - The Space downloads `meta/` and `data/` only, so the video checks are skipped. Run `lecop validate` locally on a
   full download to check the videos too.
 - Public, ungated datasets only. The Space uses no token.
@@ -27,4 +32,8 @@ most downloaded datasets the Hub tags LeRobot (gated ones left out) plus those o
   about 13 files a second.
 
 The Space runs the `lecop` wheel pinned in `requirements.txt`. Its logic outside the UI is in `lecop_space.py`, tested by
-`python3 -m unittest discover -s space`.
+`python3 -m unittest discover -s space`, and its Hub queries are in `hub.py`. Upload it with:
+
+```bash
+hf upload michele-xilo/lecop space . --repo-type space --exclude "__pycache__/*" --exclude "test_*.py" --exclude build_fits.py
+```
