@@ -860,6 +860,104 @@ fn rename_feature(root: &Path, from: &str, to: &str) {
     }
 }
 
+/// Add a `[rows, cols]` float64 feature to info.json and, to every data file, a column holding `rows` lists of
+/// `width` values per frame, nested as LeRobot stores a multi-dimensional feature.
+fn add_matrix_feature(root: &Path, name: &str, rows: usize, cols: usize, width: usize) {
+    use arrow_array::builder::{Float64Builder, ListBuilder};
+    edit_info(root, |v| {
+        v["features"][name] = serde_json::json!({"dtype": "float64", "shape": [rows, cols]});
+    });
+    for chunk in fs::read_dir(root.join("data")).unwrap() {
+        for file in fs::read_dir(chunk.unwrap().path()).unwrap() {
+            let path = file.unwrap().path();
+            let reader = parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder::try_new(
+                fs::File::open(&path).unwrap(),
+            )
+            .unwrap()
+            .build()
+            .unwrap();
+            let batches: Vec<RecordBatch> = reader.map(|b| b.unwrap()).collect();
+            let leaf = Arc::new(Field::new("element", DataType::Float64, true));
+            let inner = Arc::new(Field::new("element", DataType::List(leaf.clone()), true));
+            let mut fields: Vec<Field> = batches[0]
+                .schema()
+                .fields()
+                .iter()
+                .map(|f| f.as_ref().clone())
+                .collect();
+            fields.push(Field::new(name, DataType::List(inner.clone()), true));
+            let schema = Arc::new(Schema::new(fields));
+            let mut w =
+                ArrowWriter::try_new(fs::File::create(&path).unwrap(), schema.clone(), None)
+                    .unwrap();
+            for b in batches {
+                let n = b.num_rows();
+                let mut col = ListBuilder::new(
+                    ListBuilder::new(Float64Builder::new()).with_field(leaf.clone()),
+                )
+                .with_field(inner.clone());
+                let mut i = 0.0f64;
+                for _ in 0..n {
+                    for _ in 0..rows {
+                        for _ in 0..width {
+                            col.values().values().append_value((i * 0.7).sin());
+                            i += 1.0;
+                        }
+                        col.values().append(true);
+                    }
+                    col.append(true);
+                }
+                let col = col.finish();
+                let mut cols = b.columns().to_vec();
+                cols.push(Arc::new(col));
+                w.write(&RecordBatch::try_new(schema.clone(), cols).unwrap())
+                    .unwrap();
+            }
+            w.close().unwrap();
+        }
+    }
+}
+
+#[test]
+fn accepts_a_matrix_feature_stored_as_nested_lists_in_v2_and_v3() {
+    use common::synth::{Synth, write_v2, write_v3};
+    let s = Synth {
+        episodes: 6,
+        frames: 40,
+        dim: 3,
+        fps: 30,
+        per_file: 4,
+    };
+    for v3 in [false, true] {
+        let dir = tempfile::tempdir().unwrap();
+        if v3 {
+            write_v3(dir.path(), &s);
+        } else {
+            write_v2(dir.path(), &s);
+        }
+        add_matrix_feature(dir.path(), "observation.extrinsics", 2, 2, 2);
+        let issues = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+        assert!(issues.is_empty(), "v3={v3}: {issues:?}");
+    }
+}
+
+#[test]
+fn flags_a_matrix_feature_whose_rows_are_wider_than_declared() {
+    use common::synth::{Synth, write_v3};
+    let s = Synth {
+        episodes: 2,
+        frames: 40,
+        dim: 3,
+        fps: 30,
+        per_file: 2,
+    };
+    let dir = tempfile::tempdir().unwrap();
+    write_v3(dir.path(), &s);
+    add_matrix_feature(dir.path(), "observation.extrinsics", 2, 2, 3);
+    let issues = validate(&Dataset::open(dir.path()).unwrap()).unwrap();
+    assert_eq!(codes(&issues), ["feature_shape"], "{issues:?}");
+}
+
 fn rename_action_feature(root: &Path) {
     edit_info(root, |v| {
         let f = v["features"].as_object_mut().unwrap();

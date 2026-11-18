@@ -85,8 +85,8 @@ pub(super) fn parse_file(bytes: bytes::Bytes, ds: &Dataset) -> Result<FileData> 
             let Some((vals, w)) = batch.column_by_name(key).and_then(flatten) else {
                 continue;
             };
-            if let [declared] = f.shape[..]
-                && declared != w
+            let declared: usize = f.shape.iter().product();
+            if declared != w
                 && !d
                     .schema
                     .iter()
@@ -95,7 +95,13 @@ pub(super) fn parse_file(bytes: bytes::Bytes, ds: &Dataset) -> Result<FileData> 
                 d.schema.push((
                     Severity::Error,
                     "feature_shape",
-                    format!("`{key}` has width {w} but info.json declares {declared}"),
+                    format!(
+                        "`{key}` has width {w} but info.json declares {}",
+                        match f.shape[..] {
+                            [d] => d.to_string(),
+                            _ => format!("{declared} ({:?})", f.shape),
+                        }
+                    ),
                 ));
             }
             let e = d.floats.entry(key.clone()).or_insert((Vec::new(), w));
@@ -141,10 +147,13 @@ pub(super) fn schema_problems(
             ));
             continue;
         };
-        let (elem, is_list) = match field.data_type() {
-            T::FixedSizeList(i, _) | T::List(i) => (i.data_type(), true),
-            t => (t, false),
-        };
+        // LeRobot stores a feature of shape [a, b, ...] as lists nested once per dimension.
+        let mut elem = field.data_type();
+        let mut is_list = false;
+        while let T::FixedSizeList(i, _) | T::List(i) = elem {
+            elem = i.data_type();
+            is_list = true;
+        }
         if arrow_type(&f.dtype).is_some_and(|want| &want != elem) {
             out.push((
                 Severity::Error,
@@ -212,18 +221,24 @@ pub(super) fn as_f64(c: &ArrayRef) -> Vec<f64> {
     Vec::new()
 }
 
-/// Flatten a (fixed-size) list column of floats into (values, row width).
+/// Flatten a (fixed-size) list column of floats, nested to any depth, into (values, values per row).
+/// ponytail: the width is the first row's; a nested row of another width shows up as `column_shape`.
 pub(super) fn flatten(c: &ArrayRef) -> Option<(Vec<f64>, usize)> {
-    if let Some(l) = c.as_fixed_size_list_opt() {
-        return Some((as_f64(l.values()), l.value_length() as usize));
-    }
-    let l = c.as_list_opt::<i32>()?;
-    let w = if l.is_empty() {
-        0
+    let (inner, w) = if let Some(l) = c.as_fixed_size_list_opt() {
+        (l.values(), l.value_length() as usize)
     } else {
-        l.value_length(0) as usize
+        let l = c.as_list_opt::<i32>()?;
+        let w = if l.is_empty() {
+            0
+        } else {
+            l.value_length(0) as usize
+        };
+        (l.values(), w)
     };
-    Some((as_f64(l.values()), w))
+    Some(match flatten(inner) {
+        Some((vals, inner_w)) => (vals, w * inner_w),
+        None => (as_f64(inner), w),
+    })
 }
 
 #[cfg(test)]

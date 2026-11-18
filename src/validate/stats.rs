@@ -152,7 +152,7 @@ pub(super) fn stats_differences(
         })
         .collect();
     for stat in ["min", "max", "mean", "std"] {
-        let Some(values) = stored.get(stat).and_then(|v| v.as_array()) else {
+        let Some(values) = stored.get(stat).and_then(leaves) else {
             continue;
         };
         if values.len() != measured.len() {
@@ -188,6 +188,19 @@ pub(super) fn stats_differences(
         }
     }
     out
+}
+
+/// The numbers of a statistic, row-major: a feature of shape [a, b] stores each statistic as a nested a x b array.
+fn leaves(v: &serde_json::Value) -> Option<Vec<&serde_json::Value>> {
+    fn walk<'a>(v: &'a serde_json::Value, out: &mut Vec<&'a serde_json::Value>) {
+        match v.as_array() {
+            Some(a) => a.iter().for_each(|x| walk(x, out)),
+            None => out.push(v),
+        }
+    }
+    let mut out = Vec::new();
+    v.as_array()?.iter().for_each(|x| walk(x, &mut out));
+    Some(out)
 }
 
 /// The first difference, how many more there are, and what to do about them; None when the feature matches.
@@ -372,6 +385,24 @@ mod tests {
     fn a_feature_with_no_measured_rows_has_nothing_to_compare() {
         assert!(stats_differences(&stored(), &[], "stats.json").is_empty());
         assert!(stats_differences(&stored(), &dim_stats(&[], 2), "stats.json").is_empty());
+    }
+
+    #[test]
+    fn statistics_of_a_matrix_feature_are_stored_nested_and_compared_flat() {
+        let rows = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0];
+        let measured = dim_stats(&rows, 4);
+        let mut stored = serde_json::json!({
+            "min": [[1.0, 2.0], [3.0, 4.0]], "max": [[5.0, 6.0], [7.0, 8.0]],
+            "mean": [[3.0, 4.0], [5.0, 6.0]], "std": [[2.0, 2.0], [2.0, 2.0]], "count": [2]
+        });
+        assert_eq!(
+            stats_differences(&stored, &measured, "stats.json"),
+            Vec::<String>::new()
+        );
+        stored["max"][1][0] = 9.0.into();
+        let d = stats_differences(&stored, &measured, "stats.json");
+        assert_eq!(d.len(), 1, "{d:?}");
+        assert!(d[0].contains("dimension 2 max"), "{d:?}");
     }
 
     #[test]
