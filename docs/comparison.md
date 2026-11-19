@@ -117,6 +117,18 @@ core in the background. The other two are a single run each on an otherwise quie
 takes almost five hours (an earlier run of each, with a desktop file indexer busy in the background, took 8% and 10%
 longer). physlint's decoding run read no frames from these AV1 videos, so there is no number for it in the second row.
 
+### A large v2.1 dataset: DROID
+
+RoboTwin is v3.0, so a few large files. In v2.x every episode is its own parquet file and every camera of every episode
+its own mp4, so a large v2.x dataset is mostly a test of handling many files. We ran leCop on
+[DROID 1.0.1](https://huggingface.co/datasets/cadene/droid_1.0.1), one of the most downloaded LeRobot datasets: v2.1 at
+commit `56b622a`, 95,600 episodes, 27.6 million frames at 15 fps, three AV1 cameras, 375 GB and 382,086 files on disk.
+
+On the same workstation (AMD Ryzen 9 7900X, 24 threads, Linux, warm page cache, default thread count, leCop 0.3.1
+`release` build at commit `98e8486`, Rust 1.99.0), without video decoding, leCop took **5.3 s** (median of 3 runs after
+a warm-up) with a peak memory of 1.9 GB (`/usr/bin/time -v`). That covers 95,600 data files and the container metadata
+of 286,479 videos. lerobot-doctor and physlint were not run on it: from their RoboTwin times, they would take hours.
+
 ### Why leCop is fast
 
 - **Every pass over the data is linear.** leCop reads each data file once and checks all of its episodes from that
