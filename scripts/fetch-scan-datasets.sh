@@ -14,13 +14,23 @@ min_free_gb=${MIN_FREE_GB:-100}
 missing_files() {
   uv run -q --no-project --with huggingface_hub python3 scripts/hub_missing_files.py "$1" "$2" "$3" ${ONLY:-} </dev/null
 }
-# Same fallback as fetch-datasets.sh: the hf client rejects some files the Hub serves with other bytes.
-curl_fetch() {
-  repo=$1 rev=$2 dir=$3
-  missing_files "$repo" "$rev" "$dir" | while read -r f; do
-    mkdir -p "$dir/$(dirname "$f")"
-    curl -fsSL -o "$dir/$f" "https://huggingface.co/datasets/$repo/resolve/$rev/$f"
-  done
+# The token goes in a header file, so it never shows in the process list.
+hdr=$(mktemp)
+trap 'rm -f "$hdr"' EXIT
+token=${HF_TOKEN:-}
+token_file=${HF_TOKEN_PATH:-$HOME/.cache/huggingface/token}
+if [ -z "$token" ] && [ -f "$token_file" ]; then token=$(cat "$token_file"); fi
+if [ -n "$token" ]; then printf 'Authorization: Bearer %s\n' "$token" >"$hdr"; fi
+# curl in parallel rather than hf download: on language_table_lerobot (442k small files) hf download fetched 240 files
+# a minute, 32 curls 3,300. The Hub allows 12,000 file requests per 5 minutes; --retry waits out a 429 past that.
+# Each file is written under .part and renamed, so an interrupted fetch never leaves a truncated file behind.
+fetch() {
+  missing_files "$1" "$2" "$3" | tr '\n' '\0' |
+    REPO=$1 REV=$2 DIR=$3 HDR=$hdr xargs -0 -r -n 1 -P "${FETCH_JOBS:-16}" sh -c '
+      mkdir -p "$DIR/$(dirname "$1")" &&
+        curl -fsSL --retry 10 --retry-all-errors -H @"$HDR" -o "$DIR/$1.part" \
+          "https://huggingface.co/datasets/$REPO/resolve/$REV/$1" &&
+        mv "$DIR/$1.part" "$DIR/$1"' sh
 }
 mkdir -p "$dest"
 grep -v '^#' "$list" | cut -f "1,2,$size_col" | while IFS="$(printf '\t')" read -r repo rev size; do
@@ -32,17 +42,10 @@ grep -v '^#' "$list" | cut -f "1,2,$size_col" | while IFS="$(printf '\t')" read 
   if [ "$free_gb" -lt "$min_free_gb" ]; then
     echo "stopping: $free_gb GB free, below $min_free_gb GB"; exit 1
   fi
-  # A partial download is kept and only its missing files are fetched, in batches that fit on a command line.
+  # A partial download is kept and only its missing files are fetched; a second pass catches transient failures.
   echo "fetching $repo ($size GB)"
   mkdir -p "$dir"
-  missing_files "$repo" "$rev" "$dir" | tr '\n' '\0' |
-    xargs -0 -r -n 1000 uvx --from huggingface_hub hf download "$repo" --repo-type dataset --revision "$rev" \
-      --max-workers "${HF_MAX_WORKERS:-32}" \
-      --local-dir "$dir" >/dev/null 2>&1 || true
-  if [ -n "$(missing_files "$repo" "$rev" "$dir")" ]; then
-    echo "hf download left files missing, retrying $repo with curl"
-    curl_fetch "$repo" "$rev" "$dir" || true
-  fi
+  fetch "$repo" "$rev" "$dir" || fetch "$repo" "$rev" "$dir" || true
   left=$(missing_files "$repo" "$rev" "$dir" | wc -l)
   if [ "$left" -eq 0 ]; then touch "$dir/.complete"; else echo "FAILED   $repo ($left files missing)"; fi
 done
