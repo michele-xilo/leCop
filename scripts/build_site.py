@@ -65,8 +65,10 @@ DESCRIPTIONS = {
     "stats_zero_std": "A dimension has zero standard deviation in the statistics, so normalising divides by zero.",
     "video_frame_count": "A video has a different number of frames than its episode.",
     "video_frozen": "A video shows the same frame for many frames in a row (found by decoding).",
+    "video_missing": "A video file that an episode points to does not exist.",
     "video_resolution": "A video's frame size differs from the shape in info.json.",
     "video_span_length": "An episode's span in a shared video file differs from the episode length.",
+    "video_unreadable": "A video file is empty, truncated or not a readable mp4.",
 }
 GITHUB_MARK = (
     '<svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 '
