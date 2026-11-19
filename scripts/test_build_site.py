@@ -188,6 +188,15 @@ class VideoMarkerTest(unittest.TestCase):
         decode["run"].update(decode=True, video="decoded")
         self.assertIn("Videos: decoded", build_site.dataset_page(record(), decode))
 
+    def test_a_run_without_the_videos_says_so_and_how_to_reproduce_it(self):
+        skipped = record()
+        skipped["run"]["video"] = "skipped"
+        page = build_site.dataset_page(skipped)
+        self.assertIn("Videos: not downloaded, not checked", page)
+        self.assertIn('--exclude &quot;videos/*&quot;', page)
+        self.assertIn("--ignore video_missing", page)
+        self.assertIn("Videos not checked", build_site.row(skipped))
+
     def test_the_home_row_names_the_videos_only_when_they_were_decoded(self):
         self.assertIn("Videos decoded", build_site.row(record(), decoded=True))
         self.assertNotIn("Videos", build_site.row(record()))

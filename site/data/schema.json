@@ -27,7 +27,7 @@
         "cache": {"type": "string", "enum": ["warm"]},
         "threads": {"type": "integer"},
         "decode": {"type": "boolean"},
-        "video": {"type": "string", "enum": ["container", "decoded", "none"]},
+        "video": {"type": "string", "enum": ["container", "decoded", "skipped", "none"]},
         "lecop_version": {"type": "string"},
         "lecop_commit": {"type": "string"},
         "rustc": {"type": "string"},
