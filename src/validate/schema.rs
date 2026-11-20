@@ -150,7 +150,7 @@ pub(super) fn schema_problems(
         // LeRobot stores a feature of shape [a, b, ...] as lists nested once per dimension.
         let mut elem = field.data_type();
         let mut is_list = false;
-        while let T::FixedSizeList(i, _) | T::List(i) = elem {
+        while let T::FixedSizeList(i, _) | T::List(i) | T::LargeList(i) = elem {
             elem = i.data_type();
             is_list = true;
         }
@@ -221,13 +221,20 @@ pub(super) fn as_f64(c: &ArrayRef) -> Vec<f64> {
     Vec::new()
 }
 
-/// Flatten a (fixed-size) list column of floats, nested to any depth, into (values, values per row).
+/// Flatten a (fixed-size or large) list column of floats, nested to any depth, into (values, values per row).
 /// ponytail: the width is the first row's; a nested row of another width shows up as `column_shape`.
 pub(super) fn flatten(c: &ArrayRef) -> Option<(Vec<f64>, usize)> {
     let (inner, w) = if let Some(l) = c.as_fixed_size_list_opt() {
         (l.values(), l.value_length() as usize)
+    } else if let Some(l) = c.as_list_opt::<i32>() {
+        let w = if l.is_empty() {
+            0
+        } else {
+            l.value_length(0) as usize
+        };
+        (l.values(), w)
     } else {
-        let l = c.as_list_opt::<i32>()?;
+        let l = c.as_list_opt::<i64>()?;
         let w = if l.is_empty() {
             0
         } else {
@@ -254,5 +261,46 @@ mod tests {
         assert_eq!(as_f64(&f32s), [1.5]);
         assert_eq!(as_f64(&f64s), [2.5]);
         assert!(as_f64(&ints).is_empty());
+    }
+
+    /// A [2, 2] float32 feature as LeRobot's Array2D can store it: large_list<large_list<float>>, two rows.
+    fn large_list_2x2() -> ArrayRef {
+        use arrow_array::builder::{Float32Builder, LargeListBuilder};
+        let mut b = LargeListBuilder::new(LargeListBuilder::new(Float32Builder::new()));
+        for row in [[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]] {
+            for pair in row {
+                b.values().values().append_slice(&pair);
+                b.values().append(true);
+            }
+            b.append(true);
+        }
+        Arc::new(b.finish())
+    }
+
+    #[test]
+    fn a_2d_feature_stored_as_nested_large_lists_matches_its_declared_dtype() {
+        let col = large_list_2x2();
+        let schema = arrow_schema::Schema::new(vec![arrow_schema::Field::new(
+            "observation.state.waypoints",
+            col.data_type().clone(),
+            true,
+        )]);
+        let features = BTreeMap::from([(
+            "observation.state.waypoints".to_string(),
+            crate::dataset::Feature {
+                dtype: "float32".into(),
+                shape: vec![2, 2],
+                names: None,
+            },
+        )]);
+        assert!(schema_problems(&features, &schema).is_empty());
+    }
+
+    #[test]
+    fn nested_large_lists_flatten_to_their_values_and_row_width() {
+        let (vals, w) = flatten(&large_list_2x2()).expect("a large list column flattens");
+        assert_eq!(w, 4);
+        assert_eq!(vals.len(), 8);
+        assert!((vals[7] - 8.0).abs() < 1e-9);
     }
 }
