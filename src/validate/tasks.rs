@@ -53,11 +53,13 @@ pub(super) fn task_index_issue(
     used: &BTreeSet<i64>,
     known: Option<&BTreeSet<i64>>,
 ) -> Option<Tagged> {
-    let unknown: Vec<String> = used
-        .difference(known?)
-        .take(5)
-        .map(|t| t.to_string())
-        .collect();
+    let all: Vec<&i64> = used.difference(known?).collect();
+    let unknown: Vec<String> = all.iter().take(5).map(|t| t.to_string()).collect();
+    let verb = if all.len() > 5 {
+        format!("and {} more appear", all.len() - 5)
+    } else {
+        "appears".to_string()
+    };
     (!unknown.is_empty()).then(|| {
         tag(
             None,
@@ -66,7 +68,7 @@ pub(super) fn task_index_issue(
             None,
             "task_index",
             format!(
-                "task_index {} appears in the data but not in the task metadata",
+                "task_index {} {verb} in the data but not in the task metadata",
                 unknown.join(", ")
             ),
         )
@@ -97,6 +99,25 @@ pub fn task_finding(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn task_index_issue_says_how_many_unknown_values_it_leaves_out() {
+        let known = BTreeSet::from([0, 1]);
+        let many = task_index_issue(&(0..30).collect(), Some(&known)).unwrap();
+        assert!(
+            many.2
+                .message
+                .contains("task_index 2, 3, 4, 5, 6 and 23 more appear"),
+            "{}",
+            many.2.message
+        );
+        let few = task_index_issue(&(0..4).collect(), Some(&known)).unwrap();
+        assert!(
+            few.2.message.starts_with("task_index 2, 3 appears"),
+            "{}",
+            few.2.message
+        );
+    }
 
     #[test]
     fn task_finding_follows_total_tasks() {
