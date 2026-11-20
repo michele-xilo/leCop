@@ -138,6 +138,27 @@ class VideoTest(unittest.TestCase):
             self.assertTrue(any("video" in e for e in site_run.validate({**r, "run": run}, site_run.load_schema())), value)
 
 
+class CacheTest(unittest.TestCase):
+    def test_a_dataset_smaller_than_memory_is_timed_warm(self):
+        self.assertEqual(site_run.cache_state(10 * 2**30, 124 * 2**30), "warm")
+
+    def test_a_dataset_larger_than_memory_cannot_stay_in_the_page_cache(self):
+        self.assertEqual(site_run.cache_state(184 * 2**30, 124 * 2**30), "cold")
+
+    def test_the_bytes_read_are_meta_and_data_not_videos(self):
+        with tempfile.TemporaryDirectory() as d:
+            for sub, size in [("meta", 3), ("data/chunk-000", 5), ("videos/cam", 100)]:
+                os.makedirs(os.path.join(d, sub))
+                with open(os.path.join(d, sub, "f"), "wb") as f:
+                    f.write(b"x" * size)
+            self.assertEqual(site_run.bytes_read(d), 8)
+
+    def test_a_cold_record_is_valid_and_says_so(self):
+        r = site_run.build_record(ENTRY, INFO, REPORT, [10.0], META, cache="cold")
+        self.assertEqual(site_run.validate(r, site_run.load_schema()), [])
+        self.assertEqual(r["run"]["cache"], "cold")
+
+
 class RecordTest(unittest.TestCase):
     def test_wall_time_is_the_median_of_the_samples(self):
         self.assertEqual(record()["run"]["wall_ms"], 10.0)

@@ -10,7 +10,8 @@
 
 Each record is self-contained (dataset revision, leCop version and commit, machine, threads), so records made on
 different machines can sit in the same folder. Wall time is the median of RUNS timed runs of `lecop validate -q`
-after one warm-up run, so it is a warm-cache number.
+after one warm-up run, so it is a warm-cache number, unless the files leCop reads are larger than the machine's memory
+and cannot all stay in the page cache: the record then says `cold`.
 """
 
 import argparse
@@ -65,7 +66,7 @@ def record_file(name, decode):
     return f"{name}.decode.json" if decode else f"{name}.json"
 
 
-def build_record(entry, info, report, samples_ms, meta, videos_skipped=False):
+def build_record(entry, info, report, samples_ms, meta, videos_skipped=False, cache="warm"):
     return {
         **entry,
         "dataset": {
@@ -78,7 +79,7 @@ def build_record(entry, info, report, samples_ms, meta, videos_skipped=False):
         "run": {
             "wall_ms": round(statistics.median(samples_ms), 1),
             "runs": len(samples_ms),
-            "cache": "warm",
+            "cache": cache,
             **meta,
             "video": video_mode(info, meta.get("decode"), videos_skipped),
         },
@@ -90,6 +91,20 @@ def build_record(entry, info, report, samples_ms, meta, videos_skipped=False):
             for i in report["issues"]
         ],
     }
+
+
+def bytes_read(path):
+    """Size of the files leCop reads in full: meta/ and data/. Videos are read only for their container metadata."""
+    return sum(os.path.getsize(os.path.join(d, f))
+               for sub in ("meta", "data") for d, _, files in os.walk(os.path.join(path, sub)) for f in files)
+
+
+def memory_bytes():
+    return os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
+
+
+def cache_state(read_bytes, memory):
+    return "warm" if read_bytes < memory else "cold"
 
 
 def has_video(info):
@@ -197,7 +212,9 @@ def run_dataset(entry, path, lecop, runs, meta):
     except json.JSONDecodeError:
         # A crash gets no record: it is a P0 bug to file, not a result to publish.
         raise RuntimeError(f"lecop exited {proc.returncode} without a JSON report: {proc.stderr.strip()[-300:]}")
-    return build_record(entry, info, report, time_ms([lecop, "validate", "-q", *flags, path], runs), meta, skipped)
+    samples = time_ms([lecop, "validate", "-q", *flags, path], runs)
+    cache = cache_state(bytes_read(path), memory_bytes())
+    return build_record(entry, info, report, samples, meta, skipped, cache)
 
 
 def check():
