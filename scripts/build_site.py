@@ -50,6 +50,7 @@ DESCRIPTIONS = {
     "episode_count": "The episode total in info.json disagrees with the episode metadata.",
     "episode_index": "The episode indices do not run from 0 to n-1.",
     "task_index": "A task_index in the data is not in the task metadata.",
+    "timestamp_drift": "A timestamp differs from frame_index / fps by more than the tolerance.",
     "episode_length_outlier": "An episode is far longer or shorter than the others.",
     "episode_rows_missing": "A data file has no rows for the episode that points to it.",
     "episode_short": "An episode is shorter than a second (or 5 frames).",

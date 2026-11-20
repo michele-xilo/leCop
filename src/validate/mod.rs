@@ -193,7 +193,9 @@ pub fn explain(code: &str) -> &'static str {
         "data_unreadable" => "a data parquet file is truncated, unfinalized or not parquet",
         "length_mismatch" => "an episode has a different number of rows than its metadata says",
         "episode_rows_missing" => "the data file has no rows for an episode its metadata lists",
-        "timestamp_drift" => "a timestamp differs from frame_index / fps by more than 1e-4 s",
+        "timestamp_drift" => {
+            "a timestamp differs from frame_index / fps by more than 1e-4 s (or float32 rounding, past 2048 s)"
+        }
         "timestamp_not_monotonic" => "timestamps do not strictly increase within an episode",
         "frame_index" => "frame_index does not run 0..n-1 within the episode",
         "timestamp_missing" => "the timestamp column is missing or not a float",
