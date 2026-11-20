@@ -49,6 +49,7 @@ DESCRIPTIONS = {
     "duplicate_episode": "An episode repeats the action sequence of an earlier one.",
     "episode_count": "The episode total in info.json disagrees with the episode metadata.",
     "episode_index": "The episode indices do not run from 0 to n-1.",
+    "task_index": "A task_index in the data is not in the task metadata.",
     "episode_length_outlier": "An episode is far longer or shorter than the others.",
     "episode_rows_missing": "A data file has no rows for the episode that points to it.",
     "episode_short": "An episode is shorter than a second (or 5 frames).",

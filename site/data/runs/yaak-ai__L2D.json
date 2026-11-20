@@ -1,0 +1,102 @@
+{
+  "name": "yaak-ai__L2D",
+  "repo": "yaak-ai/L2D",
+  "revision": "cc09487951af469a14ea22108b64c3b9e6cb717d",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 100000,
+    "frames": 26466954,
+    "fps": 10,
+    "robot": "KIA Niro EV 2023"
+  },
+  "run": {
+    "wall_ms": 2937.1,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "6cd9eea",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-20",
+    "decode": false,
+    "video": "skipped"
+  },
+  "errors": 1,
+  "warnings": 11,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `action` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `observation.state` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_feature_missing",
+      "message": "no statistics for observation.images.front_left, observation.images.left_backward, observation.images.left_forward, observation.images.map, observation.images.rear, observation.images.right_backward, observation.images.right_forward"
+    },
+    {
+      "severity": "error",
+      "episode": null,
+      "code": "task_index",
+      "message": "task_index 4219, 4220, 4221, 4222, 4223 appears in the data but not in the task metadata"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.vehicle: dimension 0 is at its minimum (0) in 9.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state.vehicle: dimension 2 is at its maximum (180) in 10.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.vehicle: dimension 3 reaches 30 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.vehicle: dimension 5 reaches 81 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.vehicle: dimension 6 reaches 18 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state.vehicle: dimension 7 reaches 17 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_mismatch",
+      "message": "observation.state.vehicle: count is 2636395 in stats.json but the data has 26466954 frames (and 22 more differences); stats.json is out of date with the data"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_mismatch",
+      "message": "observation.state.waypoints: count is 2636395 in stats.json but the data has 26466954 frames (and 4 more differences); stats.json is out of date with the data"
+    }
+  ]
+}
