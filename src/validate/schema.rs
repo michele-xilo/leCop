@@ -19,6 +19,8 @@ pub(super) type Run = (usize, usize);
 pub(super) struct FileData {
     pub(super) rows: usize,
     pub(super) ts: Vec<f64>,
+    /// The timestamp column is float32, so values carry its rounding (see `timestamp_tolerance`).
+    pub(super) ts_f32: bool,
     pub(super) fi: Vec<i64>,
     pub(super) ep: Option<Vec<i64>>,
     pub(super) idx: Option<Vec<i64>>,
@@ -42,6 +44,7 @@ pub(super) fn parse_file(bytes: bytes::Bytes, ds: &Dataset) -> Result<FileData> 
         let batch = batch?;
         d.rows += batch.num_rows();
         if let Some(c) = batch.column_by_name("timestamp") {
+            d.ts_f32 = c.data_type() == &arrow_schema::DataType::Float32;
             d.ts.extend(as_f64(c));
         }
         if let Some(c) = batch

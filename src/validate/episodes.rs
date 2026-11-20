@@ -12,6 +12,18 @@ use std::collections::HashMap;
 /// Timestamps may deviate from frame_index/fps by this much (LeRobot's default tolerance).
 pub(super) const TIMESTAMP_TOL_S: f64 = 1e-4;
 
+/// Tolerance for a timestamp expected at `expected` s. A float32 value can be half its spacing away, and from
+/// 2048 s on (spacing 0.000244 s) that is more than 1e-4 s: lerobot/FineART's 49-minute episodes are exact up to
+/// that rounding.
+pub(super) fn timestamp_tolerance(expected: f64, stored_f32: bool) -> f64 {
+    if !stored_f32 {
+        return TIMESTAMP_TOL_S;
+    }
+    let e = (expected as f32).abs();
+    let spacing = f64::from(f32::from_bits(e.to_bits() + 1) - e);
+    TIMESTAMP_TOL_S.max(spacing / 2.0)
+}
+
 /// An episode is reported when more than this fraction of its frames repeat the previous action.
 // ponytail: fixed 50% threshold, from one so101 dataset where normal episodes idled < 50%; make it a flag if people disagree.
 pub(super) const IDLE_FRACTION: f64 = 0.5;
@@ -399,11 +411,10 @@ pub(super) fn check_episode(
             format!("at frame {} ({} -> {})", i + 1, ts[i], ts[i + 1]),
         );
     }
-    if let Some((i, x)) = ts
-        .iter()
-        .enumerate()
-        .find(|(i, x)| (**x - *i as f64 / ds.info.fps).abs() > TIMESTAMP_TOL_S)
-    {
+    if let Some((i, x)) = ts.iter().enumerate().find(|(i, x)| {
+        let expected = *i as f64 / ds.info.fps;
+        (**x - expected).abs() > timestamp_tolerance(expected, d.ts_f32)
+    }) {
         push(
             Error,
             "timestamp_drift",
@@ -475,6 +486,13 @@ pub(super) fn check_episode(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn timestamp_tolerance_widens_to_float32_rounding_only_for_float32_columns() {
+        assert!((timestamp_tolerance(10.0, true) - TIMESTAMP_TOL_S).abs() < 1e-12);
+        assert!((timestamp_tolerance(3000.0, false) - TIMESTAMP_TOL_S).abs() < 1e-12);
+        assert!((timestamp_tolerance(3000.0, true) - 2f64.powi(-13)).abs() < 1e-12);
+    }
 
     #[test]
     fn finds_where_the_global_index_breaks() {

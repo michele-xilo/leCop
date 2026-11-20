@@ -221,6 +221,23 @@ fn flags_timestamp_drift() {
 }
 
 #[test]
+fn float32_rounding_of_a_long_episode_is_not_timestamp_drift() {
+    // 41,000 frames at 10 fps run to 4,100 s, where float32 timestamps are 0.000488 s apart: frame 40963 is
+    // stored as 4096.29980, 0.000195 s from 4096.3. Below 4096 s, multiples of 0.1 s round by less than 1e-4.
+    let codes = codes(&run(vec![good(41_000)], None));
+    assert!(!codes.contains(&"timestamp_drift"), "{codes:?}");
+}
+
+#[test]
+fn drift_beyond_float32_rounding_of_a_long_episode_is_flagged() {
+    let mut e = good(41_000);
+    for t in e.ts.iter_mut().skip(40_600) {
+        *t += 0.001;
+    }
+    assert!(codes(&run(vec![e], None)).contains(&"timestamp_drift"));
+}
+
+#[test]
 fn flags_non_monotonic_timestamps() {
     let mut e = good(20);
     e.ts[7] = e.ts[5];
