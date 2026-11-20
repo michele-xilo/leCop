@@ -55,6 +55,8 @@ DESCRIPTIONS = {
     "episode_rows_missing": "A data file has no rows for the episode that points to it.",
     "episode_short": "An episode is shorter than a second (or 5 frames).",
     "feature_dtype": "A data column does not have the type that info.json declares.",
+    "feature_extra": "A data column is not declared in info.json.",
+    "feature_shape_unknown": "A feature's shape in info.json has a null dimension, so its values are not checked.",
     "feature_missing": "A feature declared in info.json has no data column.",
     "frame_count": "The frame total in info.json disagrees with the episode lengths.",
     "idle_episode": "More than half of the frames repeat the previous action.",
@@ -288,7 +290,8 @@ def home_page(records, decodes=(), downloads=None):
         f'<span class="grow"></span><span class="median">Median scan {fmt_ms(times[len(times) // 2])}</span></div>'
         f'<div id="list">{rows}<div id="empty" class="empty" hidden>No dataset matches.</div></div>'
         '<p class="fine">Each result is what leCop reported at a pinned revision, not a verdict, and can be reproduced with one command. '
-        f'{ranked}Scan times are the median of warm-cache runs on the machine named on each dataset page. '
+        f'{ranked}Scan times are the median of warm-cache runs on the machine named on each dataset page, '
+        'or cold-cache runs where a dataset is larger than that machine\'s memory. '
         'Videos are checked from their container metadata, without decoding frames, unless a row says they were '
         'decoded (<code class="mono">lecop validate --decode</code>). '
         'leCop is unofficial and not affiliated with Hugging Face or LeRobot. '

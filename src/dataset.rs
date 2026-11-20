@@ -9,13 +9,36 @@ use std::{
 };
 
 #[derive(Debug, Deserialize)]
+#[serde(from = "RawFeature")]
 pub struct Feature {
     pub dtype: String,
-    #[serde(default)]
+    /// Empty when a dimension is unknown (see `unknown_shape`).
     pub shape: Vec<usize>,
     /// Axis names, e.g. `["height", "width", "channels"]`; absent or `null` in some datasets.
-    #[serde(default)]
     pub names: Option<serde_json::Value>,
+    /// A dimension is `null` in info.json: a variable-length feature, as in behavior-1k/2025-challenge-demos.
+    pub unknown_shape: bool,
+}
+
+#[derive(Deserialize)]
+struct RawFeature {
+    dtype: String,
+    #[serde(default)]
+    shape: Vec<Option<usize>>,
+    #[serde(default)]
+    names: Option<serde_json::Value>,
+}
+
+impl From<RawFeature> for Feature {
+    fn from(r: RawFeature) -> Self {
+        let shape: Option<Vec<usize>> = r.shape.into_iter().collect();
+        Feature {
+            dtype: r.dtype,
+            unknown_shape: shape.is_none(),
+            shape: shape.unwrap_or_default(),
+            names: r.names,
+        }
+    }
 }
 
 impl Feature {

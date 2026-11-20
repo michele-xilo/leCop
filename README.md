@@ -129,7 +129,7 @@ version. Several datasets, `--decode` and the other options are in the [crate do
 - Missing, truncated or unreadable files.
 - With `--decode`: a camera that froze or went black.
 
-58 checks in all, listed in [docs/checks.md](docs/checks.md).
+59 checks in all, listed in [docs/checks.md](docs/checks.md).
 
 ## Why leCop
 

@@ -24,7 +24,7 @@
       "properties": {
         "wall_ms": {"type": "number"},
         "runs": {"type": "integer"},
-        "cache": {"type": "string", "enum": ["warm"]},
+        "cache": {"type": "string", "enum": ["warm", "cold"]},
         "threads": {"type": "integer"},
         "decode": {"type": "boolean"},
         "video": {"type": "string", "enum": ["container", "decoded", "skipped", "none"]},
