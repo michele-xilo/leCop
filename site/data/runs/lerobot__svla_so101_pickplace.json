@@ -1,0 +1,29 @@
+{
+  "name": "lerobot__svla_so101_pickplace",
+  "repo": "lerobot/svla_so101_pickplace",
+  "revision": "f641879e22172be7e8161d5e6c1503c2d2feb657",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 50,
+    "frames": 11939,
+    "fps": 30,
+    "robot": "so100_follower"
+  },
+  "run": {
+    "wall_ms": 6.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "3fa12fd",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-20",
+    "decode": false,
+    "video": "skipped"
+  },
+  "errors": 0,
+  "warnings": 0,
+  "issues": []
+}

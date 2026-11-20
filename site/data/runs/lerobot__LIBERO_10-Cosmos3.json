@@ -1,0 +1,126 @@
+{
+  "name": "lerobot__LIBERO_10-Cosmos3",
+  "repo": "lerobot/LIBERO_10-Cosmos3",
+  "revision": "0abcc8158612d5cd8c4caa9206c833ea6a43bc4e",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 379,
+    "frames": 101469,
+    "fps": 20,
+    "robot": "franka"
+  },
+  "run": {
+    "wall_ms": 58.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "3fa12fd",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-20",
+    "decode": false,
+    "video": "skipped"
+  },
+  "errors": 0,
+  "warnings": 16,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 3 is at its maximum (1) in 9.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 7 is at its maximum (1) in 13.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "stats_mismatch",
+      "message": "action: dimension 3 min is 0.902028 in stats.json but 0.918101 in the data (and 28 more differences); stats.json is out of date with the data"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "action_jump",
+      "message": "and 1 more episodes with action jumps"
+    },
+    {
+      "severity": "warning",
+      "episode": 23,
+      "code": "episode_length_outlier",
+      "message": "455 frames, much longer than the other episodes (mean 268, std 57 over 379 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 34,
+      "code": "episode_length_outlier",
+      "message": "449 frames, much longer than the other episodes (mean 268, std 57 over 379 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 40,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 73,
+      "code": "episode_length_outlier",
+      "message": "450 frames, much longer than the other episodes (mean 268, std 57 over 379 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 145,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 182,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 194,
+      "code": "episode_length_outlier",
+      "message": "466 frames, much longer than the other episodes (mean 268, std 57 over 379 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 270,
+      "code": "episode_length_outlier",
+      "message": "457 frames, much longer than the other episodes (mean 268, std 57 over 379 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 278,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 303,
+      "code": "action_jump",
+      "message": "2 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 306,
+      "code": "episode_length_outlier",
+      "message": "505 frames, much longer than the other episodes (mean 268, std 57 over 379 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 376,
+      "code": "episode_length_outlier",
+      "message": "458 frames, much longer than the other episodes (mean 268, std 57 over 379 episodes)"
+    }
+  ]
+}
