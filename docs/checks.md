@@ -30,6 +30,7 @@ All checks read metadata and parquet only: no video frame is decoded.
 | `frame_index` runs `0..n-1` within each episode | Covered | `frame_index` |
 | The `timestamp` column exists and is a float | Covered | `timestamp_missing` |
 | Every declared feature has a data column of the declared dtype and width; no undeclared columns | Covered (list width for float features only; a multi-dimensional feature, stored as nested lists, is checked by its total width) | `feature_missing`, `feature_dtype`, `feature_shape`, `column_shape`, `feature_extra` (warning) |
+| A feature whose shape has a `null` (variable) dimension is named, and its values are not checked | Covered (warning) | `feature_shape_unknown` |
 | Every video file exists and is a readable mp4 | Covered | `video_missing`, `video_unreadable` |
 | Video frame rate matches `fps` | Covered (warning) | `video_fps` |
 | Video frame size matches the shape in `info.json` | Covered, from the container's sample description | `video_resolution` |

@@ -73,7 +73,7 @@ pub struct Checks {
 }
 
 /// Every issue code lecop can report.
-pub const ALL_CODES: [&str; 58] = [
+pub const ALL_CODES: [&str; 59] = [
     "episode_count",
     "action_jump",
     "distribution_shift",
@@ -115,6 +115,7 @@ pub const ALL_CODES: [&str; 58] = [
     "video_span_length",
     "video_span_beyond_end",
     "nonstandard_features",
+    "feature_shape_unknown",
     "non_finite",
     "action_constant",
     "idle_episode",
@@ -224,6 +225,9 @@ pub fn explain(code: &str) -> &'static str {
         "video_span_length" => "the episode's span in a shared video is not as long as the episode",
         "video_span_beyond_end" => "the episode's span reaches past the end of the video",
         "nonstandard_features" => "there is no action feature, which policies expect",
+        "feature_shape_unknown" => {
+            "a feature's shape in info.json has a null (variable) dimension, so its values are not checked"
+        }
         "non_finite" => "a float feature contains NaN or Inf",
         "action_constant" => "the action is identical on every frame",
         "idle_episode" => "more than half of the frames repeat the previous action",
@@ -417,6 +421,18 @@ pub(super) fn global_issues(
             None,
             "nonstandard_features",
             "no `observation.state` feature, which LeRobot policies expect".into(),
+        ));
+    }
+    for (key, _) in ds.info.features.iter().filter(|(_, f)| f.unknown_shape) {
+        v.push(tag(
+            None,
+            PHASE_META,
+            Warning,
+            None,
+            "feature_shape_unknown",
+            format!(
+                "`{key}` has a null dimension in its info.json shape, so its values are not checked"
+            ),
         ));
     }
     if ds.episodes.len() != ds.info.total_episodes {

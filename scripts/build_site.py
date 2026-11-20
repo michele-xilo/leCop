@@ -54,6 +54,7 @@ DESCRIPTIONS = {
     "episode_rows_missing": "A data file has no rows for the episode that points to it.",
     "episode_short": "An episode is shorter than a second (or 5 frames).",
     "feature_dtype": "A data column does not have the type that info.json declares.",
+    "feature_shape_unknown": "A feature's shape in info.json has a null dimension, so its values are not checked.",
     "feature_missing": "A feature declared in info.json has no data column.",
     "frame_count": "The frame total in info.json disagrees with the episode lengths.",
     "idle_episode": "More than half of the frames repeat the previous action.",

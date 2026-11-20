@@ -79,7 +79,7 @@ pub(super) fn parse_file(bytes: bytes::Bytes, ds: &Dataset) -> Result<FileData> 
             }
         }
         for (key, f) in &ds.info.features {
-            if f.dtype != "float32" && f.dtype != "float64" {
+            if f.dtype != "float32" && f.dtype != "float64" || f.unknown_shape {
                 continue;
             }
             let Some((vals, w)) = batch.column_by_name(key).and_then(flatten) else {
@@ -291,6 +291,7 @@ mod tests {
                 dtype: "float32".into(),
                 shape: vec![2, 2],
                 names: None,
+                unknown_shape: false,
             },
         )]);
         assert!(schema_problems(&features, &schema).is_empty());

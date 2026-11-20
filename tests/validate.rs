@@ -1931,6 +1931,18 @@ fn flags_a_scalar_column_declared_wider_in_info_json() {
 }
 
 #[test]
+fn a_feature_with_a_null_dimension_is_reported_and_the_rest_is_checked() {
+    // behavior-1k/2025-challenge-demos declares a variable-length vector as "shape": [null].
+    let v = v2_with_edit(|root| {
+        edit_info(root, |i| {
+            i["features"]["observation.state"]["shape"] = serde_json::json!([null])
+        });
+    });
+    assert_eq!(codes(&v), ["feature_shape_unknown"], "{v:?}");
+    assert!(v[0].message.contains("`observation.state`"), "{v:?}");
+}
+
+#[test]
 fn reports_a_data_file_that_is_not_parquet() {
     let v = v2_with_edit(|root| {
         fs::write(
