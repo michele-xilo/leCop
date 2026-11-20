@@ -26,7 +26,7 @@ All checks read metadata and parquet only: no video frame is decoded.
 | Episode frame ranges match their length, are contiguous, and the global `index` column agrees (v3) | Covered | `range_length`, `range_gap`, `index_mismatch` |
 | Every data parquet exists and is readable (an unfinalized or truncated file is not) | Covered | `data_missing`, `data_unreadable` |
 | Each episode has the rows its metadata says | Covered | `length_mismatch`, `episode_rows_missing` |
-| `timestamp` equals `frame_index / fps` within 1e-4 s, and increases | Covered | `timestamp_drift`, `timestamp_not_monotonic` |
+| `timestamp` equals `frame_index / fps` within 1e-4 s (or float32 rounding, past 2048 s), and increases | Covered | `timestamp_drift`, `timestamp_not_monotonic` |
 | `frame_index` runs `0..n-1` within each episode | Covered | `frame_index` |
 | The `timestamp` column exists and is a float | Covered | `timestamp_missing` |
 | Every declared feature has a data column of the declared dtype and width; no undeclared columns | Covered (list width for float features only; a multi-dimensional feature, stored as nested lists, is checked by its total width) | `feature_missing`, `feature_dtype`, `feature_shape`, `column_shape`, `feature_extra` (warning) |
