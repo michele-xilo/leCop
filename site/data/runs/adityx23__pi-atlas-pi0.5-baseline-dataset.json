@@ -1,0 +1,1806 @@
+{
+  "name": "adityx23__pi-atlas-pi0.5-baseline-dataset",
+  "repo": "adityx23/pi-atlas-pi0.5-baseline-dataset",
+  "revision": "57b443a11a8fdc4936feada1578b6671589f39dc",
+  "dataset": {
+    "format": "v2.1",
+    "episodes": 3167,
+    "frames": 1800255,
+    "fps": 30,
+    "robot": "yor"
+  },
+  "run": {
+    "wall_ms": 886.6,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "3fa12fd",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-20",
+    "decode": false,
+    "video": "skipped"
+  },
+  "errors": 46,
+  "warnings": 250,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 1 is at its minimum (0) in 16.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 8 is at its minimum (0) in 7.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 14 is at its minimum (0) in 51.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 15 is at its maximum (1) in 52.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 16 is at its minimum (0) in 51.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 22 is at its minimum (0) in 51.5% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 23 is at its minimum (0) in 25.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 28 is at its maximum (0) in 25.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "action: dimension 29 is at its minimum (0) in 25.9% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 33 reaches 22 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "action: dimension 34 reaches 12 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.imu: dimension 0 reaches 25 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.imu: dimension 3 reaches 18 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.imu: dimension 4 reaches 15 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.imu: dimension 5 reaches 23 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.imu: dimension 11 is at its minimum (0) in 34.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.imu: dimension 13 is at its minimum (0) in 34.1% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.imu: dimension 14 is at its minimum (0) in 34.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.imu: dimension 15 is at its minimum (0) in 34.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.imu: dimension 16 is at its minimum (0) in 34.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.imu: dimension 17 is at its minimum (0) in 34.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 2 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 3 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 11 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 14 is at its maximum (1) in 71.3% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 15 is at its maximum (1) in 64.2% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "clipped_dimension",
+      "message": "observation.state: dimension 30 is at its maximum (0.6740000247955322) in 5.0% of the frames"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "observation.state: dimension 31 reaches 11 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "action_jump",
+      "message": "and 394 more episodes with action jumps"
+    },
+    {
+      "severity": "warning",
+      "episode": 0,
+      "code": "action_jump",
+      "message": "4 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 2,
+      "code": "episode_length_outlier",
+      "message": "4573 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2,
+      "code": "action_jump",
+      "message": "21 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 3,
+      "code": "action_jump",
+      "message": "8 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 4,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 5,
+      "code": "episode_length_outlier",
+      "message": "3094 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 5,
+      "code": "action_jump",
+      "message": "22 frame-to-frame jumps in `action`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 6,
+      "code": "episode_length_outlier",
+      "message": "5728 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 11,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 76,
+      "code": "episode_length_outlier",
+      "message": "9350 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 76,
+      "code": "idle_episode",
+      "message": "73% of frames repeat the previous action; it first changes at frame 2 and last at frame 9340 of 9350"
+    },
+    {
+      "severity": "warning",
+      "episode": 76,
+      "code": "action_frozen",
+      "message": "action is identical for 4.5 s (136 frames) from frame 3659"
+    },
+    {
+      "severity": "warning",
+      "episode": 213,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 246,
+      "code": "idle_episode",
+      "message": "52% of frames repeat the previous action; it first changes at frame 14 and last at frame 220 of 228"
+    },
+    {
+      "severity": "warning",
+      "episode": 352,
+      "code": "idle_episode",
+      "message": "71% of frames repeat the previous action; it first changes at frame 1 and last at frame 763 of 2125"
+    },
+    {
+      "severity": "warning",
+      "episode": 369,
+      "code": "episode_short",
+      "message": "2 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 369,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 370,
+      "code": "episode_length_outlier",
+      "message": "9741 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 371,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 372,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 373,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 374,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 375,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 376,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 377,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 378,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 379,
+      "code": "episode_short",
+      "message": "19 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 379,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 380,
+      "code": "idle_episode",
+      "message": "81% of frames repeat the previous action; it first changes at frame 32 and last at frame 233 of 238"
+    },
+    {
+      "severity": "warning",
+      "episode": 510,
+      "code": "idle_episode",
+      "message": "61% of frames repeat the previous action; it first changes at frame 3 and last at frame 496 of 498"
+    },
+    {
+      "severity": "warning",
+      "episode": 674,
+      "code": "idle_episode",
+      "message": "53% of frames repeat the previous action; it first changes at frame 2 and last at frame 1747 of 1796"
+    },
+    {
+      "severity": "warning",
+      "episode": 696,
+      "code": "episode_short",
+      "message": "26 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 710,
+      "code": "episode_short",
+      "message": "20 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 797,
+      "code": "episode_short",
+      "message": "19 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 911,
+      "code": "action_frozen",
+      "message": "action is identical for 3.3 s (101 frames) from frame 312"
+    },
+    {
+      "severity": "warning",
+      "episode": 957,
+      "code": "episode_short",
+      "message": "22 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 957,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 1061,
+      "code": "idle_episode",
+      "message": "53% of frames repeat the previous action; it first changes at frame 1 and last at frame 412 of 414"
+    },
+    {
+      "severity": "warning",
+      "episode": 1099,
+      "code": "episode_short",
+      "message": "27 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1164,
+      "code": "episode_short",
+      "message": "14 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1241,
+      "code": "idle_episode",
+      "message": "66% of frames repeat the previous action; it first changes at frame 4 and last at frame 341 of 349"
+    },
+    {
+      "severity": "warning",
+      "episode": 1242,
+      "code": "idle_episode",
+      "message": "58% of frames repeat the previous action; it first changes at frame 29 and last at frame 1246 of 1250"
+    },
+    {
+      "severity": "warning",
+      "episode": 1243,
+      "code": "idle_episode",
+      "message": "60% of frames repeat the previous action; it first changes at frame 8 and last at frame 1943 of 1963"
+    },
+    {
+      "severity": "warning",
+      "episode": 1244,
+      "code": "idle_episode",
+      "message": "59% of frames repeat the previous action; it first changes at frame 19 and last at frame 240 of 241"
+    },
+    {
+      "severity": "warning",
+      "episode": 1246,
+      "code": "idle_episode",
+      "message": "52% of frames repeat the previous action; it first changes at frame 5 and last at frame 433 of 436"
+    },
+    {
+      "severity": "warning",
+      "episode": 1257,
+      "code": "episode_short",
+      "message": "13 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1257,
+      "code": "idle_episode",
+      "message": "67% of frames repeat the previous action; it first changes at frame 2 and last at frame 9 of 13"
+    },
+    {
+      "severity": "warning",
+      "episode": 1262,
+      "code": "idle_episode",
+      "message": "75% of frames repeat the previous action; it first changes at frame 12 and last at frame 117 of 127"
+    },
+    {
+      "severity": "warning",
+      "episode": 1274,
+      "code": "idle_episode",
+      "message": "52% of frames repeat the previous action; it first changes at frame 1 and last at frame 350 of 353"
+    },
+    {
+      "severity": "warning",
+      "episode": 1280,
+      "code": "episode_short",
+      "message": "25 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1280,
+      "code": "idle_episode",
+      "message": "67% of frames repeat the previous action; it first changes at frame 1 and last at frame 23 of 25"
+    },
+    {
+      "severity": "warning",
+      "episode": 1283,
+      "code": "idle_episode",
+      "message": "53% of frames repeat the previous action; it first changes at frame 1 and last at frame 1605 of 1614"
+    },
+    {
+      "severity": "warning",
+      "episode": 1284,
+      "code": "idle_episode",
+      "message": "54% of frames repeat the previous action; it first changes at frame 9 and last at frame 276 of 301"
+    },
+    {
+      "severity": "warning",
+      "episode": 1286,
+      "code": "idle_episode",
+      "message": "63% of frames repeat the previous action; it first changes at frame 3 and last at frame 225 of 238"
+    },
+    {
+      "severity": "warning",
+      "episode": 1352,
+      "code": "idle_episode",
+      "message": "52% of frames repeat the previous action; it first changes at frame 1 and last at frame 1452 of 1459"
+    },
+    {
+      "severity": "warning",
+      "episode": 1353,
+      "code": "idle_episode",
+      "message": "50% of frames repeat the previous action; it first changes at frame 2 and last at frame 212 of 221"
+    },
+    {
+      "severity": "warning",
+      "episode": 1374,
+      "code": "episode_short",
+      "message": "29 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1376,
+      "code": "idle_episode",
+      "message": "57% of frames repeat the previous action; it first changes at frame 3 and last at frame 1317 of 1328"
+    },
+    {
+      "severity": "warning",
+      "episode": 1384,
+      "code": "idle_episode",
+      "message": "52% of frames repeat the previous action; it first changes at frame 3 and last at frame 650 of 654"
+    },
+    {
+      "severity": "warning",
+      "episode": 1386,
+      "code": "idle_episode",
+      "message": "59% of frames repeat the previous action; it first changes at frame 3 and last at frame 606 of 608"
+    },
+    {
+      "severity": "warning",
+      "episode": 1387,
+      "code": "idle_episode",
+      "message": "50% of frames repeat the previous action; it first changes at frame 6 and last at frame 1686 of 1690"
+    },
+    {
+      "severity": "warning",
+      "episode": 1388,
+      "code": "idle_episode",
+      "message": "54% of frames repeat the previous action; it first changes at frame 1 and last at frame 800 of 808"
+    },
+    {
+      "severity": "warning",
+      "episode": 1389,
+      "code": "idle_episode",
+      "message": "88% of frames repeat the previous action; it first changes at frame 19 and last at frame 184 of 190"
+    },
+    {
+      "severity": "warning",
+      "episode": 1390,
+      "code": "idle_episode",
+      "message": "83% of frames repeat the previous action; it first changes at frame 4 and last at frame 140 of 141"
+    },
+    {
+      "severity": "warning",
+      "episode": 1391,
+      "code": "idle_episode",
+      "message": "83% of frames repeat the previous action; it first changes at frame 1 and last at frame 625 of 637"
+    },
+    {
+      "severity": "warning",
+      "episode": 1392,
+      "code": "episode_length_outlier",
+      "message": "3323 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1392,
+      "code": "idle_episode",
+      "message": "69% of frames repeat the previous action; it first changes at frame 3 and last at frame 3321 of 3323"
+    },
+    {
+      "severity": "warning",
+      "episode": 1393,
+      "code": "idle_episode",
+      "message": "67% of frames repeat the previous action; it first changes at frame 2 and last at frame 367 of 369"
+    },
+    {
+      "severity": "warning",
+      "episode": 1394,
+      "code": "idle_episode",
+      "message": "71% of frames repeat the previous action; it first changes at frame 5 and last at frame 631 of 634"
+    },
+    {
+      "severity": "warning",
+      "episode": 1395,
+      "code": "idle_episode",
+      "message": "66% of frames repeat the previous action; it first changes at frame 14 and last at frame 813 of 818"
+    },
+    {
+      "severity": "warning",
+      "episode": 1396,
+      "code": "episode_length_outlier",
+      "message": "3258 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1396,
+      "code": "idle_episode",
+      "message": "66% of frames repeat the previous action; it first changes at frame 1 and last at frame 3249 of 3258"
+    },
+    {
+      "severity": "warning",
+      "episode": 1397,
+      "code": "idle_episode",
+      "message": "67% of frames repeat the previous action; it first changes at frame 13 and last at frame 1132 of 1133"
+    },
+    {
+      "severity": "warning",
+      "episode": 1398,
+      "code": "idle_episode",
+      "message": "73% of frames repeat the previous action; it first changes at frame 1 and last at frame 1831 of 1852"
+    },
+    {
+      "severity": "warning",
+      "episode": 1399,
+      "code": "idle_episode",
+      "message": "80% of frames repeat the previous action; it first changes at frame 18 and last at frame 682 of 698"
+    },
+    {
+      "severity": "warning",
+      "episode": 1401,
+      "code": "idle_episode",
+      "message": "60% of frames repeat the previous action; it first changes at frame 1 and last at frame 1349 of 1378"
+    },
+    {
+      "severity": "warning",
+      "episode": 1404,
+      "code": "action_frozen",
+      "message": "action is identical for 3.5 s (107 frames) from frame 1012"
+    },
+    {
+      "severity": "warning",
+      "episode": 1406,
+      "code": "idle_episode",
+      "message": "62% of frames repeat the previous action; it first changes at frame 1 and last at frame 207 of 216"
+    },
+    {
+      "severity": "warning",
+      "episode": 1407,
+      "code": "idle_episode",
+      "message": "64% of frames repeat the previous action; it first changes at frame 24 and last at frame 1306 of 1323"
+    },
+    {
+      "severity": "warning",
+      "episode": 1408,
+      "code": "idle_episode",
+      "message": "52% of frames repeat the previous action; it first changes at frame 6 and last at frame 324 of 326"
+    },
+    {
+      "severity": "warning",
+      "episode": 1409,
+      "code": "idle_episode",
+      "message": "80% of frames repeat the previous action; it first changes at frame 2 and last at frame 1847 of 1850"
+    },
+    {
+      "severity": "warning",
+      "episode": 1409,
+      "code": "action_frozen",
+      "message": "action is identical for 31.2 s (936 frames) from frame 93"
+    },
+    {
+      "severity": "warning",
+      "episode": 1410,
+      "code": "idle_episode",
+      "message": "57% of frames repeat the previous action; it first changes at frame 1 and last at frame 187 of 218"
+    },
+    {
+      "severity": "warning",
+      "episode": 1421,
+      "code": "idle_episode",
+      "message": "54% of frames repeat the previous action; it first changes at frame 3 and last at frame 201 of 203"
+    },
+    {
+      "severity": "warning",
+      "episode": 1546,
+      "code": "idle_episode",
+      "message": "82% of frames repeat the previous action; it first changes at frame 8 and last at frame 38 of 41"
+    },
+    {
+      "severity": "warning",
+      "episode": 1784,
+      "code": "episode_short",
+      "message": "21 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1900,
+      "code": "episode_short",
+      "message": "21 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1990,
+      "code": "idle_episode",
+      "message": "81% of frames repeat the previous action; it first changes at frame 14 and last at frame 320 of 350"
+    },
+    {
+      "severity": "warning",
+      "episode": 1991,
+      "code": "idle_episode",
+      "message": "71% of frames repeat the previous action; it first changes at frame 12 and last at frame 1535 of 1551"
+    },
+    {
+      "severity": "warning",
+      "episode": 1992,
+      "code": "idle_episode",
+      "message": "74% of frames repeat the previous action; it first changes at frame 15 and last at frame 2708 of 2717"
+    },
+    {
+      "severity": "warning",
+      "episode": 1993,
+      "code": "idle_episode",
+      "message": "72% of frames repeat the previous action; it first changes at frame 3 and last at frame 938 of 944"
+    },
+    {
+      "severity": "warning",
+      "episode": 1994,
+      "code": "idle_episode",
+      "message": "77% of frames repeat the previous action; it first changes at frame 5 and last at frame 2401 of 2417"
+    },
+    {
+      "severity": "warning",
+      "episode": 1995,
+      "code": "idle_episode",
+      "message": "70% of frames repeat the previous action; it first changes at frame 24 and last at frame 893 of 908"
+    },
+    {
+      "severity": "warning",
+      "episode": 1996,
+      "code": "idle_episode",
+      "message": "75% of frames repeat the previous action; it first changes at frame 6 and last at frame 1593 of 1599"
+    },
+    {
+      "severity": "warning",
+      "episode": 1997,
+      "code": "idle_episode",
+      "message": "73% of frames repeat the previous action; it first changes at frame 6 and last at frame 2327 of 2331"
+    },
+    {
+      "severity": "warning",
+      "episode": 1998,
+      "code": "idle_episode",
+      "message": "71% of frames repeat the previous action; it first changes at frame 9 and last at frame 865 of 869"
+    },
+    {
+      "severity": "warning",
+      "episode": 1999,
+      "code": "episode_length_outlier",
+      "message": "3200 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1999,
+      "code": "idle_episode",
+      "message": "70% of frames repeat the previous action; it first changes at frame 5 and last at frame 3193 of 3200"
+    },
+    {
+      "severity": "warning",
+      "episode": 2000,
+      "code": "idle_episode",
+      "message": "60% of frames repeat the previous action; it first changes at frame 5 and last at frame 1305 of 1307"
+    },
+    {
+      "severity": "warning",
+      "episode": 2001,
+      "code": "idle_episode",
+      "message": "71% of frames repeat the previous action; it first changes at frame 4 and last at frame 1475 of 1494"
+    },
+    {
+      "severity": "warning",
+      "episode": 2002,
+      "code": "idle_episode",
+      "message": "73% of frames repeat the previous action; it first changes at frame 7 and last at frame 2203 of 2209"
+    },
+    {
+      "severity": "warning",
+      "episode": 2003,
+      "code": "idle_episode",
+      "message": "75% of frames repeat the previous action; it first changes at frame 21 and last at frame 817 of 824"
+    },
+    {
+      "severity": "warning",
+      "episode": 2004,
+      "code": "idle_episode",
+      "message": "76% of frames repeat the previous action; it first changes at frame 4 and last at frame 2480 of 2481"
+    },
+    {
+      "severity": "warning",
+      "episode": 2005,
+      "code": "idle_episode",
+      "message": "70% of frames repeat the previous action; it first changes at frame 9 and last at frame 966 of 969"
+    },
+    {
+      "severity": "warning",
+      "episode": 2006,
+      "code": "idle_episode",
+      "message": "70% of frames repeat the previous action; it first changes at frame 2 and last at frame 1320 of 1321"
+    },
+    {
+      "severity": "warning",
+      "episode": 2007,
+      "code": "idle_episode",
+      "message": "76% of frames repeat the previous action; it first changes at frame 5 and last at frame 2250 of 2256"
+    },
+    {
+      "severity": "warning",
+      "episode": 2008,
+      "code": "idle_episode",
+      "message": "73% of frames repeat the previous action; it first changes at frame 16 and last at frame 646 of 650"
+    },
+    {
+      "severity": "warning",
+      "episode": 2009,
+      "code": "idle_episode",
+      "message": "71% of frames repeat the previous action; it first changes at frame 1 and last at frame 1965 of 1968"
+    },
+    {
+      "severity": "warning",
+      "episode": 2010,
+      "code": "idle_episode",
+      "message": "71% of frames repeat the previous action; it first changes at frame 4 and last at frame 1093 of 1097"
+    },
+    {
+      "severity": "warning",
+      "episode": 2011,
+      "code": "idle_episode",
+      "message": "75% of frames repeat the previous action; it first changes at frame 1 and last at frame 1394 of 1396"
+    },
+    {
+      "severity": "warning",
+      "episode": 2012,
+      "code": "idle_episode",
+      "message": "75% of frames repeat the previous action; it first changes at frame 7 and last at frame 2106 of 2108"
+    },
+    {
+      "severity": "warning",
+      "episode": 2013,
+      "code": "idle_episode",
+      "message": "68% of frames repeat the previous action; it first changes at frame 5 and last at frame 388 of 394"
+    },
+    {
+      "severity": "warning",
+      "episode": 2014,
+      "code": "idle_episode",
+      "message": "70% of frames repeat the previous action; it first changes at frame 1 and last at frame 1590 of 1594"
+    },
+    {
+      "severity": "warning",
+      "episode": 2015,
+      "code": "idle_episode",
+      "message": "86% of frames repeat the previous action; it first changes at frame 11 and last at frame 153 of 171"
+    },
+    {
+      "severity": "warning",
+      "episode": 2016,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 2017,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 2018,
+      "code": "idle_episode",
+      "message": "87% of frames repeat the previous action; it first changes at frame 2 and last at frame 104 of 108"
+    },
+    {
+      "severity": "warning",
+      "episode": 2019,
+      "code": "idle_episode",
+      "message": "91% of frames repeat the previous action; it first changes at frame 2 and last at frame 67 of 81"
+    },
+    {
+      "severity": "warning",
+      "episode": 2020,
+      "code": "idle_episode",
+      "message": "97% of frames repeat the previous action; it first changes at frame 26 and last at frame 52 of 60"
+    },
+    {
+      "severity": "warning",
+      "episode": 2021,
+      "code": "idle_episode",
+      "message": "92% of frames repeat the previous action; it first changes at frame 3 and last at frame 118 of 129"
+    },
+    {
+      "severity": "warning",
+      "episode": 2022,
+      "code": "idle_episode",
+      "message": "96% of frames repeat the previous action; it first changes at frame 27 and last at frame 48 of 50"
+    },
+    {
+      "severity": "warning",
+      "episode": 2023,
+      "code": "idle_episode",
+      "message": "68% of frames repeat the previous action; it first changes at frame 2 and last at frame 528 of 536"
+    },
+    {
+      "severity": "warning",
+      "episode": 2024,
+      "code": "idle_episode",
+      "message": "77% of frames repeat the previous action; it first changes at frame 38 and last at frame 1589 of 1606"
+    },
+    {
+      "severity": "warning",
+      "episode": 2025,
+      "code": "idle_episode",
+      "message": "72% of frames repeat the previous action; it first changes at frame 10 and last at frame 527 of 538"
+    },
+    {
+      "severity": "warning",
+      "episode": 2026,
+      "code": "idle_episode",
+      "message": "71% of frames repeat the previous action; it first changes at frame 16 and last at frame 1929 of 1933"
+    },
+    {
+      "severity": "warning",
+      "episode": 2027,
+      "code": "idle_episode",
+      "message": "73% of frames repeat the previous action; it first changes at frame 14 and last at frame 1152 of 1153"
+    },
+    {
+      "severity": "warning",
+      "episode": 2028,
+      "code": "idle_episode",
+      "message": "68% of frames repeat the previous action; it first changes at frame 2 and last at frame 615 of 619"
+    },
+    {
+      "severity": "warning",
+      "episode": 2029,
+      "code": "idle_episode",
+      "message": "76% of frames repeat the previous action; it first changes at frame 5 and last at frame 1582 of 1587"
+    },
+    {
+      "severity": "warning",
+      "episode": 2030,
+      "code": "idle_episode",
+      "message": "65% of frames repeat the previous action; it first changes at frame 11 and last at frame 566 of 576"
+    },
+    {
+      "severity": "warning",
+      "episode": 2031,
+      "code": "idle_episode",
+      "message": "66% of frames repeat the previous action; it first changes at frame 9 and last at frame 2529 of 2534"
+    },
+    {
+      "severity": "warning",
+      "episode": 2032,
+      "code": "idle_episode",
+      "message": "70% of frames repeat the previous action; it first changes at frame 5 and last at frame 1283 of 1286"
+    },
+    {
+      "severity": "warning",
+      "episode": 2033,
+      "code": "idle_episode",
+      "message": "61% of frames repeat the previous action; it first changes at frame 2 and last at frame 456 of 459"
+    },
+    {
+      "severity": "warning",
+      "episode": 2034,
+      "code": "idle_episode",
+      "message": "71% of frames repeat the previous action; it first changes at frame 2 and last at frame 1646 of 1649"
+    },
+    {
+      "severity": "warning",
+      "episode": 2035,
+      "code": "idle_episode",
+      "message": "75% of frames repeat the previous action; it first changes at frame 3 and last at frame 443 of 454"
+    },
+    {
+      "severity": "warning",
+      "episode": 2036,
+      "code": "idle_episode",
+      "message": "68% of frames repeat the previous action; it first changes at frame 5 and last at frame 2123 of 2125"
+    },
+    {
+      "severity": "warning",
+      "episode": 2037,
+      "code": "idle_episode",
+      "message": "72% of frames repeat the previous action; it first changes at frame 3 and last at frame 1065 of 1066"
+    },
+    {
+      "severity": "warning",
+      "episode": 2038,
+      "code": "idle_episode",
+      "message": "69% of frames repeat the previous action; it first changes at frame 3 and last at frame 420 of 425"
+    },
+    {
+      "severity": "warning",
+      "episode": 2039,
+      "code": "idle_episode",
+      "message": "76% of frames repeat the previous action; it first changes at frame 4 and last at frame 1552 of 1559"
+    },
+    {
+      "severity": "warning",
+      "episode": 2040,
+      "code": "idle_episode",
+      "message": "76% of frames repeat the previous action; it first changes at frame 8 and last at frame 441 of 443"
+    },
+    {
+      "severity": "warning",
+      "episode": 2041,
+      "code": "idle_episode",
+      "message": "77% of frames repeat the previous action; it first changes at frame 2 and last at frame 2100 of 2104"
+    },
+    {
+      "severity": "warning",
+      "episode": 2042,
+      "code": "idle_episode",
+      "message": "73% of frames repeat the previous action; it first changes at frame 22 and last at frame 1295 of 1296"
+    },
+    {
+      "severity": "warning",
+      "episode": 2043,
+      "code": "idle_episode",
+      "message": "70% of frames repeat the previous action; it first changes at frame 4 and last at frame 444 of 461"
+    },
+    {
+      "severity": "warning",
+      "episode": 2044,
+      "code": "idle_episode",
+      "message": "75% of frames repeat the previous action; it first changes at frame 11 and last at frame 1998 of 2001"
+    },
+    {
+      "severity": "warning",
+      "episode": 2045,
+      "code": "idle_episode",
+      "message": "70% of frames repeat the previous action; it first changes at frame 2 and last at frame 536 of 540"
+    },
+    {
+      "severity": "warning",
+      "episode": 2046,
+      "code": "idle_episode",
+      "message": "76% of frames repeat the previous action; it first changes at frame 4 and last at frame 1916 of 1917"
+    },
+    {
+      "severity": "warning",
+      "episode": 2047,
+      "code": "idle_episode",
+      "message": "71% of frames repeat the previous action; it first changes at frame 14 and last at frame 1371 of 1372"
+    },
+    {
+      "severity": "warning",
+      "episode": 2048,
+      "code": "idle_episode",
+      "message": "60% of frames repeat the previous action; it first changes at frame 1 and last at frame 52 of 59"
+    },
+    {
+      "severity": "warning",
+      "episode": 2055,
+      "code": "episode_short",
+      "message": "16 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2059,
+      "code": "episode_short",
+      "message": "25 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2111,
+      "code": "episode_short",
+      "message": "22 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2145,
+      "code": "episode_short",
+      "message": "13 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2230,
+      "code": "episode_short",
+      "message": "17 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2264,
+      "code": "episode_short",
+      "message": "26 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2269,
+      "code": "idle_episode",
+      "message": "57% of frames repeat the previous action; it first changes at frame 2 and last at frame 1496 of 1506"
+    },
+    {
+      "severity": "warning",
+      "episode": 2269,
+      "code": "action_frozen",
+      "message": "action is identical for 5.3 s (160 frames) from frame 1054"
+    },
+    {
+      "severity": "warning",
+      "episode": 2270,
+      "code": "idle_episode",
+      "message": "81% of frames repeat the previous action; it first changes at frame 6 and last at frame 498 of 504"
+    },
+    {
+      "severity": "warning",
+      "episode": 2279,
+      "code": "episode_short",
+      "message": "16 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2368,
+      "code": "episode_short",
+      "message": "4 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2380,
+      "code": "idle_episode",
+      "message": "60% of frames repeat the previous action; it first changes at frame 2 and last at frame 1027 of 1033"
+    },
+    {
+      "severity": "warning",
+      "episode": 2511,
+      "code": "idle_episode",
+      "message": "51% of frames repeat the previous action; it first changes at frame 1 and last at frame 366 of 367"
+    },
+    {
+      "severity": "warning",
+      "episode": 2604,
+      "code": "episode_length_outlier",
+      "message": "3648 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2606,
+      "code": "episode_length_outlier",
+      "message": "5030 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2608,
+      "code": "episode_length_outlier",
+      "message": "3789 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2615,
+      "code": "idle_episode",
+      "message": "55% of frames repeat the previous action; it first changes at frame 1 and last at frame 1118 of 1119"
+    },
+    {
+      "severity": "warning",
+      "episode": 2615,
+      "code": "action_frozen",
+      "message": "action is identical for 7.2 s (216 frames) from frame 583"
+    },
+    {
+      "severity": "warning",
+      "episode": 2619,
+      "code": "episode_length_outlier",
+      "message": "3649 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2622,
+      "code": "episode_length_outlier",
+      "message": "5087 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2624,
+      "code": "episode_length_outlier",
+      "message": "4379 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2627,
+      "code": "episode_length_outlier",
+      "message": "4852 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2633,
+      "code": "episode_length_outlier",
+      "message": "3182 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2636,
+      "code": "episode_length_outlier",
+      "message": "3119 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2641,
+      "code": "episode_length_outlier",
+      "message": "4441 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2643,
+      "code": "episode_length_outlier",
+      "message": "3141 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2646,
+      "code": "episode_length_outlier",
+      "message": "3701 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2646,
+      "code": "idle_episode",
+      "message": "68% of frames repeat the previous action; it first changes at frame 7 and last at frame 3668 of 3701"
+    },
+    {
+      "severity": "warning",
+      "episode": 2647,
+      "code": "idle_episode",
+      "message": "88% of frames repeat the previous action; it first changes at frame 123 and last at frame 163 of 168"
+    },
+    {
+      "severity": "warning",
+      "episode": 2648,
+      "code": "episode_length_outlier",
+      "message": "20212 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2648,
+      "code": "idle_episode",
+      "message": "65% of frames repeat the previous action; it first changes at frame 22 and last at frame 20200 of 20212"
+    },
+    {
+      "severity": "warning",
+      "episode": 2649,
+      "code": "episode_length_outlier",
+      "message": "10047 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2649,
+      "code": "idle_episode",
+      "message": "74% of frames repeat the previous action; it first changes at frame 235 and last at frame 10015 of 10047"
+    },
+    {
+      "severity": "warning",
+      "episode": 2649,
+      "code": "action_frozen",
+      "message": "action is identical for 3.1 s (93 frames) from frame 7946"
+    },
+    {
+      "severity": "warning",
+      "episode": 2650,
+      "code": "idle_episode",
+      "message": "99% of frames repeat the previous action; it first changes at frame 101 and last at frame 101 of 112"
+    },
+    {
+      "severity": "warning",
+      "episode": 2651,
+      "code": "idle_episode",
+      "message": "79% of frames repeat the previous action; it first changes at frame 25 and last at frame 156 of 200"
+    },
+    {
+      "severity": "warning",
+      "episode": 2737,
+      "code": "episode_short",
+      "message": "27 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2744,
+      "code": "episode_length_outlier",
+      "message": "4825 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2746,
+      "code": "idle_episode",
+      "message": "61% of frames repeat the previous action; it first changes at frame 1 and last at frame 1727 of 1729"
+    },
+    {
+      "severity": "warning",
+      "episode": 2755,
+      "code": "idle_episode",
+      "message": "57% of frames repeat the previous action; it first changes at frame 4 and last at frame 354 of 369"
+    },
+    {
+      "severity": "warning",
+      "episode": 2756,
+      "code": "episode_length_outlier",
+      "message": "3129 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2801,
+      "code": "idle_episode",
+      "message": "59% of frames repeat the previous action; it first changes at frame 2 and last at frame 1543 of 1546"
+    },
+    {
+      "severity": "warning",
+      "episode": 2803,
+      "code": "idle_episode",
+      "message": "85% of frames repeat the previous action; it first changes at frame 12 and last at frame 1273 of 1275"
+    },
+    {
+      "severity": "warning",
+      "episode": 2803,
+      "code": "action_frozen",
+      "message": "action is identical for 3.1 s (93 frames) from frame 905"
+    },
+    {
+      "severity": "warning",
+      "episode": 2811,
+      "code": "action_frozen",
+      "message": "action is identical for 4.7 s (142 frames) from frame 897"
+    },
+    {
+      "severity": "warning",
+      "episode": 2844,
+      "code": "episode_short",
+      "message": "29 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2869,
+      "code": "episode_length_outlier",
+      "message": "2730 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2876,
+      "code": "idle_episode",
+      "message": "84% of frames repeat the previous action; it first changes at frame 8 and last at frame 46 of 58"
+    },
+    {
+      "severity": "warning",
+      "episode": 2878,
+      "code": "idle_episode",
+      "message": "59% of frames repeat the previous action; it first changes at frame 2 and last at frame 946 of 964"
+    },
+    {
+      "severity": "warning",
+      "episode": 2878,
+      "code": "action_frozen",
+      "message": "action is identical for 3.1 s (94 frames) from frame 493"
+    },
+    {
+      "severity": "warning",
+      "episode": 2880,
+      "code": "episode_length_outlier",
+      "message": "3418 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2891,
+      "code": "idle_episode",
+      "message": "63% of frames repeat the previous action; it first changes at frame 3 and last at frame 22 of 55"
+    },
+    {
+      "severity": "warning",
+      "episode": 2896,
+      "code": "episode_length_outlier",
+      "message": "5976 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2905,
+      "code": "episode_length_outlier",
+      "message": "2808 frames, much longer than the other episodes (mean 568, std 717 over 3167 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2908,
+      "code": "episode_short",
+      "message": "13 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 2908,
+      "code": "idle_episode",
+      "message": "75% of frames repeat the previous action; it first changes at frame 1 and last at frame 7 of 13"
+    },
+    {
+      "severity": "warning",
+      "episode": 2916,
+      "code": "action_frozen",
+      "message": "action is identical for 3.4 s (103 frames) from frame 84"
+    },
+    {
+      "severity": "warning",
+      "episode": 2919,
+      "code": "idle_episode",
+      "message": "58% of frames repeat the previous action; it first changes at frame 1 and last at frame 2528 of 2530"
+    },
+    {
+      "severity": "warning",
+      "episode": 2941,
+      "code": "idle_episode",
+      "message": "97% of frames repeat the previous action; it first changes at frame 11 and last at frame 153 of 165"
+    },
+    {
+      "severity": "warning",
+      "episode": 2942,
+      "code": "idle_episode",
+      "message": "57% of frames repeat the previous action; it first changes at frame 2 and last at frame 528 of 535"
+    },
+    {
+      "severity": "warning",
+      "episode": 2943,
+      "code": "idle_episode",
+      "message": "60% of frames repeat the previous action; it first changes at frame 2 and last at frame 1292 of 1296"
+    },
+    {
+      "severity": "warning",
+      "episode": 2946,
+      "code": "idle_episode",
+      "message": "54% of frames repeat the previous action; it first changes at frame 3 and last at frame 1300 of 1303"
+    },
+    {
+      "severity": "warning",
+      "episode": 2947,
+      "code": "idle_episode",
+      "message": "54% of frames repeat the previous action; it first changes at frame 4 and last at frame 433 of 441"
+    },
+    {
+      "severity": "warning",
+      "episode": 2948,
+      "code": "idle_episode",
+      "message": "66% of frames repeat the previous action; it first changes at frame 17 and last at frame 266 of 296"
+    },
+    {
+      "severity": "warning",
+      "episode": 2949,
+      "code": "idle_episode",
+      "message": "52% of frames repeat the previous action; it first changes at frame 22 and last at frame 216 of 217"
+    },
+    {
+      "severity": "warning",
+      "episode": 2951,
+      "code": "idle_episode",
+      "message": "55% of frames repeat the previous action; it first changes at frame 1 and last at frame 294 of 296"
+    },
+    {
+      "severity": "warning",
+      "episode": 2952,
+      "code": "idle_episode",
+      "message": "59% of frames repeat the previous action; it first changes at frame 6 and last at frame 1227 of 1237"
+    },
+    {
+      "severity": "warning",
+      "episode": 2953,
+      "code": "idle_episode",
+      "message": "67% of frames repeat the previous action; it first changes at frame 1 and last at frame 361 of 362"
+    },
+    {
+      "severity": "warning",
+      "episode": 2954,
+      "code": "idle_episode",
+      "message": "60% of frames repeat the previous action; it first changes at frame 4 and last at frame 519 of 522"
+    },
+    {
+      "severity": "warning",
+      "episode": 2955,
+      "code": "idle_episode",
+      "message": "57% of frames repeat the previous action; it first changes at frame 1 and last at frame 894 of 898"
+    },
+    {
+      "severity": "warning",
+      "episode": 2957,
+      "code": "idle_episode",
+      "message": "50% of frames repeat the previous action; it first changes at frame 2 and last at frame 648 of 649"
+    },
+    {
+      "severity": "warning",
+      "episode": 2958,
+      "code": "idle_episode",
+      "message": "55% of frames repeat the previous action; it first changes at frame 1 and last at frame 1038 of 1040"
+    },
+    {
+      "severity": "warning",
+      "episode": 2976,
+      "code": "idle_episode",
+      "message": "70% of frames repeat the previous action; it first changes at frame 12 and last at frame 557 of 559"
+    },
+    {
+      "severity": "warning",
+      "episode": 2985,
+      "code": "idle_episode",
+      "message": "100% of frames repeat the previous action; it first changes at frame 504 and last at frame 504 of 505"
+    },
+    {
+      "severity": "error",
+      "episode": 3121,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003121.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3122,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003122.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3123,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003123.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3124,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003124.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3125,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003125.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3126,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003126.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3127,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003127.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3128,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003128.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3129,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003129.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3130,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003130.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3131,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003131.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3132,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003132.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3133,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003133.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3134,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003134.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3135,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003135.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3136,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003136.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3137,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003137.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3138,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003138.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3139,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003139.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3140,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003140.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3141,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003141.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3142,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003142.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3143,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003143.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3144,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003144.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3145,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003145.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3146,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003146.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3147,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003147.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3148,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003148.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3149,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003149.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3150,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003150.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3151,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003151.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3152,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003152.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3153,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003153.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3154,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003154.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3155,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003155.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3156,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003156.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3157,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003157.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3158,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003158.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3159,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003159.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3160,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003160.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3161,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003161.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3162,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003162.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3163,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003163.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3164,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003164.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3165,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003165.parquet"
+    },
+    {
+      "severity": "error",
+      "episode": 3166,
+      "code": "data_missing",
+      "message": "data/chunk-031/episode_003166.parquet"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "name": "lerobot__svla_so100_stacking",
+  "repo": "lerobot/svla_so100_stacking",
+  "revision": "933bcc61148b1b560d1a13753b47eac54a085561",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 56,
+    "frames": 22956,
+    "fps": 30,
+    "robot": "so100"
+  },
+  "run": {
+    "wall_ms": 8.6,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "3fa12fd",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-20",
+    "decode": false,
+    "video": "skipped"
+  },
+  "errors": 0,
+  "warnings": 7,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": 20,
+      "code": "episode_short",
+      "message": "1 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 37,
+      "code": "episode_short",
+      "message": "14 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 37,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 38,
+      "code": "episode_short",
+      "message": "28 frames, under one second (30 frames at 30 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 38,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 39,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    },
+    {
+      "severity": "warning",
+      "episode": 55,
+      "code": "action_constant",
+      "message": "action is identical on every frame"
+    }
+  ]
+}

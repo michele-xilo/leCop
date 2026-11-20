@@ -1,0 +1,3732 @@
+{
+  "name": "albertwilcox__mesa-all-train-lerobot",
+  "repo": "albertwilcox/mesa-all-train-lerobot",
+  "revision": "3fb0095613c4b638e20b2278375491b5a45d2642",
+  "dataset": {
+    "format": "v3.0",
+    "episodes": 81091,
+    "frames": 11751689,
+    "fps": 20,
+    "robot": "panda"
+  },
+  "run": {
+    "wall_ms": 9885.7,
+    "runs": 5,
+    "cache": "warm",
+    "threads": 24,
+    "lecop_version": "0.3.1",
+    "lecop_commit": "3fa12fd",
+    "rustc": "1.99.0",
+    "machine": "AMD Ryzen 9 7900X 12-Core Processor",
+    "os": "Linux 7.0.0-42-generic",
+    "date": "2026-11-20",
+    "decode": false,
+    "video": "skipped"
+  },
+  "errors": 0,
+  "warnings": 617,
+  "issues": [
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `action` feature, which LeRobot policies expect; running the action checks on `actions`"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "nonstandard_features",
+      "message": "no `observation.state` feature, which LeRobot policies expect"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "actions: dimension 0 reaches 30 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "actions: dimension 1 reaches 23 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "actions: dimension 2 reaches 33 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "actions: dimension 3 reaches 13 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "outlier_values",
+      "message": "actions: dimension 4 reaches 10 standard deviations from its mean"
+    },
+    {
+      "severity": "warning",
+      "episode": null,
+      "code": "action_jump",
+      "message": "and 101 more episodes with action jumps"
+    },
+    {
+      "severity": "warning",
+      "episode": 1306,
+      "code": "episode_length_outlier",
+      "message": "311 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1308,
+      "code": "episode_length_outlier",
+      "message": "305 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1316,
+      "code": "episode_length_outlier",
+      "message": "304 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1320,
+      "code": "episode_length_outlier",
+      "message": "319 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1323,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1326,
+      "code": "episode_length_outlier",
+      "message": "308 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1327,
+      "code": "episode_length_outlier",
+      "message": "302 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1333,
+      "code": "episode_length_outlier",
+      "message": "323 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1345,
+      "code": "episode_length_outlier",
+      "message": "323 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1349,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1351,
+      "code": "episode_length_outlier",
+      "message": "323 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1353,
+      "code": "episode_length_outlier",
+      "message": "353 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1360,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1368,
+      "code": "episode_length_outlier",
+      "message": "315 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1374,
+      "code": "episode_length_outlier",
+      "message": "316 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1376,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1377,
+      "code": "episode_length_outlier",
+      "message": "350 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1394,
+      "code": "episode_length_outlier",
+      "message": "294 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1402,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1403,
+      "code": "episode_length_outlier",
+      "message": "325 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 1403,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `actions`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 1406,
+      "code": "episode_length_outlier",
+      "message": "302 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 3418,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `actions`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 3427,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 3435,
+      "code": "episode_length_outlier",
+      "message": "314 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 3482,
+      "code": "episode_length_outlier",
+      "message": "313 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 3518,
+      "code": "episode_length_outlier",
+      "message": "309 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 3905,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `actions`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 3910,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `actions`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 4482,
+      "code": "action_jump",
+      "message": "1 frame-to-frame jump in `actions`, each over 8 standard deviations of the usual step"
+    },
+    {
+      "severity": "warning",
+      "episode": 6761,
+      "code": "episode_length_outlier",
+      "message": "331 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 6772,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 6794,
+      "code": "episode_length_outlier",
+      "message": "307 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 6801,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 6804,
+      "code": "episode_length_outlier",
+      "message": "312 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 6820,
+      "code": "episode_length_outlier",
+      "message": "295 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 6824,
+      "code": "episode_length_outlier",
+      "message": "304 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 6827,
+      "code": "episode_length_outlier",
+      "message": "305 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 6833,
+      "code": "episode_length_outlier",
+      "message": "295 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 6837,
+      "code": "episode_length_outlier",
+      "message": "294 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 7079,
+      "code": "episode_length_outlier",
+      "message": "299 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 8192,
+      "code": "episode_length_outlier",
+      "message": "295 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 8233,
+      "code": "episode_length_outlier",
+      "message": "308 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 9176,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 13497,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 13505,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 13536,
+      "code": "episode_length_outlier",
+      "message": "317 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 13545,
+      "code": "episode_length_outlier",
+      "message": "328 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 13547,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 13574,
+      "code": "episode_length_outlier",
+      "message": "297 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 13578,
+      "code": "episode_length_outlier",
+      "message": "315 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 13583,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 13809,
+      "code": "episode_length_outlier",
+      "message": "319 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 16580,
+      "code": "episode_short",
+      "message": "13 frames, under one second (20 frames at 20 fps)"
+    },
+    {
+      "severity": "warning",
+      "episode": 17690,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17609"
+    },
+    {
+      "severity": "warning",
+      "episode": 17691,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17611"
+    },
+    {
+      "severity": "warning",
+      "episode": 17692,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17615"
+    },
+    {
+      "severity": "warning",
+      "episode": 17693,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17616"
+    },
+    {
+      "severity": "warning",
+      "episode": 17694,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17617"
+    },
+    {
+      "severity": "warning",
+      "episode": 17695,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17621"
+    },
+    {
+      "severity": "warning",
+      "episode": 17696,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17622"
+    },
+    {
+      "severity": "warning",
+      "episode": 17697,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17634"
+    },
+    {
+      "severity": "warning",
+      "episode": 17698,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17635"
+    },
+    {
+      "severity": "warning",
+      "episode": 17699,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17637"
+    },
+    {
+      "severity": "warning",
+      "episode": 17700,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17638"
+    },
+    {
+      "severity": "warning",
+      "episode": 17701,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17640"
+    },
+    {
+      "severity": "warning",
+      "episode": 17702,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17642"
+    },
+    {
+      "severity": "warning",
+      "episode": 17703,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17643"
+    },
+    {
+      "severity": "warning",
+      "episode": 17704,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17647"
+    },
+    {
+      "severity": "warning",
+      "episode": 17705,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17650"
+    },
+    {
+      "severity": "warning",
+      "episode": 17706,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17651"
+    },
+    {
+      "severity": "warning",
+      "episode": 17707,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17653"
+    },
+    {
+      "severity": "warning",
+      "episode": 17708,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17658"
+    },
+    {
+      "severity": "warning",
+      "episode": 17709,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17659"
+    },
+    {
+      "severity": "warning",
+      "episode": 17710,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17661"
+    },
+    {
+      "severity": "warning",
+      "episode": 17711,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17662"
+    },
+    {
+      "severity": "warning",
+      "episode": 17712,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17664"
+    },
+    {
+      "severity": "warning",
+      "episode": 17713,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17666"
+    },
+    {
+      "severity": "warning",
+      "episode": 17714,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17667"
+    },
+    {
+      "severity": "warning",
+      "episode": 17715,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17668"
+    },
+    {
+      "severity": "warning",
+      "episode": 17716,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17669"
+    },
+    {
+      "severity": "warning",
+      "episode": 17717,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17671"
+    },
+    {
+      "severity": "warning",
+      "episode": 17718,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17675"
+    },
+    {
+      "severity": "warning",
+      "episode": 17719,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17680"
+    },
+    {
+      "severity": "warning",
+      "episode": 17720,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17681"
+    },
+    {
+      "severity": "warning",
+      "episode": 17721,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17682"
+    },
+    {
+      "severity": "warning",
+      "episode": 17722,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17683"
+    },
+    {
+      "severity": "warning",
+      "episode": 17723,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17684"
+    },
+    {
+      "severity": "warning",
+      "episode": 17724,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17685"
+    },
+    {
+      "severity": "warning",
+      "episode": 17725,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17686"
+    },
+    {
+      "severity": "warning",
+      "episode": 17726,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17687"
+    },
+    {
+      "severity": "warning",
+      "episode": 17727,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17688"
+    },
+    {
+      "severity": "warning",
+      "episode": 17728,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 17689"
+    },
+    {
+      "severity": "warning",
+      "episode": 19547,
+      "code": "episode_length_outlier",
+      "message": "332 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 19565,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 19569,
+      "code": "episode_length_outlier",
+      "message": "299 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 19597,
+      "code": "episode_length_outlier",
+      "message": "294 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 19599,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 19619,
+      "code": "episode_length_outlier",
+      "message": "296 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 19621,
+      "code": "episode_length_outlier",
+      "message": "306 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 23062,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 23109,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23044"
+    },
+    {
+      "severity": "warning",
+      "episode": 23110,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23046"
+    },
+    {
+      "severity": "warning",
+      "episode": 23111,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23047"
+    },
+    {
+      "severity": "warning",
+      "episode": 23112,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23050"
+    },
+    {
+      "severity": "warning",
+      "episode": 23113,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23052"
+    },
+    {
+      "severity": "warning",
+      "episode": 23114,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23053"
+    },
+    {
+      "severity": "warning",
+      "episode": 23115,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23056"
+    },
+    {
+      "severity": "warning",
+      "episode": 23116,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 23116,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23062"
+    },
+    {
+      "severity": "warning",
+      "episode": 23117,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23070"
+    },
+    {
+      "severity": "warning",
+      "episode": 23118,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23071"
+    },
+    {
+      "severity": "warning",
+      "episode": 23119,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23072"
+    },
+    {
+      "severity": "warning",
+      "episode": 23120,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23074"
+    },
+    {
+      "severity": "warning",
+      "episode": 23121,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23076"
+    },
+    {
+      "severity": "warning",
+      "episode": 23122,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23077"
+    },
+    {
+      "severity": "warning",
+      "episode": 23123,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23083"
+    },
+    {
+      "severity": "warning",
+      "episode": 23124,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23084"
+    },
+    {
+      "severity": "warning",
+      "episode": 23125,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23087"
+    },
+    {
+      "severity": "warning",
+      "episode": 23126,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23093"
+    },
+    {
+      "severity": "warning",
+      "episode": 23127,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23096"
+    },
+    {
+      "severity": "warning",
+      "episode": 23128,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23097"
+    },
+    {
+      "severity": "warning",
+      "episode": 23129,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23099"
+    },
+    {
+      "severity": "warning",
+      "episode": 23130,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23101"
+    },
+    {
+      "severity": "warning",
+      "episode": 23131,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23102"
+    },
+    {
+      "severity": "warning",
+      "episode": 23132,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23104"
+    },
+    {
+      "severity": "warning",
+      "episode": 23133,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23105"
+    },
+    {
+      "severity": "warning",
+      "episode": 23134,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23106"
+    },
+    {
+      "severity": "warning",
+      "episode": 23135,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23107"
+    },
+    {
+      "severity": "warning",
+      "episode": 23136,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23108"
+    },
+    {
+      "severity": "warning",
+      "episode": 23137,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23044"
+    },
+    {
+      "severity": "warning",
+      "episode": 23138,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23046"
+    },
+    {
+      "severity": "warning",
+      "episode": 23139,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23047"
+    },
+    {
+      "severity": "warning",
+      "episode": 23140,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23050"
+    },
+    {
+      "severity": "warning",
+      "episode": 23141,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23052"
+    },
+    {
+      "severity": "warning",
+      "episode": 23142,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23053"
+    },
+    {
+      "severity": "warning",
+      "episode": 23143,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23056"
+    },
+    {
+      "severity": "warning",
+      "episode": 23144,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 23144,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23062"
+    },
+    {
+      "severity": "warning",
+      "episode": 23145,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23070"
+    },
+    {
+      "severity": "warning",
+      "episode": 23146,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23071"
+    },
+    {
+      "severity": "warning",
+      "episode": 23147,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23072"
+    },
+    {
+      "severity": "warning",
+      "episode": 23148,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23074"
+    },
+    {
+      "severity": "warning",
+      "episode": 23149,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23076"
+    },
+    {
+      "severity": "warning",
+      "episode": 23150,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23077"
+    },
+    {
+      "severity": "warning",
+      "episode": 23151,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23083"
+    },
+    {
+      "severity": "warning",
+      "episode": 23152,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23084"
+    },
+    {
+      "severity": "warning",
+      "episode": 23153,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23044"
+    },
+    {
+      "severity": "warning",
+      "episode": 23154,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23046"
+    },
+    {
+      "severity": "warning",
+      "episode": 23155,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23047"
+    },
+    {
+      "severity": "warning",
+      "episode": 23156,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23050"
+    },
+    {
+      "severity": "warning",
+      "episode": 23157,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23052"
+    },
+    {
+      "severity": "warning",
+      "episode": 23158,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23053"
+    },
+    {
+      "severity": "warning",
+      "episode": 23159,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23056"
+    },
+    {
+      "severity": "warning",
+      "episode": 23160,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 23160,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23062"
+    },
+    {
+      "severity": "warning",
+      "episode": 23161,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23070"
+    },
+    {
+      "severity": "warning",
+      "episode": 23162,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23071"
+    },
+    {
+      "severity": "warning",
+      "episode": 23163,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23072"
+    },
+    {
+      "severity": "warning",
+      "episode": 23164,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23074"
+    },
+    {
+      "severity": "warning",
+      "episode": 23165,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23076"
+    },
+    {
+      "severity": "warning",
+      "episode": 23166,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23077"
+    },
+    {
+      "severity": "warning",
+      "episode": 23167,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23083"
+    },
+    {
+      "severity": "warning",
+      "episode": 23168,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23084"
+    },
+    {
+      "severity": "warning",
+      "episode": 23169,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23087"
+    },
+    {
+      "severity": "warning",
+      "episode": 23170,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23093"
+    },
+    {
+      "severity": "warning",
+      "episode": 23171,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23096"
+    },
+    {
+      "severity": "warning",
+      "episode": 23172,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23097"
+    },
+    {
+      "severity": "warning",
+      "episode": 23173,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23099"
+    },
+    {
+      "severity": "warning",
+      "episode": 23174,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23101"
+    },
+    {
+      "severity": "warning",
+      "episode": 23175,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23102"
+    },
+    {
+      "severity": "warning",
+      "episode": 23176,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23104"
+    },
+    {
+      "severity": "warning",
+      "episode": 23177,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23105"
+    },
+    {
+      "severity": "warning",
+      "episode": 23178,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23106"
+    },
+    {
+      "severity": "warning",
+      "episode": 23179,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 23107"
+    },
+    {
+      "severity": "warning",
+      "episode": 24414,
+      "code": "episode_length_outlier",
+      "message": "307 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 24431,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 24447,
+      "code": "episode_length_outlier",
+      "message": "308 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 24473,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 24502,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 25227,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 25228,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 25236,
+      "code": "episode_length_outlier",
+      "message": "302 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 25299,
+      "code": "episode_length_outlier",
+      "message": "307 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 25305,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 26515,
+      "code": "episode_length_outlier",
+      "message": "303 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 26558,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 26566,
+      "code": "episode_length_outlier",
+      "message": "295 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 26593,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26514"
+    },
+    {
+      "severity": "warning",
+      "episode": 26594,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26521"
+    },
+    {
+      "severity": "warning",
+      "episode": 26595,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26526"
+    },
+    {
+      "severity": "warning",
+      "episode": 26596,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26528"
+    },
+    {
+      "severity": "warning",
+      "episode": 26597,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26529"
+    },
+    {
+      "severity": "warning",
+      "episode": 26598,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26530"
+    },
+    {
+      "severity": "warning",
+      "episode": 26599,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26531"
+    },
+    {
+      "severity": "warning",
+      "episode": 26600,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26539"
+    },
+    {
+      "severity": "warning",
+      "episode": 26601,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26544"
+    },
+    {
+      "severity": "warning",
+      "episode": 26602,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26549"
+    },
+    {
+      "severity": "warning",
+      "episode": 26603,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26550"
+    },
+    {
+      "severity": "warning",
+      "episode": 26604,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26554"
+    },
+    {
+      "severity": "warning",
+      "episode": 26605,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26561"
+    },
+    {
+      "severity": "warning",
+      "episode": 26606,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26564"
+    },
+    {
+      "severity": "warning",
+      "episode": 26607,
+      "code": "episode_length_outlier",
+      "message": "295 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 26607,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26566"
+    },
+    {
+      "severity": "warning",
+      "episode": 26608,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26567"
+    },
+    {
+      "severity": "warning",
+      "episode": 26609,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26580"
+    },
+    {
+      "severity": "warning",
+      "episode": 26610,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26581"
+    },
+    {
+      "severity": "warning",
+      "episode": 26611,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26582"
+    },
+    {
+      "severity": "warning",
+      "episode": 26612,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26583"
+    },
+    {
+      "severity": "warning",
+      "episode": 26613,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26584"
+    },
+    {
+      "severity": "warning",
+      "episode": 26614,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26585"
+    },
+    {
+      "severity": "warning",
+      "episode": 26615,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26586"
+    },
+    {
+      "severity": "warning",
+      "episode": 26616,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26587"
+    },
+    {
+      "severity": "warning",
+      "episode": 26617,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26588"
+    },
+    {
+      "severity": "warning",
+      "episode": 26618,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26589"
+    },
+    {
+      "severity": "warning",
+      "episode": 26619,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26590"
+    },
+    {
+      "severity": "warning",
+      "episode": 26620,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26591"
+    },
+    {
+      "severity": "warning",
+      "episode": 26621,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26592"
+    },
+    {
+      "severity": "warning",
+      "episode": 26622,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26514"
+    },
+    {
+      "severity": "warning",
+      "episode": 26623,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26521"
+    },
+    {
+      "severity": "warning",
+      "episode": 26624,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26526"
+    },
+    {
+      "severity": "warning",
+      "episode": 26625,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26528"
+    },
+    {
+      "severity": "warning",
+      "episode": 26626,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26529"
+    },
+    {
+      "severity": "warning",
+      "episode": 26627,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26530"
+    },
+    {
+      "severity": "warning",
+      "episode": 26628,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26531"
+    },
+    {
+      "severity": "warning",
+      "episode": 26629,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26539"
+    },
+    {
+      "severity": "warning",
+      "episode": 26630,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26544"
+    },
+    {
+      "severity": "warning",
+      "episode": 26631,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26549"
+    },
+    {
+      "severity": "warning",
+      "episode": 26632,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26550"
+    },
+    {
+      "severity": "warning",
+      "episode": 26633,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26554"
+    },
+    {
+      "severity": "warning",
+      "episode": 26634,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26561"
+    },
+    {
+      "severity": "warning",
+      "episode": 26635,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26564"
+    },
+    {
+      "severity": "warning",
+      "episode": 26636,
+      "code": "episode_length_outlier",
+      "message": "295 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 26636,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26566"
+    },
+    {
+      "severity": "warning",
+      "episode": 26637,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26567"
+    },
+    {
+      "severity": "warning",
+      "episode": 26638,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26580"
+    },
+    {
+      "severity": "warning",
+      "episode": 26639,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26581"
+    },
+    {
+      "severity": "warning",
+      "episode": 26640,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26582"
+    },
+    {
+      "severity": "warning",
+      "episode": 26641,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26583"
+    },
+    {
+      "severity": "warning",
+      "episode": 26642,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26584"
+    },
+    {
+      "severity": "warning",
+      "episode": 26643,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26585"
+    },
+    {
+      "severity": "warning",
+      "episode": 26644,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26586"
+    },
+    {
+      "severity": "warning",
+      "episode": 26645,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26587"
+    },
+    {
+      "severity": "warning",
+      "episode": 26646,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26588"
+    },
+    {
+      "severity": "warning",
+      "episode": 26647,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26589"
+    },
+    {
+      "severity": "warning",
+      "episode": 26648,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26590"
+    },
+    {
+      "severity": "warning",
+      "episode": 26649,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26591"
+    },
+    {
+      "severity": "warning",
+      "episode": 26650,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 26592"
+    },
+    {
+      "severity": "warning",
+      "episode": 29011,
+      "code": "episode_length_outlier",
+      "message": "304 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 29015,
+      "code": "episode_length_outlier",
+      "message": "301 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 29047,
+      "code": "episode_length_outlier",
+      "message": "297 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 29050,
+      "code": "episode_length_outlier",
+      "message": "323 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 29082,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 28984"
+    },
+    {
+      "severity": "warning",
+      "episode": 29083,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 28989"
+    },
+    {
+      "severity": "warning",
+      "episode": 29084,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 28991"
+    },
+    {
+      "severity": "warning",
+      "episode": 29085,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 28992"
+    },
+    {
+      "severity": "warning",
+      "episode": 29086,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 28996"
+    },
+    {
+      "severity": "warning",
+      "episode": 29087,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 28999"
+    },
+    {
+      "severity": "warning",
+      "episode": 29088,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29003"
+    },
+    {
+      "severity": "warning",
+      "episode": 29089,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29004"
+    },
+    {
+      "severity": "warning",
+      "episode": 29090,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29005"
+    },
+    {
+      "severity": "warning",
+      "episode": 29091,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29006"
+    },
+    {
+      "severity": "warning",
+      "episode": 29092,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29008"
+    },
+    {
+      "severity": "warning",
+      "episode": 29093,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29013"
+    },
+    {
+      "severity": "warning",
+      "episode": 29094,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29014"
+    },
+    {
+      "severity": "warning",
+      "episode": 29095,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29019"
+    },
+    {
+      "severity": "warning",
+      "episode": 29096,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29020"
+    },
+    {
+      "severity": "warning",
+      "episode": 29097,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29022"
+    },
+    {
+      "severity": "warning",
+      "episode": 29098,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29023"
+    },
+    {
+      "severity": "warning",
+      "episode": 29099,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29024"
+    },
+    {
+      "severity": "warning",
+      "episode": 29100,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29026"
+    },
+    {
+      "severity": "warning",
+      "episode": 29101,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29029"
+    },
+    {
+      "severity": "warning",
+      "episode": 29102,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29030"
+    },
+    {
+      "severity": "warning",
+      "episode": 29103,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29031"
+    },
+    {
+      "severity": "warning",
+      "episode": 29104,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29032"
+    },
+    {
+      "severity": "warning",
+      "episode": 29105,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29033"
+    },
+    {
+      "severity": "warning",
+      "episode": 29106,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29034"
+    },
+    {
+      "severity": "warning",
+      "episode": 29107,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29036"
+    },
+    {
+      "severity": "warning",
+      "episode": 29108,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29039"
+    },
+    {
+      "severity": "warning",
+      "episode": 29109,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29040"
+    },
+    {
+      "severity": "warning",
+      "episode": 29110,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29041"
+    },
+    {
+      "severity": "warning",
+      "episode": 29111,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29042"
+    },
+    {
+      "severity": "warning",
+      "episode": 29112,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29043"
+    },
+    {
+      "severity": "warning",
+      "episode": 29113,
+      "code": "episode_length_outlier",
+      "message": "297 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 29113,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29047"
+    },
+    {
+      "severity": "warning",
+      "episode": 29114,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29055"
+    },
+    {
+      "severity": "warning",
+      "episode": 29115,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29056"
+    },
+    {
+      "severity": "warning",
+      "episode": 29116,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29057"
+    },
+    {
+      "severity": "warning",
+      "episode": 29117,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29059"
+    },
+    {
+      "severity": "warning",
+      "episode": 29118,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29063"
+    },
+    {
+      "severity": "warning",
+      "episode": 29119,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29069"
+    },
+    {
+      "severity": "warning",
+      "episode": 29120,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29070"
+    },
+    {
+      "severity": "warning",
+      "episode": 29121,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29071"
+    },
+    {
+      "severity": "warning",
+      "episode": 29122,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29073"
+    },
+    {
+      "severity": "warning",
+      "episode": 29123,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29074"
+    },
+    {
+      "severity": "warning",
+      "episode": 29124,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29075"
+    },
+    {
+      "severity": "warning",
+      "episode": 29125,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29076"
+    },
+    {
+      "severity": "warning",
+      "episode": 29126,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29077"
+    },
+    {
+      "severity": "warning",
+      "episode": 29127,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29078"
+    },
+    {
+      "severity": "warning",
+      "episode": 29128,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29079"
+    },
+    {
+      "severity": "warning",
+      "episode": 29129,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29080"
+    },
+    {
+      "severity": "warning",
+      "episode": 29130,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 29081"
+    },
+    {
+      "severity": "warning",
+      "episode": 32174,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 32180,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 32197,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 32215,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 32219,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 32244,
+      "code": "episode_length_outlier",
+      "message": "310 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 32589,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 33879,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 33881,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 33886,
+      "code": "episode_length_outlier",
+      "message": "296 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 33888,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 33898,
+      "code": "episode_length_outlier",
+      "message": "310 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 33907,
+      "code": "episode_length_outlier",
+      "message": "295 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 33909,
+      "code": "episode_length_outlier",
+      "message": "311 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 33921,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 33965,
+      "code": "episode_length_outlier",
+      "message": "302 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 34356,
+      "code": "episode_length_outlier",
+      "message": "314 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 34987,
+      "code": "episode_length_outlier",
+      "message": "318 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 34993,
+      "code": "episode_length_outlier",
+      "message": "295 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 34994,
+      "code": "episode_length_outlier",
+      "message": "321 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35005,
+      "code": "episode_length_outlier",
+      "message": "324 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35006,
+      "code": "episode_length_outlier",
+      "message": "304 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35012,
+      "code": "episode_length_outlier",
+      "message": "309 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35018,
+      "code": "episode_length_outlier",
+      "message": "324 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35024,
+      "code": "episode_length_outlier",
+      "message": "302 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35026,
+      "code": "episode_length_outlier",
+      "message": "299 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35029,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35030,
+      "code": "episode_length_outlier",
+      "message": "305 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35041,
+      "code": "episode_length_outlier",
+      "message": "315 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35050,
+      "code": "episode_length_outlier",
+      "message": "299 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35063,
+      "code": "episode_length_outlier",
+      "message": "302 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35066,
+      "code": "episode_length_outlier",
+      "message": "337 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35067,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35184,
+      "code": "episode_length_outlier",
+      "message": "354 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35196,
+      "code": "episode_length_outlier",
+      "message": "317 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35237,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35240,
+      "code": "episode_length_outlier",
+      "message": "338 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35250,
+      "code": "episode_length_outlier",
+      "message": "301 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35257,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35258,
+      "code": "episode_length_outlier",
+      "message": "341 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 35262,
+      "code": "episode_length_outlier",
+      "message": "305 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 38110,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 38176,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38085"
+    },
+    {
+      "severity": "warning",
+      "episode": 38177,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38086"
+    },
+    {
+      "severity": "warning",
+      "episode": 38178,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38089"
+    },
+    {
+      "severity": "warning",
+      "episode": 38179,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38090"
+    },
+    {
+      "severity": "warning",
+      "episode": 38180,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38092"
+    },
+    {
+      "severity": "warning",
+      "episode": 38181,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38095"
+    },
+    {
+      "severity": "warning",
+      "episode": 38182,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38103"
+    },
+    {
+      "severity": "warning",
+      "episode": 38183,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38104"
+    },
+    {
+      "severity": "warning",
+      "episode": 38184,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38105"
+    },
+    {
+      "severity": "warning",
+      "episode": 38185,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38108"
+    },
+    {
+      "severity": "warning",
+      "episode": 38186,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38109"
+    },
+    {
+      "severity": "warning",
+      "episode": 38187,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38112"
+    },
+    {
+      "severity": "warning",
+      "episode": 38188,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38136"
+    },
+    {
+      "severity": "warning",
+      "episode": 38189,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38140"
+    },
+    {
+      "severity": "warning",
+      "episode": 38190,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38142"
+    },
+    {
+      "severity": "warning",
+      "episode": 38191,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38143"
+    },
+    {
+      "severity": "warning",
+      "episode": 38192,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38150"
+    },
+    {
+      "severity": "warning",
+      "episode": 38193,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38151"
+    },
+    {
+      "severity": "warning",
+      "episode": 38194,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38152"
+    },
+    {
+      "severity": "warning",
+      "episode": 38195,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38153"
+    },
+    {
+      "severity": "warning",
+      "episode": 38196,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38154"
+    },
+    {
+      "severity": "warning",
+      "episode": 38197,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38155"
+    },
+    {
+      "severity": "warning",
+      "episode": 38198,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38156"
+    },
+    {
+      "severity": "warning",
+      "episode": 38199,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38157"
+    },
+    {
+      "severity": "warning",
+      "episode": 38200,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38158"
+    },
+    {
+      "severity": "warning",
+      "episode": 38201,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38159"
+    },
+    {
+      "severity": "warning",
+      "episode": 38202,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38160"
+    },
+    {
+      "severity": "warning",
+      "episode": 38203,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38161"
+    },
+    {
+      "severity": "warning",
+      "episode": 38204,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38162"
+    },
+    {
+      "severity": "warning",
+      "episode": 38205,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38163"
+    },
+    {
+      "severity": "warning",
+      "episode": 38206,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38164"
+    },
+    {
+      "severity": "warning",
+      "episode": 38207,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38165"
+    },
+    {
+      "severity": "warning",
+      "episode": 38208,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38166"
+    },
+    {
+      "severity": "warning",
+      "episode": 38209,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38167"
+    },
+    {
+      "severity": "warning",
+      "episode": 38210,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38168"
+    },
+    {
+      "severity": "warning",
+      "episode": 38211,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38169"
+    },
+    {
+      "severity": "warning",
+      "episode": 38212,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38170"
+    },
+    {
+      "severity": "warning",
+      "episode": 38213,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38171"
+    },
+    {
+      "severity": "warning",
+      "episode": 38214,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38172"
+    },
+    {
+      "severity": "warning",
+      "episode": 38215,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38173"
+    },
+    {
+      "severity": "warning",
+      "episode": 38216,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38174"
+    },
+    {
+      "severity": "warning",
+      "episode": 38217,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 38175"
+    },
+    {
+      "severity": "warning",
+      "episode": 44703,
+      "code": "episode_length_outlier",
+      "message": "304 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 45054,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 45078,
+      "code": "episode_length_outlier",
+      "message": "298 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 45099,
+      "code": "episode_length_outlier",
+      "message": "326 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 45633,
+      "code": "episode_length_outlier",
+      "message": "312 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 45858,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 45886,
+      "code": "episode_length_outlier",
+      "message": "297 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 46503,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 46771,
+      "code": "episode_length_outlier",
+      "message": "333 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 46817,
+      "code": "episode_length_outlier",
+      "message": "306 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 46826,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 46836,
+      "code": "episode_length_outlier",
+      "message": "297 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 48245,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 48581,
+      "code": "episode_length_outlier",
+      "message": "298 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 48637,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 49564,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 49870,
+      "code": "episode_length_outlier",
+      "message": "304 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 50105,
+      "code": "episode_length_outlier",
+      "message": "295 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 50482,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 50496,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 50508,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 50539,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 51096,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 51459,
+      "code": "episode_length_outlier",
+      "message": "308 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 51580,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52486,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52450"
+    },
+    {
+      "severity": "warning",
+      "episode": 52487,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52451"
+    },
+    {
+      "severity": "warning",
+      "episode": 52488,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52452"
+    },
+    {
+      "severity": "warning",
+      "episode": 52493,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52454"
+    },
+    {
+      "severity": "warning",
+      "episode": 52494,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52455"
+    },
+    {
+      "severity": "warning",
+      "episode": 52501,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52457"
+    },
+    {
+      "severity": "warning",
+      "episode": 52502,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52460"
+    },
+    {
+      "severity": "warning",
+      "episode": 52503,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52461"
+    },
+    {
+      "severity": "warning",
+      "episode": 52504,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52462"
+    },
+    {
+      "severity": "warning",
+      "episode": 52506,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52465"
+    },
+    {
+      "severity": "warning",
+      "episode": 52507,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52468"
+    },
+    {
+      "severity": "warning",
+      "episode": 52508,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52470"
+    },
+    {
+      "severity": "warning",
+      "episode": 52512,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52472"
+    },
+    {
+      "severity": "warning",
+      "episode": 52514,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52473"
+    },
+    {
+      "severity": "warning",
+      "episode": 52516,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52475"
+    },
+    {
+      "severity": "warning",
+      "episode": 52519,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52477"
+    },
+    {
+      "severity": "warning",
+      "episode": 52523,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52480"
+    },
+    {
+      "severity": "warning",
+      "episode": 52526,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52482"
+    },
+    {
+      "severity": "warning",
+      "episode": 52527,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52483"
+    },
+    {
+      "severity": "warning",
+      "episode": 52529,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52450"
+    },
+    {
+      "severity": "warning",
+      "episode": 52530,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52451"
+    },
+    {
+      "severity": "warning",
+      "episode": 52531,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52452"
+    },
+    {
+      "severity": "warning",
+      "episode": 52535,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52454"
+    },
+    {
+      "severity": "warning",
+      "episode": 52539,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52455"
+    },
+    {
+      "severity": "warning",
+      "episode": 52541,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52457"
+    },
+    {
+      "severity": "warning",
+      "episode": 52542,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52460"
+    },
+    {
+      "severity": "warning",
+      "episode": 52543,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52461"
+    },
+    {
+      "severity": "warning",
+      "episode": 52544,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52462"
+    },
+    {
+      "severity": "warning",
+      "episode": 52547,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52465"
+    },
+    {
+      "severity": "warning",
+      "episode": 52548,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52468"
+    },
+    {
+      "severity": "warning",
+      "episode": 52549,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52470"
+    },
+    {
+      "severity": "warning",
+      "episode": 52550,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52472"
+    },
+    {
+      "severity": "warning",
+      "episode": 52551,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52473"
+    },
+    {
+      "severity": "warning",
+      "episode": 52552,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52475"
+    },
+    {
+      "severity": "warning",
+      "episode": 52553,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52477"
+    },
+    {
+      "severity": "warning",
+      "episode": 52554,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52480"
+    },
+    {
+      "severity": "warning",
+      "episode": 52555,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52482"
+    },
+    {
+      "severity": "warning",
+      "episode": 52556,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52483"
+    },
+    {
+      "severity": "warning",
+      "episode": 52557,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52450"
+    },
+    {
+      "severity": "warning",
+      "episode": 52558,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52451"
+    },
+    {
+      "severity": "warning",
+      "episode": 52559,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52452"
+    },
+    {
+      "severity": "warning",
+      "episode": 52560,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52454"
+    },
+    {
+      "severity": "warning",
+      "episode": 52561,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52455"
+    },
+    {
+      "severity": "warning",
+      "episode": 52562,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52457"
+    },
+    {
+      "severity": "warning",
+      "episode": 52563,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52460"
+    },
+    {
+      "severity": "warning",
+      "episode": 52564,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52461"
+    },
+    {
+      "severity": "warning",
+      "episode": 52565,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52462"
+    },
+    {
+      "severity": "warning",
+      "episode": 52566,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52465"
+    },
+    {
+      "severity": "warning",
+      "episode": 52567,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52468"
+    },
+    {
+      "severity": "warning",
+      "episode": 52568,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52470"
+    },
+    {
+      "severity": "warning",
+      "episode": 52569,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52472"
+    },
+    {
+      "severity": "warning",
+      "episode": 52570,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52473"
+    },
+    {
+      "severity": "warning",
+      "episode": 52571,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52475"
+    },
+    {
+      "severity": "warning",
+      "episode": 52572,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52477"
+    },
+    {
+      "severity": "warning",
+      "episode": 52573,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52480"
+    },
+    {
+      "severity": "warning",
+      "episode": 52574,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52482"
+    },
+    {
+      "severity": "warning",
+      "episode": 52575,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52483"
+    },
+    {
+      "severity": "warning",
+      "episode": 52576,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52450"
+    },
+    {
+      "severity": "warning",
+      "episode": 52577,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52451"
+    },
+    {
+      "severity": "warning",
+      "episode": 52578,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52452"
+    },
+    {
+      "severity": "warning",
+      "episode": 52579,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52454"
+    },
+    {
+      "severity": "warning",
+      "episode": 52580,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52455"
+    },
+    {
+      "severity": "warning",
+      "episode": 52581,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52457"
+    },
+    {
+      "severity": "warning",
+      "episode": 52582,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52460"
+    },
+    {
+      "severity": "warning",
+      "episode": 52583,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52461"
+    },
+    {
+      "severity": "warning",
+      "episode": 52584,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52462"
+    },
+    {
+      "severity": "warning",
+      "episode": 52585,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52465"
+    },
+    {
+      "severity": "warning",
+      "episode": 52586,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52468"
+    },
+    {
+      "severity": "warning",
+      "episode": 52587,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52470"
+    },
+    {
+      "severity": "warning",
+      "episode": 52588,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52472"
+    },
+    {
+      "severity": "warning",
+      "episode": 52589,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52473"
+    },
+    {
+      "severity": "warning",
+      "episode": 52590,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52475"
+    },
+    {
+      "severity": "warning",
+      "episode": 52591,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52477"
+    },
+    {
+      "severity": "warning",
+      "episode": 52592,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52480"
+    },
+    {
+      "severity": "warning",
+      "episode": 52593,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52482"
+    },
+    {
+      "severity": "warning",
+      "episode": 52594,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52483"
+    },
+    {
+      "severity": "warning",
+      "episode": 52595,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52450"
+    },
+    {
+      "severity": "warning",
+      "episode": 52596,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52451"
+    },
+    {
+      "severity": "warning",
+      "episode": 52597,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52452"
+    },
+    {
+      "severity": "warning",
+      "episode": 52598,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52454"
+    },
+    {
+      "severity": "warning",
+      "episode": 52599,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52455"
+    },
+    {
+      "severity": "warning",
+      "episode": 52600,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52457"
+    },
+    {
+      "severity": "warning",
+      "episode": 52601,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52460"
+    },
+    {
+      "severity": "warning",
+      "episode": 52602,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52461"
+    },
+    {
+      "severity": "warning",
+      "episode": 52603,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52462"
+    },
+    {
+      "severity": "warning",
+      "episode": 52604,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52465"
+    },
+    {
+      "severity": "warning",
+      "episode": 52605,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52468"
+    },
+    {
+      "severity": "warning",
+      "episode": 52606,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52470"
+    },
+    {
+      "severity": "warning",
+      "episode": 52607,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52472"
+    },
+    {
+      "severity": "warning",
+      "episode": 52608,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52473"
+    },
+    {
+      "severity": "warning",
+      "episode": 52609,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52475"
+    },
+    {
+      "severity": "warning",
+      "episode": 52610,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52477"
+    },
+    {
+      "severity": "warning",
+      "episode": 52611,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52480"
+    },
+    {
+      "severity": "warning",
+      "episode": 52612,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52482"
+    },
+    {
+      "severity": "warning",
+      "episode": 52613,
+      "code": "duplicate_episode",
+      "message": "same action sequence as episode 52483"
+    },
+    {
+      "severity": "warning",
+      "episode": 52725,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52727,
+      "code": "episode_length_outlier",
+      "message": "294 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52728,
+      "code": "episode_length_outlier",
+      "message": "296 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52729,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52736,
+      "code": "episode_length_outlier",
+      "message": "310 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52738,
+      "code": "episode_length_outlier",
+      "message": "323 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52742,
+      "code": "episode_length_outlier",
+      "message": "296 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52756,
+      "code": "episode_length_outlier",
+      "message": "302 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52759,
+      "code": "episode_length_outlier",
+      "message": "296 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52769,
+      "code": "episode_length_outlier",
+      "message": "313 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52775,
+      "code": "episode_length_outlier",
+      "message": "325 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52779,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52782,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52800,
+      "code": "episode_length_outlier",
+      "message": "311 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52809,
+      "code": "episode_length_outlier",
+      "message": "294 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52814,
+      "code": "episode_length_outlier",
+      "message": "325 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 52906,
+      "code": "episode_length_outlier",
+      "message": "297 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 53181,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 53872,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 53884,
+      "code": "episode_length_outlier",
+      "message": "303 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 53921,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 53924,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 54375,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 55201,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 55290,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 55643,
+      "code": "episode_length_outlier",
+      "message": "303 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 55941,
+      "code": "episode_length_outlier",
+      "message": "303 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 55968,
+      "code": "episode_length_outlier",
+      "message": "321 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 55990,
+      "code": "episode_length_outlier",
+      "message": "297 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56025,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56029,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56045,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56046,
+      "code": "episode_length_outlier",
+      "message": "367 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56047,
+      "code": "episode_length_outlier",
+      "message": "308 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56061,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56092,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56093,
+      "code": "episode_length_outlier",
+      "message": "306 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56100,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56108,
+      "code": "episode_length_outlier",
+      "message": "306 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56110,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56114,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56126,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56341,
+      "code": "episode_length_outlier",
+      "message": "302 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56364,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56407,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56420,
+      "code": "episode_length_outlier",
+      "message": "308 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 56909,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 58044,
+      "code": "episode_length_outlier",
+      "message": "298 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 58517,
+      "code": "episode_length_outlier",
+      "message": "303 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 58546,
+      "code": "episode_length_outlier",
+      "message": "294 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 58755,
+      "code": "episode_length_outlier",
+      "message": "302 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 59085,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 59147,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 59183,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 59186,
+      "code": "episode_length_outlier",
+      "message": "316 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 59209,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 59659,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 59662,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 59679,
+      "code": "episode_length_outlier",
+      "message": "318 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 59733,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 61062,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 62033,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 62502,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 63065,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 63151,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 63707,
+      "code": "episode_length_outlier",
+      "message": "303 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 63738,
+      "code": "episode_length_outlier",
+      "message": "301 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 63744,
+      "code": "episode_length_outlier",
+      "message": "294 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 64641,
+      "code": "episode_length_outlier",
+      "message": "324 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 65666,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 65719,
+      "code": "episode_length_outlier",
+      "message": "307 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 67039,
+      "code": "episode_length_outlier",
+      "message": "307 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 69070,
+      "code": "episode_length_outlier",
+      "message": "303 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 69071,
+      "code": "episode_length_outlier",
+      "message": "342 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 69092,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 69102,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 74264,
+      "code": "episode_length_outlier",
+      "message": "298 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 74276,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 74280,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 74297,
+      "code": "episode_length_outlier",
+      "message": "315 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 74299,
+      "code": "episode_length_outlier",
+      "message": "310 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 74315,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 74320,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 74327,
+      "code": "episode_length_outlier",
+      "message": "315 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 74337,
+      "code": "episode_length_outlier",
+      "message": "293 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 74341,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 77194,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78277,
+      "code": "episode_length_outlier",
+      "message": "305 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78284,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78286,
+      "code": "episode_length_outlier",
+      "message": "291 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78288,
+      "code": "episode_length_outlier",
+      "message": "289 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78302,
+      "code": "episode_length_outlier",
+      "message": "318 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78305,
+      "code": "episode_length_outlier",
+      "message": "292 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78306,
+      "code": "episode_length_outlier",
+      "message": "300 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78308,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78310,
+      "code": "episode_length_outlier",
+      "message": "304 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78320,
+      "code": "episode_length_outlier",
+      "message": "298 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78321,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78325,
+      "code": "episode_length_outlier",
+      "message": "306 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78334,
+      "code": "episode_length_outlier",
+      "message": "290 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78346,
+      "code": "episode_length_outlier",
+      "message": "311 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78348,
+      "code": "episode_length_outlier",
+      "message": "313 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    },
+    {
+      "severity": "warning",
+      "episode": 78362,
+      "code": "episode_length_outlier",
+      "message": "288 frames, much longer than the other episodes (mean 145, std 48 over 81091 episodes)"
+    }
+  ]
+}
